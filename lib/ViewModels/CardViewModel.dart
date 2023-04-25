@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
 
+import 'DetailsViewModel.dart';
+
 class CardViewModel extends StatelessWidget {
   final String title;
+  final String text;
 
   const CardViewModel({
     super.key,
     required this.title,
+    required this.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('$title tapped.');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsViewModel(title: title, text: text),
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(

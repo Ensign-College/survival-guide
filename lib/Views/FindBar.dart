@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:survival_guide/constants/colors.dart';
 
 class FindBar extends StatelessWidget {
   final ValueChanged<String> onSearchTextChanged;
@@ -8,15 +9,30 @@ class FindBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[300],
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
         onChanged: onSearchTextChanged,
-        decoration: InputDecoration(
+        style: TextStyle(color: Colors.white),
+        decoration:  InputDecoration(
           labelText: 'Find text',
           hintText: 'Type your search query',
-          border: OutlineInputBorder(),
-          suffixIcon: Icon(Icons.search),
+          labelStyle: TextStyle(color: Colors.white),
+          hintStyle: TextStyle(color: Colors.white),
+          fillColor: CardBackgroundColor,
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          suffixIcon: Icon(Icons.search, color: Colors.white),
         ),
       ),
     );

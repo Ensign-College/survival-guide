@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../Views/FindBar.dart';
 
 class DetailsViewModel extends StatefulWidget {
-  const DetailsViewModel({super.key});
+  final String title;
+  final String text;
+  const DetailsViewModel({super.key, required this.title, required this.text});
+
 
   @override
   _DetailsViewModelState createState() => _DetailsViewModelState();
@@ -21,16 +24,15 @@ class _DetailsViewModelState extends State<DetailsViewModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:const Text('My StatefulWidget View')),
+      appBar: AppBar(title: Text(widget.title,), backgroundColor: Colors.transparent,),
       body: Column(
         children: [
-         const Expanded(
+          Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque posuere...',
-                  style: TextStyle(fontSize: 20),
+                padding: const EdgeInsets.all(16),
+                child: Text(widget.text,
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
             ),
