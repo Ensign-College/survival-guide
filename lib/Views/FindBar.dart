@@ -3,8 +3,8 @@ import 'package:survival_guide/constants/colors.dart';
 
 class FindBar extends StatelessWidget {
   final ValueChanged<String> onSearchTextChanged;
-
-  const FindBar({required this.onSearchTextChanged});
+  final String title;
+  const FindBar({required this.onSearchTextChanged, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -12,27 +12,27 @@ class FindBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
         onChanged: onSearchTextChanged,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
         decoration:  InputDecoration(
-          labelText: 'Find text',
+          labelText: 'Find in $title',
           hintText: 'Type your search query',
-          labelStyle: TextStyle(color: Colors.white),
-          hintStyle: TextStyle(color: Colors.white),
+          labelStyle: const TextStyle(color: Colors.white),
+          hintStyle: const TextStyle(color: Colors.white),
           fillColor: CardBackgroundColor,
           filled: true,
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
-          suffixIcon: Icon(Icons.search, color: Colors.white),
+          suffixIcon:const Icon(Icons.search, color: Colors.white),
         ),
       ),
     );

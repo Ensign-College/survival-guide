@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/ViewModels/CardViewModel.dart';
 import 'package:survival_guide/Views/DirectoryGridView.dart';
+import 'package:survival_guide/Views/FindBar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/directory.dart';
 
@@ -33,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: FindBar(onSearchTextChanged: (String value) {  }, title: 'Advising',),
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: Colors.transparent,
