@@ -1,16 +1,6 @@
-# survival_guide
+# Survival guide
 
-Stuent's survival guide in Ensign College
+This app is dedicated to help Ensign College student to orient themselves in Ensign college. 
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Documentation
+- [Wiki](https://github.com/Ensign-College/survival-guide/wiki)
