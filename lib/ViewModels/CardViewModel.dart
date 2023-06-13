@@ -5,13 +5,15 @@ import 'DetailsViewModel.dart';
 
 class CardViewModel extends StatelessWidget {
   final String title;
-  final String text;
+  final String imageUrl;
 
   const CardViewModel({
-    super.key,
+    Key? key,
     required this.title,
-    required this.text,
-  });
+    required this.imageUrl,
+  }) : super(key: key);
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class CardViewModel extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailsViewModel(title: title, text: text),
+            builder: (context) => DetailsViewModel(title: title, text: "stuff"),
           ),
         );
       },
@@ -56,9 +58,9 @@ class CardViewModel extends StatelessWidget {
     return Container(
       width: 40,
       height: 40,
-      decoration: const BoxDecoration(
+       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/Ensign_Logo.png'),
+          image: NetworkImage(imageUrl),
           fit: BoxFit.cover,
         ),
       ),
