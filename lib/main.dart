@@ -3,16 +3,14 @@ import 'package:survival_guide/ViewModels/CardViewModel.dart';
 import 'package:survival_guide/Views/DirectoryGridView.dart';
 import 'package:survival_guide/Views/FindBar.dart';
 import 'package:survival_guide/constants/colors.dart';
-import 'package:survival_guide/constants/directory.dart';
-
-import 'constants/fetching_data.dart';
+import 'package:survival_guide/repository/fetch_card.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -26,13 +24,39 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final dataService = DataService();
+  List<CardViewModel> cards = [];
+  List<CardData> cardData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      cardData = await dataService.fetchData();
+      cards = cardData
+          .map((card) =>
+              CardViewModel(title: card.title, imageUrl: card.imageUrl))
+          .toList();
+      setState(() {}); // Notify the framework that the
+      setState(() {});
+    } catch (e) {
+      // Handle the error
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,14 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
         title: 'Advising',
       ),
       appBar: AppBar(
-        actions: [IconButton(onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Draft()));
-        }, icon: const Icon(Icons.search))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => DirectoryGridView(children: cards)));
+              },
+              icon: const Icon(Icons.search))
+        ],
         title: Text(widget.title),
         backgroundColor: Colors.transparent,
       ),
       body: Center(
-        child: DirectoryGridView(children: directoryCards),
+        child: DirectoryGridView(
+          children: cards
+              .map((card) => CardViewModel(
+                    title: card.title,
+                    imageUrl: card.imageUrl,
+                  ))
+              .toList(),
+        ),
       ),
     );
   }
