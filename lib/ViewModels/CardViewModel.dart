@@ -27,7 +27,7 @@ class CardViewModel extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: CardBackgroundColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
         ),
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         width: 150,
