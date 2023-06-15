@@ -45,12 +45,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> fetchData() async {
     try {
       cardData = await dataService.fetchData();
+      print('------------- cardData ---------');
+      print(cardData);
       cards = cardData
           .map((card) =>
               CardViewModel(title: card.title, imageUrl: card.imageUrl))
           .toList();
-      setState(() {}); // Notify the framework that the
-      setState(() {});
+      setState(() {
+        print('------------- cards ---------');
+        print(cards);
+      }); // Notify the framework that the
+      // setState(() {});
     } catch (e) {
       // Handle the error
       print(e);
@@ -65,14 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
         title: 'Advising',
       ),
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DirectoryGridView(children: cards)));
-              },
-              icon: const Icon(Icons.search))
-        ],
         title: Text(widget.title),
         backgroundColor: Colors.transparent,
       ),

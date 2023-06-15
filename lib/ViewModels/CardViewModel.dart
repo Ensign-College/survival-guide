@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
 
+import '../repository/fetch_details.dart';
 import 'DetailsViewModel.dart';
 
 class CardViewModel extends StatelessWidget {
@@ -13,12 +14,41 @@ class CardViewModel extends StatelessWidget {
     required this.imageUrl,
   }) : super(key: key);
 
+
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchData();
+  // }
+
+  Future<void> fetchData() async {
+  final dataService = DetailsService();
+  List<DetailsViewModel> cards = [];
+  List<CardDetails> cardData = [];
+    try {
+      cardData = await dataService.fetchDetails();
+      print('------------- cardData ---------');
+      print(cardData);
+      cards = cardData
+          .map((card) =>
+              DetailsViewModel(title: card.title, text: card.details ))
+          .toList();
+      // setState(() {});
+    } catch (e) {
+      // Handle the error
+      print(e);
+    }
+  }
+
   
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print('------------- title ---------');
+        print(title);
         Navigator.push(
           context,
           MaterialPageRoute(
