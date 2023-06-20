@@ -4,8 +4,16 @@ import 'package:survival_guide/Views/DirectoryGridView.dart';
 import 'package:survival_guide/Views/FindBar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/repository/fetch_card.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+    await dotenv.load(fileName: "lib/.env");
+    await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+
   runApp(const MyApp());
 }
 
