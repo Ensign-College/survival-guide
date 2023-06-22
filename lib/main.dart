@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:survival_guide/ViewModels/CardViewModel.dart';
-import 'package:survival_guide/Views/DirectoryGridView.dart';
-import 'package:survival_guide/Views/FindBar.dart';
 import 'package:survival_guide/constants/colors.dart';
-import 'package:survival_guide/constants/directory.dart';
+import 'Views/home.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'constants/fetching_data.dart';
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  await Supabase.initialize(
+    url: 'https://ehyfnzsinagvuifstdkx.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoeWZuenNpbmFndnVpZnN0ZGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY4NDU2NjYsImV4cCI6MjAwMjQyMTY2Nn0.UiAdrjIs8xET7QhUgnqayEPFLnU-8rN_IE5r4ymLkRM',
+  );
   runApp(const MyApp());
 }
 
@@ -21,35 +23,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(scaffoldBackgroundColor: AppBackgroundColor),
       home: const MyHomePage(title: "Welcome to Ensign College"),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: FindBar(
-        onSearchTextChanged: (String value) {},
-        title: 'Advising',
-      ),
-      appBar: AppBar(
-        actions: [IconButton(onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Draft()));
-        }, icon: const Icon(Icons.search))],
-        title: Text(widget.title),
-        backgroundColor: Colors.transparent,
-      ),
-      body: Center(
-        child: DirectoryGridView(children: directoryCards),
-      ),
     );
   }
 }
