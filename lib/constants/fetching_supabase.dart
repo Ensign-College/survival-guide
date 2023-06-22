@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,7 +20,6 @@ class _SupabaseStatefe extends State<Supabasefe> {
   void initState() {
     super.initState();
     _getData();
-    print(2 + 1); //si corre esto porque no lo corre en la escueal.
   }
 
   void _getData() async {
@@ -27,30 +28,19 @@ class _SupabaseStatefe extends State<Supabasefe> {
         .from('card')
         .select()
         .order('id', ascending: true);
-    // print("hola");
-    // print(response);
-    // print("-----------------");
-    // print(response[0]);
-    // print("-----------------");
-    // print(response[0]['title']);
-    // print("-----------------");
-    // print(response.runtimeType);
-    final titles = response.map((item) => item['title']).toList();
-    for (final hola in response) {
-      // print('--------------------');
-      // print(hola['title']);
+    print(response);
 
+
+    print("-----------------");
+
+    for (final item in response) {
       loadedItems.add(CardViewModel(
-        title: hola['title'],
-        imageUrl: hola['imageUrl'],
-      ));
-      // print('--------------------');
-      print(hola);
-
-      setState(() {
-        directoryCards3 = loadedItems;
-      });
+          title: item['title'], imageUrl: item['image_logo']));
     }
+
+    setState(() {
+      directoryCards3 = loadedItems;
+    });
   }
 
   @override
