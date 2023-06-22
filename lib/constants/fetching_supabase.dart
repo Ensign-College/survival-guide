@@ -18,6 +18,7 @@ class _SupabaseStatefe extends State<Supabasefe> {
   void initState() {
     super.initState();
     _getData();
+    print(2 + 1); //si corre esto porque no lo corre en la escueal.
   }
 
   void _getData() async {
@@ -26,21 +27,25 @@ class _SupabaseStatefe extends State<Supabasefe> {
         .from('card')
         .select()
         .order('id', ascending: true);
-    print("hola");
-    print(response);
-    print("-----------------");
-    print(response[0]);
-    print("-----------------");
-    print(response[0]['title']);
-    print("-----------------");
-    print(response.runtimeType);
+    // print("hola");
+    // print(response);
+    // print("-----------------");
+    // print(response[0]);
+    // print("-----------------");
+    // print(response[0]['title']);
+    // print("-----------------");
+    // print(response.runtimeType);
     final titles = response.map((item) => item['title']).toList();
-    for (final title in titles) {
+    for (final hola in response) {
+      // print('--------------------');
+      // print(hola['title']);
+
       loadedItems.add(CardViewModel(
-        title: title,
-        text: title,
+        title: hola['title'],
+        imageUrl: hola['imageUrl'],
       ));
-      print(title);
+      // print('--------------------');
+      print(hola);
 
       setState(() {
         directoryCards3 = loadedItems;
