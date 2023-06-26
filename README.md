@@ -1,6 +1,7 @@
 # Survival guide
 
-[![](https://dcbadge.vercel.app/api/server/INVITEID)](https://discord.gg/jaavNtrG)
+[![](https://dcbadge.vercel.app/api/Ensigns_computer_people/jaavNtrG)](https://discord.gg/jaavNtrG)
+
 
 
 This app is dedicated to helping Ensign College students to orient themselves in Ensign College. 
