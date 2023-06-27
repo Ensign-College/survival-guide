@@ -38,6 +38,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^1.0.0
   supabase_flutter: ^1.10.4
+  flutter_dotenv: ^5.1.0
+  realtime_client: ^1.1.1
 
 dev_dependencies:
   flutter_test:

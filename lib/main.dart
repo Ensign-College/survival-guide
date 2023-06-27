@@ -2,15 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'Views/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Supabase.initialize(
-    url: 'https://ehyfnzsinagvuifstdkx.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoeWZuenNpbmFndnVpZnN0ZGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY4NDU2NjYsImV4cCI6MjAwMjQyMTY2Nn0.UiAdrjIs8xET7QhUgnqayEPFLnU-8rN_IE5r4ymLkRM'
-    // anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoeWZuenNpbmFndnVpZnN0ZGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY4NDU2NjYsImV4cCI6MjAwMjQyMTY2Nn0.UiAdrjIs8xET7QhUgnqayEPFLnU-8rN_IE5r4ymLkRM',
+  // Load environment variables from .env.local file
+  await dotenv.load(fileName: "lib/.env");
+
+  // Access the environment variables
+  final supabaseUrl = dotenv.env['SUPABASE_URL'];
+  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+
+  var supabase = await Supabase.initialize(
+    url: supabaseUrl!,
+    anonKey: supabaseAnonKey!,
   );
+
+  var client = RealtimeClient(supabaseUrl!);
+  client.connect();
+  client.onOpen(() => print('Socket opened.'));
+  client.onClose((event) => print('Socket closed $event'));
+  client.onError((error) => print('Socket error: $error'));
   runApp(const MyApp());
 }
 
