@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 
 class CardData {
   final String title;
@@ -13,29 +11,26 @@ class CardData {
 
 class DataService {
 
-  final supabase = Supabase.instance.client;
 
-  Future<List<CardData>> fetchData() async {
-    var supabaseUrl = dotenv.env['SUPABASE_URL']!;
-    var supabaseApiKey = dotenv.env['SUPABASE_ANON_KEY']!;
-    final response = await supabase
-        .from('card')
-        .select()
-        .order('id', ascending: true);
-
-
-    if (response != null) {
-      // Parse the JSON data
-      print("response: ${response}"); // This is the response body
-      return response.map((item) => CardData(
-        title: item['title'],
-        imageUrl: item['image_logo'], // Note that I changed 'logo_image_url' to 'image_logo' as per your previous messages
-      )).toList();
-    } else {
-      // Handle the error
-      print("response.statusCode: ${response.statusCode}"); // This is the response body
-      print("response.body: ${response.body}"); // This is the response body
-      throw Exception('Failed to load data');
-    }
-  }
+  // Future<List<CardData>> fetchData() async {
+  //       await dotenv.load(fileName: ".env");
+  //   var supabaseUrl = dotenv.env['SUPABASE_URL']!;
+  //   var supabaseApiKey = dotenv.env['SUPABASE_ANON_KEY']!;
+  //   final response = await http.get(
+  //     Uri.parse('$supabaseUrl/rest/v1/Cards'),
+  //     headers: {'apikey': supabaseApiKey, 'Content-Type': 'application/json'},
+  //   );
+  //
+  //   if (response.statusCode == 200) {
+  //     // Parse the JSON data
+  //     List<dynamic> data = jsonDecode(response.body);
+  //     return data.map((item) => CardData(
+  //       title: item['title'],
+  //       imageUrl: item['image_logo'], // Note that I changed 'logo_image_url' to 'image_logo' as per your previous messages
+  //     )).toList();
+  //   } else {
+  //     // Handle the error
+  //     throw Exception('Failed to load data');
+  //   }
+  // }
 }
