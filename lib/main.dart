@@ -8,14 +8,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
-    await dotenv.load(fileName: "lib/.env");
-    await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: "lib/.env");
+  // Access the environment variables
+  final supabaseUrl = dotenv.env['SUPABASE_URL'];
+  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+  await Supabase.initialize(
+    url: supabaseUrl!,
+    anonKey: supabaseAnonKey!,
   );
 
   runApp(const MyApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -40,33 +47,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final dataService = DataService();
+  final _card_stream = supabase.from('card').stream(primaryKey: ['id']);
+  bool isGridView = false;
+
   List<CardViewModel> cards = [];
-  List<CardData> cardData = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    try {
-      cardData = await dataService.fetchData();
-      cards = cardData
-          .map((card) =>
-              CardViewModel(title: card.title, imageUrl: card.imageUrl))
-          .toList();
-      setState(() {}); // Notify the framework that the
-      setState(() {});
-    } catch (e) {
-      // Handle the error
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       bottomNavigationBar: FindBar(
         onSearchTextChanged: (String value) {},
@@ -75,24 +63,49 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DirectoryGridView(children: cards)));
-              },
-              icon: const Icon(Icons.search))
+            onPressed: () {
+              setState(() {
+                isGridView = !isGridView;
+              });
+            },
+            icon: isGridView ? const Icon(Icons.list) : const Icon(Icons.grid_on),
+          ),
         ],
         title: Text(widget.title),
         backgroundColor: Colors.transparent,
       ),
-      body: Center(
-        child: DirectoryGridView(
-          children: cards
-              .map((card) => CardViewModel(
-                    title: card.title,
-                    imageUrl: card.imageUrl,
-                  ))
-              .toList(),
-        ),
+      body: StreamBuilder(
+        stream: _card_stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return  Center(
+              child: Text("Error has occurred: ${snapshot.error!}")
+            );
+          }
+
+          if (snapshot.hasData) {
+            final List<dynamic> data = snapshot.data as List<dynamic>;
+            final cards = data.map((e) {
+              return CardViewModel(
+                title: e['title'] as String,
+                imageUrl: e['image_logo'] as String,
+              );
+            }).toList();
+            return isGridView ? ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final card = data[index];
+                return CardViewModel(
+                  title: card['title'] as String,
+                  imageUrl: card['image_logo'] as String,
+                );
+              },
+            ) : DirectoryGridView(children: cards);
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }

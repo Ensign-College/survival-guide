@@ -1,36 +1,33 @@
+
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'dart:io';
 
-class CardData {
-  final String title;
-  final String imageUrl;
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:realtime_client/realtime_client.dart';
 
-  CardData({required this.title, required this.imageUrl});
-}
+import '../ViewModels/CardViewModel.dart';
 
 class DataService {
+  final supabase = Supabase.instance.client;
 
+  Future<List<CardViewModel>> fetchData() async {
+    final response =
+    await supabase.from('card').select().order('id', ascending: true);
 
-  Future<List<CardData>> fetchData() async {
-        await dotenv.load(fileName: ".env");
-    var supabaseUrl = dotenv.env['SUPABASE_URL']!;
-    var supabaseApiKey = dotenv.env['SUPABASE_ANON_KEY']!;
-    final response = await http.get(
-      Uri.parse('$supabaseUrl/rest/v1/Cards'),
-      headers: {'apikey': supabaseApiKey, 'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      // Parse the JSON data
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((item) => CardData(
-        title: item['title'],
-        imageUrl: item['image_logo'], // Note that I changed 'logo_image_url' to 'image_logo' as per your previous messages
-      )).toList();
+    // Check if the response contains data and no error
+    if (response != null) {
+      // Map the data to CardViewModel and return it as a List
+      return (response as List).map((e) {
+        return CardViewModel(
+          title: e['title'] as String,
+          imageUrl: e['image_logo'] as String,
+        );
+      }).toList();
     } else {
-      // Handle the error
+      print("response.statusCode: ${response.status}"); // This is the response status code
+      print("response.error: ${response.error}"); // This is the response error
       throw Exception('Failed to load data');
     }
   }
+
 }
