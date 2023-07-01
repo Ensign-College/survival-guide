@@ -6,6 +6,9 @@
 
 This app is dedicated to helping Ensign College students to orient themselves in Ensign College. 
 
+Testing
+
+
 # Documentation
 - [Wiki](https://github.com/Ensign-College/survival-guide/wiki)
 
