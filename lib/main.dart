@@ -54,6 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       bottomNavigationBar: FindBar(
         onSearchTextChanged: (String value) {},
@@ -67,8 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 isGridView = !isGridView;
               });
             },
-            icon:
-                isGridView ? const Icon(Icons.list) : const Icon(Icons.grid_on),
+            icon: isGridView ? const Icon(Icons.list) : const Icon(Icons.grid_on),
           ),
         ],
         title: Text(widget.title),
@@ -78,8 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
         stream: _card_stream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(
-                child: Text("Error has occurred: ${snapshot.error!}"));
+            return  Center(
+              child: Text("Error has occurred: ${snapshot.error!}")
+            );
           }
 
           if (snapshot.hasData) {
@@ -90,18 +91,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 imageUrl: e['image_logo'] as String,
               );
             }).toList();
-            return isGridView
-                ? ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final card = data[index];
-                      return CardViewModel(
-                        title: card['title'] as String,
-                        imageUrl: card['image_logo'] as String,
-                      );
-                    },
-                  )
-                : DirectoryGridView(children: cards);
+            return isGridView ? ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final card = data[index];
+                return CardViewModel(
+                  title: card['title'] as String,
+                  imageUrl: card['image_logo'] as String,
+                );
+              },
+            ) : DirectoryGridView(children: cards);
           }
           return const Center(
             child: CircularProgressIndicator(),
