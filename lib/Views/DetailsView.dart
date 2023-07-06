@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/CustomTextParser.dart';
 
@@ -6,18 +8,24 @@ import 'FindBar.dart';
 
 class DetailsViewModel extends StatefulWidget {
   final int detailsId;
-  const DetailsViewModel({super.key, required this.detailsId});
+  final String title;
+  const DetailsViewModel(
+      {super.key, required this.detailsId, required this.title});
 
   @override
   _DetailsViewModelState createState() => _DetailsViewModelState();
 }
 
 class _DetailsViewModelState extends State<DetailsViewModel> {
+  String text = "no text";
+
   @override
   void initState() {
     super.initState();
     // TODO: implement initState
-    callFunctions();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getDetails();
+    });
   }
 
   Future<void> callFunctions() async {
@@ -28,13 +36,13 @@ class _DetailsViewModelState extends State<DetailsViewModel> {
 
   void _getDetails() async {
     final detailsId = widget.detailsId;
-    final details = await supabase.from('card_details').select('''
-      $detailsId,
-      id (
-        $detailsId
-      )
-  ''');
-    print("Details: " + details);
+    final details =
+        await supabase.from('card_details').select().eq('id', detailsId);
+    print("Details: " + details.toString());
+    debugPrint("details" + details.toString());
+    setState(() {
+      text = details[0]['text'];
+    });
   }
 
   void _setSearchText(String text) {
@@ -47,25 +55,25 @@ class _DetailsViewModelState extends State<DetailsViewModel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "sup",
+        title: Text(
+          widget.title,
         ),
         backgroundColor: Colors.transparent,
       ),
       body: Column(
         children: [
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
               child: Padding(
                   padding: EdgeInsets.all(16),
                   child: CustomTextParserWidget(
-                    text: "sd",
+                    text: text,
                   )),
             ),
           ),
           FindBar(
             onSearchTextChanged: _setSearchText,
-            title: "sdf",
+            title: widget.title,
           ),
         ],
       ),

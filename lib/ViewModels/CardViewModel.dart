@@ -23,6 +23,7 @@ class CardViewModel extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => DetailsViewModel(
               detailsId: detailsID,
+              title: title,
             ),
           ),
         );
