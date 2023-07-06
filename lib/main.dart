@@ -7,8 +7,6 @@ import 'package:survival_guide/repository/fetch_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-//random comment for testing!
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
