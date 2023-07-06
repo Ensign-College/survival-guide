@@ -3,7 +3,6 @@ import 'package:survival_guide/ViewModels/CardViewModel.dart';
 import 'package:survival_guide/Views/DirectoryGridView.dart';
 import 'package:survival_guide/Views/FindBar.dart';
 import 'package:survival_guide/constants/colors.dart';
-import 'package:survival_guide/repository/fetch_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -82,8 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("Error has occurred: ${snapshot.error!}")
             );
           }
-
           if (snapshot.hasData) {
+            // TODO: Create a supabase model for card
             final List<dynamic> data = snapshot.data as List<dynamic>;
             final cards = data.map((e) {
               return CardViewModel(

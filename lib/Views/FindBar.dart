@@ -4,7 +4,7 @@ import 'package:survival_guide/constants/colors.dart';
 class FindBar extends StatelessWidget {
   final ValueChanged<String> onSearchTextChanged;
   final String title;
-  const FindBar({required this.onSearchTextChanged, required this.title});
+  const FindBar({super.key, required this.onSearchTextChanged, required this.title});
 
   @override
   Widget build(BuildContext context) {
