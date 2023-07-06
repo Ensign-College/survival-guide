@@ -1,6 +1,6 @@
 # Survival guide
 
-[![Discord](https://img.shields.io/discord/1234567890?color=%237289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/cJMmvf5cyr)
+[![](https://dcbadge.vercel.app/api/server/jaavNtrG)](https://discord.gg/jaavNtrG)
 
 This app is dedicated to helping Ensign College students to orient themselves in Ensign College. 
 
