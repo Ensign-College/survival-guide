@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
 
-import 'DetailsViewModel.dart';
+import '../Views/DetailsView.dart';
 
 class CardViewModel extends StatelessWidget {
   final String title;
   final String imageUrl;
-
-  const CardViewModel({
-    Key? key,
-    required this.title,
-    required this.imageUrl,
-  }) : super(key: key);
-
-  
+  final int detailsID;
+  const CardViewModel(
+      {Key? key,
+      required this.title,
+      required this.imageUrl,
+      required this.detailsID})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,9 @@ class CardViewModel extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailsViewModel(title: title, text: "stuff"),
+            builder: (context) => DetailsViewModel(
+              detailsId: detailsID,
+            ),
           ),
         );
       },
@@ -58,7 +59,7 @@ class CardViewModel extends StatelessWidget {
     return Container(
       width: 40,
       height: 40,
-       decoration: BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(imageUrl),
           fit: BoxFit.cover,
