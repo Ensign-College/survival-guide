@@ -3,9 +3,10 @@ import 'package:survival_guide/ViewModels/CardViewModel.dart';
 import 'package:survival_guide/Views/DirectoryGridView.dart';
 import 'package:survival_guide/Views/FindBar.dart';
 import 'package:survival_guide/constants/colors.dart';
-import 'package:survival_guide/repository/fetch_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'constants/supabase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,8 +22,6 @@ Future<void> main() async {
 
   runApp(const MyApp());
 }
-
-final supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -81,14 +80,14 @@ class _MyHomePageState extends State<MyHomePage> {
             return Center(
                 child: Text("Error has occurred: ${snapshot.error!}"));
           }
-
           if (snapshot.hasData) {
+            // TODO: Create a supabase model for card
             final List<dynamic> data = snapshot.data as List<dynamic>;
             final cards = data.map((e) {
               return CardViewModel(
-                title: e['title'] as String,
-                imageUrl: e['image_logo'] as String,
-              );
+                  title: e['title'] as String,
+                  imageUrl: e['image_logo'] as String,
+                  detailsID: e['card_detail_id'] as int);
             }).toList();
             return isGridView
                 ? ListView.builder(
@@ -98,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       return CardViewModel(
                         title: card['title'] as String,
                         imageUrl: card['image_logo'] as String,
+                        detailsID: card['card_detail_id'] as int,
                       );
                     },
                   )
