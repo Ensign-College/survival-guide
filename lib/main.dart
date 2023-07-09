@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:survival_guide/ViewModels/CardViewModel.dart';
-import 'package:survival_guide/Views/DirectoryGridView.dart';
-import 'package:survival_guide/Views/FindBar.dart';
+import 'package:survival_guide/ViewModels/card_view_model.dart';
+import 'package:survival_guide/Views/directory_grid_view.dart';
+import 'package:survival_guide/Views/find_bar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(scaffoldBackgroundColor: AppBackgroundColor),
+      theme: ThemeData(scaffoldBackgroundColor: appBackgroundColor),
       home: const MyHomePage(title: "Welcome to Ensign College"),
     );
   }
@@ -46,7 +46,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _card_stream = supabase.from('card').stream(primaryKey: ['id']);
+  final cardStream = supabase.from('card').stream(primaryKey: ['id']);
   bool isGridView = false;
 
   List<CardViewModel> cards = [];
@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.transparent,
       ),
       body: StreamBuilder(
-        stream: _card_stream,
+        stream: cardStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(

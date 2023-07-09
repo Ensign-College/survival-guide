@@ -1,10 +1,9 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:survival_guide/Views/CustomTextParser.dart';
+import 'package:survival_guide/Views/custom_text_parser.dart';
 
 import '../constants/supabase.dart';
-import 'FindBar.dart';
+import 'find_bar.dart';
 
 class DetailsViewModel extends StatefulWidget {
   final int detailsId;
@@ -13,10 +12,10 @@ class DetailsViewModel extends StatefulWidget {
       {super.key, required this.detailsId, required this.title});
 
   @override
-  _DetailsViewModelState createState() => _DetailsViewModelState();
+  DetailsViewModelState createState() => DetailsViewModelState();
 }
 
-class _DetailsViewModelState extends State<DetailsViewModel> {
+class DetailsViewModelState extends State<DetailsViewModel> {
   String text = "no text";
 
   @override
@@ -32,14 +31,15 @@ class _DetailsViewModelState extends State<DetailsViewModel> {
     _getDetails;
   }
 
+  // ignore: unused_field
   String _searchText = '';
 
   void _getDetails() async {
     final detailsId = widget.detailsId;
     final details =
         await supabase.from('card_details').select().eq('id', detailsId);
-    print("Details: " + details.toString());
-    debugPrint("details" + details.toString());
+    // print("Details: " + details.toString());
+    // debugPrint("details" + details.toString());
     setState(() {
       text = details[0]['text'];
     });
@@ -65,7 +65,7 @@ class _DetailsViewModelState extends State<DetailsViewModel> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: CustomTextParserWidget(
                     text: text,
                   )),

@@ -18,7 +18,7 @@ class FindBar extends StatelessWidget {
           hintText: 'Type your search query',
           labelStyle: const TextStyle(color: Colors.white),
           hintStyle: const TextStyle(color: Colors.white),
-          fillColor: CardBackgroundColor,
+          fillColor: cardBackgroundColor,
           filled: true,
           border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
 
-import '../Views/DetailsView.dart';
+import '../Views/details_view.dart';
 
 class CardViewModel extends StatelessWidget {
   final String title;
@@ -30,7 +30,7 @@ class CardViewModel extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: CardBackgroundColor,
+          color: cardBackgroundColor,
           borderRadius: BorderRadius.circular(24),
         ),
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
