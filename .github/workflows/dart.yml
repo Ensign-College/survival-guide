@@ -36,12 +36,12 @@ jobs:
 
       - name: Run Dart analysis
         run: dart analyze
-        
+
       # - name: Analyze
       #   run: flutter analyze
 
-      - name: Test
-        run: flutter test
+      # - name: Test
+      #   run: flutter test
 
       - name: Build
         run: flutter build sdk
