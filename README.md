@@ -18,7 +18,7 @@ List the requirements that need to be met before starting with the project. This
 
 - Flutter, Supabase.
 - Account setup for Supabase.
-- Database access credentials.
+- Database access keys. Ask for an invitation in Discord server.
 
 ## Setup
 
@@ -31,12 +31,12 @@ Step-by-step instructions on how to set up the project. Include the following:
    `flutter pub get`
 
 3. Create a new branch and switch to it:
-   `git checkout -b <branch-name>`
+   `git checkout -b <your_github_username/feature-name>`
 
 4. Ensure that the Flutter development environment is properly set up:
    `flutter doctor`
 
-5. Create an `.env` file at 'lib' to store your API keys using the example.env as model. This file should not be committed to version control.
+5. Create an `.env` file at root directory to store your API keys duplicating 'example.env' and renaming to '.env'. This file should not be committed to version control (.gitignore takes care of that).
    lib/.env
 
 ## Execution
