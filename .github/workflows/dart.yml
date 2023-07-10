@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - environment: .env
       - uses: actions/checkout@v1
       # The flutter action needs java so include it
       - uses: actions/setup-java@v1
@@ -35,6 +36,9 @@ jobs:
         run: flutter pub get
 
       - name: Run Dart analysis
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE.URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: dart analyze
 
       # - name: Analyze
