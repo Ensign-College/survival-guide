@@ -16,7 +16,7 @@ class DetailsViewModel extends StatefulWidget {
 }
 
 class DetailsViewModelState extends State<DetailsViewModel> {
-  String text = "no text";
+  String text = 'no text';
 
   @override
   void initState() {

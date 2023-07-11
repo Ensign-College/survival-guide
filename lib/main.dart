@@ -11,7 +11,7 @@ import 'constants/supabase.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: '.env');
   // Access the environment variables
   final supabaseUrl = dotenv.env['SUPABASE_URL'];
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(scaffoldBackgroundColor: appBackgroundColor),
-      home: const MyHomePage(title: "Welcome to Ensign College"),
+      home: const MyHomePage(title: 'Welcome to Ensign College'),
     );
   }
 }
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-                child: Text("Error has occurred: ${snapshot.error!}"));
+                child: Text('Error has occurred: ${snapshot.error!}'));
           }
           if (snapshot.hasData) {
             // TODO: Create a supabase model for card

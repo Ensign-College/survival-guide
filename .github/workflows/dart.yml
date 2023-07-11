@@ -40,8 +40,8 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE.URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           EOF
-      - name: Run Dart analysis
-        run: dart analyze
+      - name: Run Flutter analysis
+        run: flutter analyze
 
       # - name: Analyze
       #   run: flutter analyze
