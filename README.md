@@ -83,7 +83,7 @@ Run the Flutter app: In your Flutter project directory, run 'flutter run'.
 - Creating feature branches.
 - Making pull requests.
 
-This project uses commitlint
+This project uses commitlint <br>
 Your git commit should include one of the below prefixes: 
 > build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test
 
