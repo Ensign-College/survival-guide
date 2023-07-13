@@ -17,6 +17,7 @@ class DetailsViewModel extends StatefulWidget {
 
 class DetailsViewModelState extends State<DetailsViewModel> {
   String text = "no text";
+  List<String> images = [];
 
   @override
   void initState() {
@@ -38,10 +39,11 @@ class DetailsViewModelState extends State<DetailsViewModel> {
     final detailsId = widget.detailsId;
     final details =
         await supabase.from('card_details').select().eq('id', detailsId);
-    // print("Details: " + details.toString());
+    print("Details: " + details.toString());
     // debugPrint("details" + details.toString());
     setState(() {
       text = details[0]['text'];
+      images = List<String>.from(details[0]['pictures'].map((item) => item as String));
     });
   }
 
@@ -60,23 +62,41 @@ class DetailsViewModelState extends State<DetailsViewModel> {
         ),
         backgroundColor: Colors.transparent,
       ),
-      body: Column(
+      body:
+      Column(
         children: [
+          if (images.first != "") ...[
+
+      Expanded(
+              flex: 1,
+              child: Center(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: images.map((url) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0), // adjust as needed
+                        child: Image.network(url, fit: BoxFit.cover),
+                      ),
+                    ),
+                  )).toList(),
+                ),
+              ),
+            ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: CustomTextParserWidget(
-                    text: text,
-                  )),
+            flex: 2,
+            child: CustomTextParserWidget(
+              text: text,
             ),
           ),
-          FindBar(
-            onSearchTextChanged: _setSearchText,
-            title: widget.title,
-          ),
-        ],
+  ] else ...[
+    Text("Loading data")
+    ],
+    ]
       ),
+
     );
   }
 }
