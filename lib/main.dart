@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:survival_guide/ViewModels/card_view_model.dart';
 import 'package:survival_guide/Views/directory_grid_view.dart';
 import 'package:survival_guide/Views/find_bar.dart';
@@ -10,6 +11,9 @@ import 'constants/supabase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox(
+      'myBox'); //Maybe we need to put this as a variable. The example says that.
 
   await dotenv.load(fileName: '.env');
   // Access the environment variables
@@ -48,6 +52,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final cardStream = supabase.from('card').stream(primaryKey: ['id']);
   bool isGridView = false;
+  final cardBox = Hive.box('myBox');
 
   List<CardViewModel> cards = [];
 
@@ -62,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             onPressed: () {
+              // print(cardStream2());
               setState(() {
                 isGridView = !isGridView;
               });
@@ -84,11 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
             // TODO: Create a supabase model for card
             final List<dynamic> data = snapshot.data as List<dynamic>;
             final cards = data.map((e) {
+              // print(e);
               return CardViewModel(
                   title: e['title'] as String,
                   imageUrl: e['image_logo'] as String,
                   detailsID: e['card_detail_id'] as int);
             }).toList();
+            cardBox.put('cards', cards);
+            // print('holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+            // print(cardBox.get('cards'));
+            // print('amount of box is ${cardBox.length}');
+            // print(cardBox.values);
             return isGridView
                 ? ListView.builder(
                     itemCount: data.length,
@@ -101,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     },
                   )
-                : DirectoryGridView(children: cards);
+                : DirectoryGridView(children: cardBox.get('cards'));
           }
           return const Center(
             child: CircularProgressIndicator(),
