@@ -97,10 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   detailsID: e['card_detail_id'] as int);
             }).toList();
             cardBox.put('cards', cards);
-            // print('holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-            // print(cardBox.get('cards'));
-            // print('amount of box is ${cardBox.length}');
-            // print(cardBox.values);
             return isGridView
                 ? ListView.builder(
                     itemCount: data.length,
