@@ -21,7 +21,6 @@ class DetailsViewModelState extends State<DetailsViewModel> {
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getDetails();
     });

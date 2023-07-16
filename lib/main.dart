@@ -7,15 +7,16 @@ import 'package:survival_guide/constants/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'boxes.dart';
 import 'constants/supabase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox(
-      'myBox'); //Maybe we need to put this as a variable. The example says that.
-
   await dotenv.load(fileName: '.env');
+  await Hive.initFlutter();
+  Hive.registerAdapter(CardViewModelAdapter());
+  await Hive.openBox<CardViewModel>('cards');
+
   // Access the environment variables
   final supabaseUrl = dotenv.env['SUPABASE_URL'];
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
@@ -52,7 +53,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final cardStream = supabase.from('card').stream(primaryKey: ['id']);
   bool isGridView = false;
-  final cardBox = Hive.box('myBox');
+  final box = Boxes.getCardViewModel();
 
   List<CardViewModel> cards = [];
 
@@ -67,7 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              // print(cardStream2());
               setState(() {
                 isGridView = !isGridView;
               });
@@ -82,10 +82,18 @@ class _MyHomePageState extends State<MyHomePage> {
       body: StreamBuilder(
         stream: cardStream,
         builder: (context, snapshot) {
+          
           if (snapshot.hasError) {
             return Center(
                 child: Text('Error has occurred: ${snapshot.error!}'));
           }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
           if (snapshot.hasData) {
             // TODO: Create a supabase model for card
             final List<dynamic> data = snapshot.data as List<dynamic>;
@@ -96,7 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   imageUrl: e['image_logo'] as String,
                   detailsID: e['card_detail_id'] as int);
             }).toList();
-            cardBox.put('cards', cards);
+            for (var card in cards) {
+              box.put(card.title,
+                  card);
+            }
             return isGridView
                 ? ListView.builder(
                     itemCount: data.length,
@@ -109,11 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     },
                   )
-                : DirectoryGridView(children: cardBox.get('cards'));
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+                : DirectoryGridView(children: cards);
+          } 
+          return DirectoryGridView(children: box.values.toList());
         },
       ),
     );

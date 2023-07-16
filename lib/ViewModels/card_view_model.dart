@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
+import 'package:hive/hive.dart';
 
 import '../Views/details_view.dart';
 
+part 'card_view_model.g.dart';
+
+@HiveType(typeId: 0)
 class CardViewModel extends StatelessWidget {
+  @HiveField(0)
   final String title;
+  @HiveField(1)
   final String imageUrl;
+  @HiveField(2)
   final int detailsID;
+  
   const CardViewModel(
       {Key? key,
       required this.title,
