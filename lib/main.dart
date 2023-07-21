@@ -60,10 +60,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: FindBar(
+      ///SearchBar START////
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FindBar(
         onSearchTextChanged: (String value) {},
         title: 'Advising',
       ),
+
+      ///SearchBar END////
       appBar: AppBar(
         actions: [
           IconButton(
@@ -82,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: StreamBuilder(
         stream: cardStream,
         builder: (context, snapshot) {
-          
           if (snapshot.hasError) {
             return Center(
                 child: Text('Error has occurred: ${snapshot.error!}'));
@@ -105,8 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   detailsID: e['card_detail_id'] as int);
             }).toList();
             for (var card in cards) {
-              box.put(card.title,
-                  card);
+              box.put(card.title, card);
             }
             return isGridView
                 ? ListView.builder(
@@ -121,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   )
                 : DirectoryGridView(children: cards);
-          } 
+          }
           return DirectoryGridView(children: box.values.toList());
         },
       ),
