@@ -53,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final cardStream = supabase.from('card').stream(primaryKey: ['id']);
   bool isGridView = false;
+  bool searchPosition = true;
   final box = Boxes.getCardViewModel();
 
   List<CardViewModel> cards = [];
@@ -61,7 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       ///SearchBar START////
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      floatingActionButtonLocation: searchPosition
+          ? FloatingActionButtonLocation.centerDocked
+          : FloatingActionButtonLocation.centerTop,
       floatingActionButton: FindBar(
         onSearchTextChanged: (String value) {},
         title: 'Advising',
