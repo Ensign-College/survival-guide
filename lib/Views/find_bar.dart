@@ -19,6 +19,8 @@ class FindBar extends StatefulWidget {
 }
 
 class _FindBarState extends State<FindBar> {
+  TextEditingController _textEditingController = TextEditingController();
+
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -92,15 +94,21 @@ class _FindBarState extends State<FindBar> {
                 final suggestionData =
                     cardData.firstWhere((data) => data['title'] == suggestion);
 
+                // Obtener el contenido de 'text' y limitar a 20 caracteres después del índice de búsqueda
+                String searchText = _textEditingController.text.toLowerCase();
+                int startIndex = suggestion.toLowerCase().indexOf(searchText);
+                int endIndex = startIndex + searchText.length + 20;
                 String subtitleText = suggestionData['text'] as String;
-
-                if (subtitleText.length > 30) {
-                  subtitleText = subtitleText.substring(0, 30);
+                if (endIndex < subtitleText.length) {
+                  subtitleText = subtitleText.substring(startIndex, endIndex);
+                } else {
+                  subtitleText = subtitleText.substring(startIndex);
                 }
 
                 return ListTile(
                   title: Text(suggestion),
-                  subtitle: Text(subtitleText),
+                  subtitle:
+                      Text(subtitleText), // Mostrar la sugerencia formateada
                 );
               },
               // ignore: sized_box_for_whitespace
