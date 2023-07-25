@@ -69,6 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FindBar(
         onSearchTextChanged: (String value) {},
         title: 'Advising',
+        onPressed: () {
+          setState(() {
+            searchPosition = !searchPosition;
+          });
+        },
       ),
 
       ///SearchBar END////

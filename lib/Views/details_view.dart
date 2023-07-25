@@ -72,6 +72,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
           FindBar(
             onSearchTextChanged: _setSearchText,
             title: widget.title,
+            onPressed: () {},
           ),
         ],
       ),
