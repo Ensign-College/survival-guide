@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/custom_text_parser.dart';
 
@@ -73,6 +72,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
           FindBar(
             onSearchTextChanged: _setSearchText,
             title: widget.title,
+            onPressed: () {},
           ),
         ],
       ),
