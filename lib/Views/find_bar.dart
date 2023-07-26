@@ -8,6 +8,7 @@ class FindBar extends StatefulWidget {
   final ValueChanged<String> onSearchTextChanged;
   final String title;
   final void Function() onPressed;
+
   const FindBar(
       {super.key,
       required this.onSearchTextChanged,
@@ -19,8 +20,7 @@ class FindBar extends StatefulWidget {
 }
 
 class _FindBarState extends State<FindBar> {
-  TextEditingController _textEditingController = TextEditingController();
-
+  final TextEditingController _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -49,10 +49,8 @@ class _FindBarState extends State<FindBar> {
         if (snapshot.hasError) {
           return const Text('Error');
         }
-
         if (snapshot.hasData) {
           List<dynamic> cardData = snapshot.data as List<dynamic>;
-
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TypeAheadField<String>(
@@ -60,8 +58,9 @@ class _FindBarState extends State<FindBar> {
               textFieldConfiguration: TextFieldConfiguration(
                 onTap: () {},
                 focusNode: _focusNode,
+                cursorColor: Colors.white,
                 decoration: InputDecoration(
-                  labelText: 'Find in ${widget.title}',
+                  labelText: 'Find in Ensign College',
                   hintText: 'Type your search query',
                   labelStyle: const TextStyle(color: Colors.white),
                   hintStyle: const TextStyle(color: Colors.white),
@@ -93,7 +92,6 @@ class _FindBarState extends State<FindBar> {
               itemBuilder: (context, String suggestion) {
                 final suggestionData =
                     cardData.firstWhere((data) => data['title'] == suggestion);
-
                 // Obtener el contenido de 'text' y limitar a 20 caracteres después del índice de búsqueda
                 String searchText = _textEditingController.text.toLowerCase();
                 int startIndex = suggestion.toLowerCase().indexOf(searchText);
@@ -104,20 +102,26 @@ class _FindBarState extends State<FindBar> {
                 } else {
                   subtitleText = subtitleText.substring(startIndex);
                 }
-
-                return ListTile(
-                  title: Text(suggestion),
-                  subtitle:
-                      Text(subtitleText), // Mostrar la sugerencia formateada
+                debugPrint('suggestion$suggestion');
+                return Container(
+                  color: cardBackgroundColor,
+                  child: ListTile(
+                    title: Text(suggestion, style: TextStyle(color: textColor)),
+                    subtitle: Text(
+                      subtitleText,
+                      style: TextStyle(color: textColor),
+                    ), // Mostrar la sugerencia formateada
+                  ),
                 );
               },
               // ignore: sized_box_for_whitespace
               noItemsFoundBuilder: (context) => Container(
+                color: cardBackgroundColor,
                 height: 100,
-                child: const Center(
+                child:  Center(
                   child: Text(
                     'No Data',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: textColor),
                   ),
                 ),
               ),

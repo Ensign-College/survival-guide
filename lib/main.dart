@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(scaffoldBackgroundColor: appBackgroundColor),
+      theme: ThemeData(scaffoldBackgroundColor: appBackgroundColor, textTheme: TextTheme(titleMedium: TextStyle(color: textColor)),),
       home: const MyHomePage(title: 'Welcome to Ensign College'),
     );
   }
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
           : FloatingActionButtonLocation.centerTop,
       floatingActionButton: FindBar(
         onSearchTextChanged: (String value) {},
-        title: 'Advising',
+        title: 'Search',
         onPressed: () {
           setState(() {
             searchPosition = !searchPosition;
