@@ -4,14 +4,17 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CustomTextParserWidget extends StatelessWidget {
   final String text;
+  final double fontSize;
 
-  const CustomTextParserWidget({super.key, required this.text});
+  const CustomTextParserWidget({super.key, required this.text, required this.fontSize});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: RichText(
-        text: TextSpan(children: _parseText(text)),
+        text: TextSpan( children: _parseText(text),
+          style: TextStyle(fontSize: fontSize),),
+
       ),
     );
   }
