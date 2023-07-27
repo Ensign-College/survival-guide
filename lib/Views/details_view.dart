@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/custom_text_parser.dart';
+import 'package:survival_guide/constants/colors.dart';
 
 import '../constants/supabase.dart';
 
@@ -15,7 +16,7 @@ class DetailsViewModel extends StatefulWidget {
 }
 
 class DetailsViewModelState extends State<DetailsViewModel> {
-  String text = "no text";
+  String text = 'no text';
   List<String> images = [];
   bool isLoaded = false;
   double _fontSize = 16.0;
@@ -32,9 +33,6 @@ class DetailsViewModelState extends State<DetailsViewModel> {
     _getDetails;
   }
 
-  // ignore: unused_field
-  String _searchText = '';
-
   void _getDetails() async {
     final detailsId = widget.detailsId;
     final details =
@@ -44,12 +42,6 @@ class DetailsViewModelState extends State<DetailsViewModel> {
       images = List<String>.from(
           details[0]['pictures'].map((item) => item as String));
       isLoaded = true;
-    });
-  }
-
-  void _setSearchText(String text) {
-    setState(() {
-      _searchText = text;
     });
   }
 
@@ -116,13 +108,15 @@ class DetailsViewModelState extends State<DetailsViewModel> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 FloatingActionButton(
+                  backgroundColor: cardBackgroundColor,
                   onPressed: _increaseFontSize,
-                  child: Icon(Icons.add),
+                  child: const Icon(Icons.add),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 FloatingActionButton(
+                  backgroundColor: cardBackgroundColor,
                   onPressed: _decreaseFontSize,
-                  child: Icon(Icons.remove),
+                  child: const Icon(Icons.remove),
                 ),
               ],
             ),
@@ -134,7 +128,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
               ),
               backgroundColor: Colors.transparent,
             ),
-            body: Center(
+            body: const Center(
               child: CircularProgressIndicator(),
             ),
           );
