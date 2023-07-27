@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:survival_guide/ViewModels/card_view_model.dart';
 import 'package:survival_guide/Views/directory_grid_view.dart';
 import 'package:survival_guide/Views/find_bar.dart';
@@ -6,12 +7,16 @@ import 'package:survival_guide/constants/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'boxes.dart';
 import 'constants/supabase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
+  await Hive.initFlutter();
+  Hive.registerAdapter(CardViewModelAdapter());
+  await Hive.openBox<CardViewModel>('cards');
 
-  await dotenv.load(fileName: ".env");
   // Access the environment variables
   final supabaseUrl = dotenv.env['SUPABASE_URL'];
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
@@ -32,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(scaffoldBackgroundColor: appBackgroundColor),
-      home: const MyHomePage(title: "Welcome to Ensign College"),
+      home: const MyHomePage(title: 'Welcome to Ensign College'),
     );
   }
 }
@@ -48,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final cardStream = supabase.from('card').stream(primaryKey: ['id']);
   bool isGridView = false;
+  final box = Boxes.getCardViewModel();
 
   List<CardViewModel> cards = [];
 
@@ -76,19 +82,32 @@ class _MyHomePageState extends State<MyHomePage> {
       body: StreamBuilder(
         stream: cardStream,
         builder: (context, snapshot) {
+          
           if (snapshot.hasError) {
             return Center(
-                child: Text("Error has occurred: ${snapshot.error!}"));
+                child: Text('Error has occurred: ${snapshot.error!}'));
           }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
           if (snapshot.hasData) {
             // TODO: Create a supabase model for card
             final List<dynamic> data = snapshot.data as List<dynamic>;
             final cards = data.map((e) {
+              // print(e);
               return CardViewModel(
                   title: e['title'] as String,
                   imageUrl: e['image_logo'] as String,
                   detailsID: e['card_detail_id'] as int);
             }).toList();
+            for (var card in cards) {
+              box.put(card.title,
+                  card);
+            }
             return isGridView
                 ? ListView.builder(
                     itemCount: data.length,
@@ -102,10 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   )
                 : DirectoryGridView(children: cards);
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          } 
+          return DirectoryGridView(children: box.values.toList());
         },
       ),
     );
