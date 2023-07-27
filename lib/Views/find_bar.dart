@@ -84,33 +84,39 @@ class _FindBarState extends State<FindBar> {
               suggestionsCallback: (String query) {
                 query = query.toLowerCase();
                 List<String> suggestions = cardData
-                    .map((data) => data['title'] as String)
+                    .map((data) => data['text'] as String)
                     .where((title) => title.toLowerCase().contains(query))
                     .toList();
                 return suggestions;
               },
               itemBuilder: (context, String suggestion) {
                 final suggestionData =
-                    cardData.firstWhere((data) => data['title'] == suggestion);
-                // Obtener el contenido de 'text' y limitar a 20 caracteres después del índice de búsqueda
+                    cardData.firstWhere((data) => data['text'] == suggestion);
                 String searchText = _textEditingController.text.toLowerCase();
                 int startIndex = suggestion.toLowerCase().indexOf(searchText);
                 int endIndex = startIndex + searchText.length + 20;
+                String titleText = suggestionData['title'] as String;
+                if (endIndex < titleText.length) {
+                  titleText = titleText.substring(startIndex, endIndex);
+                } else {
+                  titleText = titleText.substring(startIndex);
+                }
+
                 String subtitleText = suggestionData['text'] as String;
                 if (endIndex < subtitleText.length) {
                   subtitleText = subtitleText.substring(startIndex, endIndex);
                 } else {
                   subtitleText = subtitleText.substring(startIndex);
                 }
-                debugPrint('suggestion$suggestion');
+
                 return Container(
                   color: cardBackgroundColor,
                   child: ListTile(
-                    title: Text(suggestion, style: TextStyle(color: textColor)),
+                    title: Text(titleText, style: TextStyle(color: textColor)),
                     subtitle: Text(
                       subtitleText,
                       style: TextStyle(color: textColor),
-                    ), // Mostrar la sugerencia formateada
+                    ),
                   ),
                 );
               },
@@ -118,7 +124,7 @@ class _FindBarState extends State<FindBar> {
               noItemsFoundBuilder: (context) => Container(
                 color: cardBackgroundColor,
                 height: 100,
-                child:  Center(
+                child: Center(
                   child: Text(
                     'No Data',
                     style: TextStyle(fontSize: 16, color: textColor),
@@ -128,11 +134,13 @@ class _FindBarState extends State<FindBar> {
               onSuggestionSelected: (String suggestion) async {
                 final idResponse = await supabase
                     .from('card_details')
-                    .select('id')
-                    .eq('title', suggestion)
+                    .select()
+                    .eq('text', suggestion)
                     .single();
 
                 int id = idResponse['id'] as int;
+
+                String title = idResponse['title'] as String;
 
                 // ignore: use_build_context_synchronously
                 Navigator.push(
@@ -140,7 +148,7 @@ class _FindBarState extends State<FindBar> {
                   MaterialPageRoute(
                     builder: (context) => DetailsViewModel(
                       detailsId: id,
-                      title: suggestion,
+                      title: title,
                     ),
                   ),
                 );
