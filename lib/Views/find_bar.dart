@@ -22,6 +22,7 @@ class FindBar extends StatefulWidget {
 class _FindBarState extends State<FindBar> {
   final TextEditingController _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  String _searchText = '';
 
   @override
   void initState() {
@@ -51,11 +52,17 @@ class _FindBarState extends State<FindBar> {
         }
         if (snapshot.hasData) {
           List<dynamic> cardData = snapshot.data as List<dynamic>;
+
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TypeAheadField<String>(
               debounceDuration: const Duration(milliseconds: 500),
               textFieldConfiguration: TextFieldConfiguration(
+                onChanged: (text) {
+                  setState(() {
+                    _searchText = text.toLowerCase();
+                  });
+                },
                 onTap: () {},
                 focusNode: _focusNode,
                 cursorColor: Colors.white,
@@ -92,30 +99,42 @@ class _FindBarState extends State<FindBar> {
               itemBuilder: (context, String suggestion) {
                 final suggestionData =
                     cardData.firstWhere((data) => data['text'] == suggestion);
-                String searchText = _textEditingController.text.toLowerCase();
-                int startIndex = suggestion.toLowerCase().indexOf(searchText);
-                int endIndex = startIndex + searchText.length + 20;
-                String titleText = suggestionData['title'] as String;
-                if (endIndex < titleText.length) {
-                  titleText = titleText.substring(startIndex, endIndex);
-                } else {
-                  titleText = titleText.substring(startIndex);
-                }
 
-                String subtitleText = suggestionData['text'] as String;
-                if (endIndex < subtitleText.length) {
-                  subtitleText = subtitleText.substring(startIndex, endIndex);
+                int startIndex =
+                    suggestionData['text'].toLowerCase().indexOf(_searchText) +
+                        _searchText.length;
+                int endIndex = startIndex + _searchText.length + 30;
+
+                String titleText = suggestionData['title'] as String;
+                String subtitleText = '';
+
+                if (startIndex >= 0 && endIndex <= suggestion.length) {
+                  subtitleText = suggestion.substring(startIndex, endIndex);
+                  print(subtitleText + ' testing');
+                } else if (startIndex >= 0) {
+                  subtitleText = suggestion.substring(startIndex);
                 } else {
-                  subtitleText = subtitleText.substring(startIndex);
+                  subtitleText = '';
                 }
 
                 return Container(
                   color: cardBackgroundColor,
                   child: ListTile(
                     title: Text(titleText, style: TextStyle(color: textColor)),
-                    subtitle: Text(
-                      subtitleText,
-                      style: TextStyle(color: textColor),
+                    subtitle: Row(
+                      children: [
+                        Text(_searchText,
+                            style: TextStyle(
+                                color: textColor, fontWeight: FontWeight.bold)),
+                        Text(
+                          subtitleText,
+                          style: TextStyle(color: textColor),
+                        ),
+                        Text(
+                          '...',
+                          style: TextStyle(color: textColor),
+                        ),
+                      ],
                     ),
                   ),
                 );
