@@ -66,27 +66,7 @@ class _FindBarState extends State<FindBar> {
                 onTap: () {},
                 focusNode: _focusNode,
                 cursorColor: Colors.white,
-                decoration: InputDecoration(
-                  labelText: 'Find in Ensign College',
-                  hintText: 'Type your search query',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  hintStyle: const TextStyle(color: Colors.white),
-                  fillColor: cardBackgroundColor,
-                  filled: true,
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  suffixIcon: const Icon(Icons.search, color: Colors.white),
-                ),
+                decoration: ,
               ),
               suggestionsCallback: (String query) {
                 query = query.toLowerCase();
@@ -178,5 +158,29 @@ class _FindBarState extends State<FindBar> {
         return Container();
       },
     );
+  }
+
+  InputDecoration searchBarDecoration() { 
+    return InputDecoration(
+                  labelText: 'Find in Ensign College',
+                  hintText: 'Type your search query',
+                  labelStyle: const TextStyle(color: Colors.white),
+                  hintStyle: const TextStyle(color: Colors.white),
+                  fillColor: cardBackgroundColor,
+                  filled: true,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  suffixIcon: const Icon(Icons.search, color: Colors.white),
+                );
   }
 }

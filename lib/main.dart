@@ -36,7 +36,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(scaffoldBackgroundColor: appBackgroundColor, textTheme: TextTheme(titleMedium: TextStyle(color: textColor)),),
+      theme: ThemeData(
+        scaffoldBackgroundColor: appBackgroundColor,
+        textTheme: TextTheme(titleMedium: TextStyle(color: textColor)),
+      ),
       home: const MyHomePage(title: 'Welcome to Ensign College'),
     );
   }
@@ -61,8 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      ///SearchBar START////
-
       floatingActionButtonLocation: searchPosition
           ? FloatingActionButtonLocation.centerDocked
           : FloatingActionButtonLocation.centerTop,
@@ -75,8 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
       ),
-
-      ///SearchBar END////
       appBar: AppBar(
         actions: [
           IconButton(
