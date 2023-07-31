@@ -109,10 +109,12 @@ class _FindBarState extends State<FindBar> {
                 String subtitleText = '';
 
                 if (startIndex >= 0 && endIndex <= suggestion.length) {
-                  subtitleText = suggestion.substring(startIndex, endIndex);
-                  print(subtitleText + ' testing');
+                  subtitleText = suggestion
+                      .substring(startIndex, endIndex)
+                      .replaceAll('\n', ' ');
                 } else if (startIndex >= 0) {
-                  subtitleText = suggestion.substring(startIndex);
+                  subtitleText =
+                      suggestion.substring(startIndex).replaceAll('\n', ' ');
                 } else {
                   subtitleText = '';
                 }
@@ -127,11 +129,7 @@ class _FindBarState extends State<FindBar> {
                             style: TextStyle(
                                 color: textColor, fontWeight: FontWeight.bold)),
                         Text(
-                          subtitleText,
-                          style: TextStyle(color: textColor),
-                        ),
-                        Text(
-                          '...',
+                          '$subtitleText...',
                           style: TextStyle(color: textColor),
                         ),
                       ],
