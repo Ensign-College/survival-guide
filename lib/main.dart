@@ -6,7 +6,10 @@ import 'package:survival_guide/Views/find_bar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Views/Scheduler/scheduler.dart';
+import 'Views/school_login.dart';
 import 'boxes.dart';
 import 'constants/supabase.dart';
 
@@ -87,6 +90,23 @@ class _MyHomePageState extends State<MyHomePage> {
             icon:
                 isGridView ? const Icon(Icons.list) : const Icon(Icons.grid_on),
           ),
+          ElevatedButton(
+              onPressed: () async {
+                final String? setCookieValue = await getCookieFromPreferences();
+                if (setCookieValue != null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SchedulerListPage(cookie: setCookieValue)));
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SAMLLogin()),
+                  );
+                }
+              },
+              child: Text("Scheduler"))
         ],
         title: Text(widget.title),
         backgroundColor: Colors.transparent,
@@ -136,5 +156,10 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
+  }
+
+  Future<String?> getCookieFromPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('.AspNet.Cookies');
   }
 }
