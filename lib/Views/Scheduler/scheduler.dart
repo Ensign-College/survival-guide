@@ -5,6 +5,7 @@ import 'package:survival_guide/models/SchedulerCourseModel.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
+import '../../models/SchedulerAppDataModel.dart';
 import '../school_login.dart';
 
 class SchedulerListPage extends StatefulWidget {
@@ -24,7 +25,6 @@ class _SchedulerListPageState extends State<SchedulerListPage> {
   void initState() {
     super.initState();
     print("Fetching subjects..."); // Log the initialization
-    printWrapped("cookie is ${widget.cookie}");
     apiService = SchedulerApiService(cookie: widget.cookie);
     subjects = apiService.fetchSubjects().catchError((e) {
       Navigator.push(
@@ -32,7 +32,17 @@ class _SchedulerListPageState extends State<SchedulerListPage> {
         MaterialPageRoute(builder: (context) => SAMLLogin()),
       );
     });
-    // apiService.fetchAppData();
+
+    _callPrint();
+  }
+
+
+  void _callPrint() async {
+   await printAppData();
+  }
+  Future<void> printAppData() async {
+    final appdata = await apiService.fetchAppData();
+    printWrapped('appdata is ${appdata.terms?.first.title} ${appdata.terms?.last.title}' );
   }
 
   void _onSubjectTap(SchedulerSubjectModel subject) async {

@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/developer.dart';
+import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'dart:developer';
 
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
@@ -46,18 +47,20 @@ class SchedulerApiService {
   }
 
 
-  Future<Map<String, dynamic>> fetchAppData() async {
+  Future<SchedulerAppDataModel> fetchAppData() async {
     final response = await http.get(
       Uri.parse('${schedulerURL}app-data/'),
       headers: headers,
     );
-
-    printWrapped('response: ${response.body}');
-
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final Map<String, dynamic> parsedJson = jsonDecode(response.body);
+
+      final appData = SchedulerAppDataModel.fromJson(parsedJson);
+      return appData;
     } else {
       throw Exception('Failed to load term data');
     }
   }
+
+
 }
