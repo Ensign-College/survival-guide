@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:survival_guide/constants/colors.dart';
@@ -20,7 +22,6 @@ class FindBar extends StatefulWidget {
 }
 
 class _FindBarState extends State<FindBar> {
-  final TextEditingController _textEditingController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   String _searchText = '';
 
@@ -66,27 +67,7 @@ class _FindBarState extends State<FindBar> {
                 onTap: () {},
                 focusNode: _focusNode,
                 cursorColor: Colors.white,
-                decoration: InputDecoration(
-                  labelText: 'Find in Ensign College',
-                  hintText: 'Type your search query',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  hintStyle: const TextStyle(color: Colors.white),
-                  fillColor: cardBackgroundColor,
-                  filled: true,
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  suffixIcon: const Icon(Icons.search, color: Colors.white),
-                ),
+                decoration: _buildInputDecoration(),
               ),
               suggestionsCallback: (String query) {
                 query = query.toLowerCase();
@@ -108,46 +89,13 @@ class _FindBarState extends State<FindBar> {
                 String titleText = suggestionData['title'] as String;
                 String subtitleText = '';
 
-                if (startIndex >= 0 && endIndex <= suggestion.length) {
-                  subtitleText = suggestion
-                      .substring(startIndex, endIndex)
-                      .replaceAll('\n', ' ');
-                } else if (startIndex >= 0) {
-                  subtitleText =
-                      suggestion.substring(startIndex).replaceAll('\n', ' ');
-                } else {
-                  subtitleText = '';
-                }
+                subtitleText =
+                    _formatSubtitle(startIndex, endIndex, suggestion);
 
-                return Container(
-                  color: cardBackgroundColor,
-                  child: ListTile(
-                    title: Text(titleText, style: TextStyle(color: textColor)),
-                    subtitle: Row(
-                      children: [
-                        Text(_searchText,
-                            style: TextStyle(
-                                color: textColor, fontWeight: FontWeight.bold)),
-                        Text(
-                          '$subtitleText...',
-                          style: TextStyle(color: textColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return _suggestionItem(titleText, subtitleText);
               },
               // ignore: sized_box_for_whitespace
-              noItemsFoundBuilder: (context) => Container(
-                color: cardBackgroundColor,
-                height: 100,
-                child: Center(
-                  child: Text(
-                    'No Data',
-                    style: TextStyle(fontSize: 16, color: textColor),
-                  ),
-                ),
-              ),
+
               onSuggestionSelected: (String suggestion) async {
                 final idResponse = await supabase
                     .from('card_details')
@@ -171,12 +119,80 @@ class _FindBarState extends State<FindBar> {
                 );
                 widget.onSearchTextChanged(suggestion);
               },
+              noItemsFoundBuilder: (context) => _noItems(),
             ),
           );
         }
 
         return Container();
       },
+    );
+  }
+
+  InputDecoration _buildInputDecoration() {
+    return InputDecoration(
+      labelText: 'Find in Ensign College',
+      hintText: 'Type your search query',
+      labelStyle: const TextStyle(color: Colors.white),
+      hintStyle: const TextStyle(color: Colors.white),
+      fillColor: cardBackgroundColor,
+      filled: true,
+      border: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.all(Radius.circular(25)),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.all(Radius.circular(25)),
+      ),
+      enabledBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.all(Radius.circular(25)),
+      ),
+      suffixIcon: const Icon(Icons.search, color: Colors.white),
+    );
+  }
+
+  String _formatSubtitle(int startIndex, int endIndex, String suggestion) {
+    if (startIndex >= 0 && endIndex <= suggestion.length) {
+      return suggestion.substring(startIndex, endIndex).replaceAll('\n', ' ');
+    } else if (startIndex >= 0) {
+      return suggestion.substring(startIndex).replaceAll('\n', ' ');
+    } else {
+      return '';
+    }
+  }
+
+  Widget _suggestionItem(String titleText, String subtitleText) {
+    return Container(
+      color: cardBackgroundColor,
+      child: ListTile(
+        title: Text(titleText, style: TextStyle(color: textColor)),
+        subtitle: Row(
+          children: [
+            Text(_searchText,
+                style:
+                    TextStyle(color: textColor, fontWeight: FontWeight.bold)),
+            Text(
+              '$subtitleText...',
+              style: TextStyle(color: textColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _noItems() {
+    return Container(
+      color: cardBackgroundColor,
+      height: 100,
+      child: Center(
+        child: Text(
+          'No Data',
+          style: TextStyle(fontSize: 16, color: textColor),
+        ),
+      ),
     );
   }
 }
