@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:survival_guide/ViewModels/card_view_model.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler.dart';
 import 'package:survival_guide/Views/directory_grid_view.dart';
 import 'package:survival_guide/Views/find_bar.dart';
 import 'package:survival_guide/constants/colors.dart';
@@ -8,7 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Views/Scheduler/scheduler.dart';
+import 'Views/Scheduler/scheduler_list_page.dart';
 import 'Views/school_login.dart';
 import 'boxes.dart';
 import 'constants/supabase.dart';
@@ -98,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              SchedulerListPage(cookie: setCookieValue)));
+                              SchedulerTermsList(cookie: setCookieValue)));
                 } else {
                   Navigator.push(
                     context,

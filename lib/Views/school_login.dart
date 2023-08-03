@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 import 'package:survival_guide/Views/Scheduler/scheduler.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler_list_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SAMLLogin extends StatefulWidget {
@@ -50,9 +51,7 @@ class _SAMLLoginState extends State<SAMLLogin> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SchedulerListPage(
-                            cookie:
-                                setCookieValue))); // Pass the cookie to the new page
+                        builder: (context) => SchedulerTermsList(cookie: setCookieValue))); // Pass the cookie to the new page
               }
             }
           }),

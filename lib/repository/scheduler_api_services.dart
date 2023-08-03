@@ -17,9 +17,9 @@ class SchedulerApiService {
     headers = {'Cookie': '.AspNet.Cookies=$cookie'};
   }
 
-  Future<List<SchedulerSubjectModel>> fetchSubjects() async {
+  Future<List<SchedulerSubjectModel>> fetchSubjects(String term) async {
     final response = await http.get(
-      Uri.parse('${schedulerURL}terms/2023%20Fall%20Semester/subjects'),
+      Uri.parse('${schedulerURL}terms/$term/subjects'),
       headers: headers,
     );
     final List<dynamic> parsedJson = jsonDecode(response.body);
@@ -61,6 +61,4 @@ class SchedulerApiService {
       throw Exception('Failed to load term data');
     }
   }
-
-
 }

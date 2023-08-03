@@ -1,107 +1,105 @@
 import 'package:flutter/material.dart';
-import 'package:survival_guide/Views/Scheduler/scheduler_courses.dart';
-import 'package:survival_guide/constants/developer.dart';
-import 'package:survival_guide/models/SchedulerCourseModel.dart';
-import 'package:survival_guide/models/SchedulerSubjectModel.dart';
-import 'package:survival_guide/repository/scheduler_api_services.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler_list_page.dart';
+import 'package:survival_guide/constants/colors.dart';
 
 import '../../models/SchedulerAppDataModel.dart';
+import '../../repository/scheduler_api_services.dart';
 import '../school_login.dart';
 
-class SchedulerListPage extends StatefulWidget {
+class SchedulerTermsList extends StatefulWidget {
   final String cookie;
 
-  SchedulerListPage({required this.cookie});
+  SchedulerTermsList({required this.cookie});
 
   @override
-  _SchedulerListPageState createState() => _SchedulerListPageState();
+  _SchedulerTermsListState createState() => _SchedulerTermsListState();
 }
 
-class _SchedulerListPageState extends State<SchedulerListPage> {
-  late Future<List<SchedulerSubjectModel>> subjects;
+class _SchedulerTermsListState extends State<SchedulerTermsList> {
+  late final Future<SchedulerAppDataModel> appDataFuture;
   late final SchedulerApiService apiService;
+
+  Future<SchedulerAppDataModel> fetchAppData() async {
+    final appdata = await apiService.fetchAppData();
+    return appdata;
+  }
 
   @override
   void initState() {
     super.initState();
-    print("Fetching subjects..."); // Log the initialization
     apiService = SchedulerApiService(cookie: widget.cookie);
-    subjects = apiService.fetchSubjects().catchError((e) {
+    appDataFuture = fetchAppData().catchError((e) {
+      debugPrint("Error fetching app data: $e");
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SAMLLogin()),
       );
     });
-
-    _callPrint();
-  }
-
-
-  void _callPrint() async {
-   await printAppData();
-  }
-  Future<void> printAppData() async {
-    final appdata = await apiService.fetchAppData();
-    printWrapped('appdata is ${appdata.terms?.first.title} ${appdata.terms?.last.title}' );
-  }
-
-  void _onSubjectTap(SchedulerSubjectModel subject) async {
-    try {
-      final List<SchedulerCourseModel> courses =
-          await apiService.fetchCoursesForSubject(subject.id);
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return SchedulerCoursesPage(courses: courses);
-          },
-        ),
-      );
-    } catch (e) {
-      print(e.toString());
-      // Handle error (e.g., show a dialog or a snackbar with an error message)
-      print(
-          'Failed to load courses'); // You can replace this with proper error handling
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Scheduler")),
-      body: FutureBuilder<List<SchedulerSubjectModel>>(
-        future: subjects,
+      appBar: AppBar(
+        title: Text('Scheduler Terms'), // Set the title for the AppBar
+        backgroundColor: appBackgroundColor,
+      ),
+      body: FutureBuilder<SchedulerAppDataModel>(
+        future: appDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const CircularProgressIndicator(); // Loading indicator
           } else if (snapshot.hasError) {
-            return Text(
-              'Error: ${snapshot.error}',
-              style: const TextStyle(color: Colors.white),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Text(
-              'No subjects available.',
-              style: TextStyle(color: Colors.white),
-            );
+            return Text('Error: ${snapshot.error}'); // Error handling
+          } else if (!snapshot.hasData || snapshot.data!.terms!.isEmpty) {
+            return Text('No terms available.'); // Handling no data
           } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                    snapshot.data![index]
-                        .title, // Access the title property of the subject
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  onTap: () => _onSubjectTap(snapshot.data![index]),
-                );
-              },
+            return Material(
+                color: appBackgroundColor,
+                child: Column(
+                  children: [
+                    Text('Student Name: ${snapshot.data?.studentName ?? ''}', style: TextStyle(color: Colors.white, fontSize: 20)),
+                    Text('Student ID: ${snapshot.data?.userId ?? ''}', style: TextStyle(color: Colors.white, fontSize: 20)),
+                    const Text('Terms: ', style: TextStyle(color: Colors.white, fontSize: 20)),
+                    Expanded(child: terms(snapshot.data!.terms!)),
+                  ],
+                )
             );
           }
         },
       ),
+    );
+  }
+
+  ListView terms(List<Terms> termsList) {
+    return ListView.builder(
+      itemCount: termsList.length,
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SchedulerListPage(
+                  cookie: widget.cookie,
+                  term: termsList[index].title ??
+                      "", // Passing the term title
+                ),
+              ),
+            );
+          },
+          child: Card(
+            color: cardBackgroundColor, // Card background color
+            child: ListTile(
+              title: Text(
+                termsList[index].title ?? "",
+                style: TextStyle(
+                    color: Colors.white), // White text color
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
