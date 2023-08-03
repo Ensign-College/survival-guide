@@ -7,6 +7,7 @@ import 'dart:developer';
 
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
+import 'package:survival_guide/models/SchedulerTermDataModel.dart';
 
 class SchedulerApiService {
   final String cookie;
@@ -57,6 +58,20 @@ class SchedulerApiService {
 
       final appData = SchedulerAppDataModel.fromJson(parsedJson);
       return appData;
+    } else {
+      throw Exception('Failed to load term data');
+    }
+  }
+
+  Future<SchedulerTermDataModel> fetchTermData(String term) async {
+    final response = await http.get(
+      Uri.parse('${schedulerURL}term-data/$term'),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      final termData = SchedulerTermDataModel.fromJson(parsedJson);
+      return termData;
     } else {
       throw Exception('Failed to load term data');
     }
