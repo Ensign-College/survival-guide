@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_courses.dart';
 import 'package:survival_guide/constants/developer.dart';
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
-
 import '../../constants/colors.dart';
+import '../../constants/shimmer.dart';
 import '../../models/SchedulerAppDataModel.dart';
 import '../../models/SchedulerTermDataModel.dart';
 import '../school_login.dart';
@@ -28,7 +29,6 @@ class _SchedulerListPageState extends State<SchedulerListPage> {
   void initState() {
     super.initState();
     apiService = SchedulerApiService(cookie: widget.cookie);
-    buildTermData();
     subjects = apiService.fetchSubjects(widget.term).catchError((e) {
       Navigator.push(
         context,
@@ -40,74 +40,129 @@ class _SchedulerListPageState extends State<SchedulerListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Scheduler')),
+      appBar: AppBar(title: const Text('Scheduler'), backgroundColor: appBackgroundColor,),
       backgroundColor: appBackgroundColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text("Current Schedule: ", style: TextStyle(color: Colors.white, fontSize: 24.0),),
-          Padding(padding: EdgeInsets.all(10.0),),
-          buildTermData(),
-          Padding(padding: EdgeInsets.all(10.0),),
-          Text("Add classes: ", style: TextStyle(color: Colors.white, fontSize: 24.0),),
-          Padding(padding: EdgeInsets.all(10.0),),
-          SchedulerCoursesPage(apiService: apiService, subjects: subjects,),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            buildSectionTitle('Current Schedule'),
+            const SizedBox(height: 10),
+            buildTermData(),
+            const SizedBox(height: 20),
+            buildSectionTitle('Add classes'),
+            const SizedBox(height: 10),
+            SchedulerCoursesPage(apiService: apiService, subjects: subjects),
+          ],
+        ),
       ),
     );
   }
+
+  Text buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(color: textColor, fontSize: 24.0, fontWeight: FontWeight.bold),
+    );
+  }
+
+  TextStyle _headerTextStyle() {
+    return TextStyle(color: textColor, fontSize: 20.0, fontWeight: FontWeight.bold);
+  }
+
+    TextStyle _cellTextStyle() {
+      return TextStyle(
+        color: textColor,
+        fontSize: 16.0,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
 
   FutureBuilder<SchedulerTermDataModel> buildTermData() {
     return FutureBuilder<SchedulerTermDataModel>(
       future: apiService.fetchTermData(widget.term),
       builder: (context, snapshot) {
-        print("fall first class: ${snapshot.data?.courses.first.title}");
-        print("Instructor: ${snapshot.data?.currentSections.first.course}");
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return shimmerEffect(200); // Change here
         } else if (snapshot.hasError) {
-          return Text(
-            'Error: ${snapshot.error}',
-            style: const TextStyle(color: Colors.white),
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: TextStyle(color: textColor, fontSize: 16.0),
+            ),
           );
         } else if (!snapshot.hasData) {
-          return const Text(
-            'No data available.',
-            style: TextStyle(color: Colors.white),
+          return Center(
+            child: Text(
+              'No data available.',
+              style: TextStyle(color: textColor, fontSize: 16.0),
+            ),
           );
         } else {
-          return DataTable(
-            columns: const [
-              DataColumn(
-                  label: Text('Status',
-                      style: TextStyle(color: Colors.white, fontSize: 18.0))),
-              DataColumn(
-                  label: Text('Course',
-                      style: TextStyle(color: Colors.white, fontSize: 18.0))),
-              DataColumn(
-                  label: Text('Instructor',
-                      style: TextStyle(color: Colors.white, fontSize: 18.0))),
-            ],
-            rows: snapshot.data!.currentSections
-                .map((course) => DataRow(
-                      cells: [
-                        DataCell(Text(course.enrollmentStatus,
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 18.0))),
-                        DataCell(Text(course.course + " " + course.title,
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 18.0))),
-                        DataCell(Text(
-                            course.instructor.isEmpty
-                                ? "TBA"
-                                : course.instructor.first.name,
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18.0)))
-                      ],
-                    ))
-                .toList(),
+          return Card(
+            elevation: 5.0,
+            color: cardBackgroundColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(  // Added scrollview
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingRowHeight: 40,
+                  columnSpacing: 30,
+                  clipBehavior: Clip.antiAlias,
+                  columns: [
+                    DataColumn(label: Text('Status', style: _headerTextStyle())),
+                    DataColumn(label: Text('Course', style: _headerTextStyle())),
+                    DataColumn(label: Text('Instructor', style: _headerTextStyle())),
+                  ],
+                  rows: snapshot.data!.currentSections
+                      .map((course) => DataRow(
+                    color: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+                        }
+                        return cardBackgroundColor;
+                      },
+                    ),
+                    cells: [
+                      DataCell(Text(course.enrollmentStatus, style: _cellTextStyle())),
+                      DataCell(
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                            course.course + " " + course.title,
+                            style: _cellTextStyle(),
+                            softWrap: false,
+                          ),
+                        ),
+                        ),
+                      ),
+                      DataCell(
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                            course.instructor.isEmpty ? "TBA" : course.instructor.first.name,
+                            style: _cellTextStyle(),
+                            softWrap: false,
+                          ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ))
+                      .toList(),
+                ),
+              ),
+            ),
           );
-        }
+      }
       },
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_list_page.dart';
 import 'package:survival_guide/constants/colors.dart';
 
+import '../../constants/shimmer.dart';
 import '../../models/SchedulerAppDataModel.dart';
 import '../../repository/scheduler_api_services.dart';
 import '../school_login.dart';
@@ -29,7 +30,7 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
     super.initState();
     apiService = SchedulerApiService(cookie: widget.cookie);
     appDataFuture = fetchAppData().catchError((e) {
-      debugPrint("Error fetching app data: $e");
+      debugPrint('Error fetching app data: $e');
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SAMLLogin()),
@@ -41,30 +42,42 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scheduler Terms'), // Set the title for the AppBar
+        title: const Text('Scheduler Terms'), // Set the title for the AppBar
         backgroundColor: appBackgroundColor,
       ),
       body: FutureBuilder<SchedulerAppDataModel>(
         future: appDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Loading indicator
+            return Column(
+              children: [
+                shimmerEffect(50, baseColor: appBackgroundColor),
+                shimmerEffect(50, baseColor: appBackgroundColor),
+                shimmerEffect(50),
+                Padding(padding: EdgeInsets.all(5.0)),
+                shimmerEffect(50)
+              ],
+            );
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}'); // Error handling
+            return Text('Error: ${snapshot.error}');
           } else if (!snapshot.hasData || snapshot.data!.terms!.isEmpty) {
-            return Text('No terms available.'); // Handling no data
+            return const Text('No terms available.');
           } else {
             return Material(
                 color: appBackgroundColor,
                 child: Column(
                   children: [
-                    Text('Student Name: ${snapshot.data?.studentName ?? ''}', style: TextStyle(color: Colors.white, fontSize: 20)),
-                    Text('Student ID: ${snapshot.data?.userId ?? ''}', style: TextStyle(color: Colors.white, fontSize: 20)),
-                    const Text('Terms: ', style: TextStyle(color: Colors.white, fontSize: 20)),
+                    Text('Student Name: ${snapshot.data?.studentName ?? ''}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 20)),
+                    Text('Student ID: ${snapshot.data?.userId ?? ''}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 20)),
+                    const Text('Terms: ',
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
                     Expanded(child: terms(snapshot.data!.terms!)),
                   ],
-                )
-            );
+                ));
           }
         },
       ),
@@ -82,19 +95,17 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
               MaterialPageRoute(
                 builder: (context) => SchedulerListPage(
                   cookie: widget.cookie,
-                  term: termsList[index].title ??
-                      "", // Passing the term title
+                  term: termsList[index].title ?? '',
                 ),
               ),
             );
           },
           child: Card(
-            color: cardBackgroundColor, // Card background color
+            color: cardBackgroundColor,
             child: ListTile(
               title: Text(
-                termsList[index].title ?? "",
-                style: TextStyle(
-                    color: Colors.white), // White text color
+                termsList[index].title ?? '',
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ),

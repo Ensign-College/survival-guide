@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/shimmer.dart';
 import '../../models/SchedulerSubjectModel.dart';
 import '../../repository/scheduler_api_services.dart';
 
@@ -24,8 +26,10 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         subjectsRow(),
+        Padding(padding: EdgeInsets.all(8.0)),
         coursesRow(),
       ],
     );
@@ -33,7 +37,8 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
 
   void _onSubjectTap(SchedulerSubjectModel subject) async {
     try {
-      final courses = await widget.apiService.fetchCoursesForSubject(subject.id);
+      final courses =
+          await widget.apiService.fetchCoursesForSubject(subject.id);
       setState(() {
         selectedCourses = courses;
         selectedCourse = selectedCourses?.first;
@@ -47,13 +52,13 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
   Widget coursesRow() {
     return showCourses
         ? Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Courses:',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(color: textColor, fontSize: 24),
               ),
-              buildCourses(),
+              Expanded(child: buildCourses()),
             ],
           )
         : const SizedBox.shrink();
@@ -63,14 +68,11 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(right: 8.0), // Adjust the padding as needed
-          child: Text(
-            'Subjects:',
-            style: TextStyle(color: Colors.white, fontSize: 24),
-          ),
+        Text(
+          'Subjects:',
+          style: TextStyle(color: textColor, fontSize: 24),
         ),
-        buildSubjects(),
+        Expanded(child: buildSubjects()),
       ],
     );
   }
@@ -80,13 +82,13 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
       future: widget.subjects,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return shimmerEffect(50, baseColor: appBackgroundColor);
         } else if (snapshot.hasError ||
             !snapshot.hasData ||
             snapshot.data!.isEmpty) {
-          return const Text(
+          return Text(
             'No subjects available.',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: textColor),
           );
         } else {
           return DropdownButton<SchedulerSubjectModel>(
@@ -94,16 +96,16 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
               selectedSubject != null
                   ? selectedSubject!.title
                   : "Select a subject",
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: textColor),
             ),
             dropdownColor: appBackgroundColor,
-            icon: const Icon(Icons.arrow_downward, color: Colors.white),
+            icon: Icon(Icons.arrow_downward, color: textColor),
             iconSize: 24,
-            style: const TextStyle(color: Colors.white),
-            onChanged: (SchedulerSubjectModel? newValue) {
-              setState(() async {
+            style: TextStyle(color: textColor),
+            onChanged: (SchedulerSubjectModel? newValue) async {
+              setState(() {
                 selectedSubject = newValue;
-                showCourses = true;
+                showCourses = false;
                 _onSubjectTap(selectedSubject!);
               });
             },
@@ -113,7 +115,9 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
                 value: value,
                 child: Text(
                   value.title,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: textColor),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               );
             }).toList(),
@@ -124,18 +128,21 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
   }
 
   Widget buildCourses() {
+    if (selectedCourses == null || selectedCourses!.isEmpty) {
+      return shimmerEffect(50, baseColor: appBackgroundColor);
+    }
     return DropdownButton<SchedulerCourseModel>(
       hint: Text(
         selectedCourse != null ? selectedCourse!.title : 'Select a course',
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: textColor),
       ),
       dropdownColor: appBackgroundColor,
-      icon: const Icon(Icons.arrow_downward, color: Colors.white),
+      icon: Icon(Icons.arrow_downward, color: textColor),
       iconSize: 24,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: textColor),
       onChanged: (SchedulerCourseModel? newValue) {
         setState(() {
-          selectedCourse = newValue; // Assign the selected course value
+          selectedCourse = newValue;
         });
       },
       items: selectedCourses!.map<DropdownMenuItem<SchedulerCourseModel>>(
@@ -143,8 +150,10 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
         return DropdownMenuItem<SchedulerCourseModel>(
           value: value,
           child: Text(
-             value.number + " " + value.title,
-            style: TextStyle(color: Colors.white),
+            value.number + " " + value.title,
+            style: TextStyle(color: textColor),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         );
       }).toList(),

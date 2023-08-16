@@ -47,6 +47,7 @@ dependencies:
   webview_flutter: ^4.2.2
   webview_cookie_manager: ^2.0.6
   flutter_inappwebview: ^5.7.2+3
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

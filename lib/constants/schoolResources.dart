@@ -1,0 +1,1 @@
+const ensignLogo = "https://lds-business-college.brightspotcdn.com/dims4/default/8083e0a/2147483647/strip/true/crop/289x289+0+0/resize/578x578!/format/webp/quality/90/?url=http%3A%2F%2Fensign-brightspot.s3.amazonaws.com%2F9d%2Fce%2Fd73e01074eda9fe48ce963bd46d0%2Fensign-official-ces-logos-4x4in-medallion.png";
