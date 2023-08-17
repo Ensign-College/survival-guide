@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:survival_guide/ViewModels/card_view_model.dart';
-import 'package:survival_guide/Views/Scheduler/scheduler_list_page.dart';
 import 'package:survival_guide/Views/find_bar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/schoolResources.dart';
@@ -138,10 +137,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void addConstantCards() {
-    if (!cards.any((card) => card.title == "Class Scheduler" && card.detailsID == 99999999)) {
+    if (!cards.any((card) => card.title == "Class Scheduler (beta)" && card.detailsID == 99999999)) {
       cards.add(
         CardViewModel(
-          title: "Class Scheduler",
+          title: "Class Scheduler (beta)",
           imageUrl: ensignLogo,
           detailsID: 99999999,
           isConstant: true,

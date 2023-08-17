@@ -10,10 +10,10 @@ import '../school_login.dart';
 class SchedulerTermsList extends StatefulWidget {
   final String cookie;
 
-  SchedulerTermsList({required this.cookie});
+  const SchedulerTermsList({super.key, required this.cookie});
 
   @override
-  _SchedulerTermsListState createState() => _SchedulerTermsListState();
+  State<SchedulerTermsList> createState() =>  _SchedulerTermsListState();
 }
 
 class _SchedulerTermsListState extends State<SchedulerTermsList> {
@@ -54,7 +54,7 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
                 shimmerEffect(50, baseColor: appBackgroundColor),
                 shimmerEffect(50, baseColor: appBackgroundColor),
                 shimmerEffect(50),
-                Padding(padding: EdgeInsets.all(5.0)),
+                const Padding(padding: EdgeInsets.all(5.0)),
                 shimmerEffect(50)
               ],
             );

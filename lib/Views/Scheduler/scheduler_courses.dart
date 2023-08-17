@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:survival_guide/constants/showDialog.dart';
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 
 import '../../constants/colors.dart';
@@ -10,27 +11,34 @@ import '../../repository/scheduler_api_services.dart';
 class SchedulerCoursesPage extends StatefulWidget {
   final SchedulerApiService apiService;
   final Future<List<SchedulerSubjectModel>> subjects;
+  final String term;
 
-  SchedulerCoursesPage({required this.apiService, required this.subjects});
+  const SchedulerCoursesPage(
+      {super.key, required this.apiService, required this.subjects, required this.term});
 
   @override
   _SchedulerCoursesPageState createState() => _SchedulerCoursesPageState();
 }
 
 class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
+  late SchedulerApiService apiService;
   SchedulerSubjectModel? selectedSubject;
   List<SchedulerCourseModel>? selectedCourses;
   SchedulerCourseModel? selectedCourse;
   bool showCourses = false;
+  bool isPosting = false;
+  late String term = widget.term;
 
   @override
   Widget build(BuildContext context) {
+    apiService = widget.apiService;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         subjectsRow(),
-        Padding(padding: EdgeInsets.all(8.0)),
+        const Padding(padding: EdgeInsets.all(8.0)),
         coursesRow(),
+        submitButton(),
       ],
     );
   }
@@ -62,6 +70,36 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
             ],
           )
         : const SizedBox.shrink();
+  }
+
+  Widget submitButton() {
+    return ElevatedButton(
+      onPressed: selectedCourse != null && !isPosting
+          ? () async {
+        debugPrint('postDesiredCourse called at ${DateTime.now()}');
+
+        setState(() {
+                isPosting = true;
+              });
+              try {
+                await apiService.postDesiredCourse(
+                    selectedCourse!.number, selectedCourse!.id.substring(0, 3), term);
+              } catch (e) {
+                debugPrint('Error posting course: $e');
+                alert(context, 'Error posting course: $e');
+              } finally {
+                setState(() {
+                  isPosting = false;
+                });
+              }
+            }
+          : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: cardBackgroundColor,
+        foregroundColor: textColor,
+      ),
+      child: isPosting ? const CircularProgressIndicator() : const Text('Submit Course'),
+    );
   }
 
   Row subjectsRow() {
