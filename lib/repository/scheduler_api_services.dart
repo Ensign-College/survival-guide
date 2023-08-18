@@ -109,6 +109,7 @@ class SchedulerApiService {
     print('Scheduler token: $schedulerToken');
     debugPrint('Body: $body');
 
+    // We need all these headers to make the server think we are a browser
     final response = await http.post(url,
       headers: {
         'Accept': 'application/json',
