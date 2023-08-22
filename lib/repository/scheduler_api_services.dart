@@ -138,4 +138,35 @@ class SchedulerApiService {
           'Failed to post desired course ${response.statusCode}  ');
     }
   }
+
+  Future<void> deleteDesiredCourse(String term, String courseNumber) async {
+    final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/$courseNumber');
+
+    final schedulerToken = await getValueFromPreferences('__RequestVerificationToken');
+    final xcrfToken = await getValueFromPreferences('xcrf-token');
+    final response = await http.delete(url,
+        headers: {
+          'Accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.5',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'X-XSRF-Token': xcrfToken!,
+          'X-Requested-With': 'XMLHttpRequest',
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin',
+          'Cookie': '.AspNet.Cookies=$cookie; __RequestVerificationToken=$schedulerToken',
+          'Referer': 'https://ensign.collegescheduler.com/terms/2023%20Fall%20Semester/courses/add',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Origin': 'https://ensign.collegescheduler.com',
+        });
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+    } else {
+      printWrapped('reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception('Failed to delete the course ${response.statusCode}');
+    }
+  }
+
 }

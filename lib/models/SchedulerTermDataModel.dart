@@ -63,27 +63,27 @@ class SchedulerTermDataModel {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['showDegreePlanWarning'] = showDegreePlanWarning;
-    _data['showDegreePlanWarningOnConfirm'] = showDegreePlanWarningOnConfirm;
-    _data['currentSections'] = currentSections.map((e)=>e.toJson()).toList();
-    _data['degreePlanCourses'] = degreePlanCourses;
-    _data['courses'] = courses.map((e)=>e.toJson()).toList();
-    _data['favorites'] = favorites;
-    _data['academicCareers'] = academicCareers.map((e)=>e.toJson()).toList();
-    _data['academicGroups'] = academicGroups.map((e)=>e.toJson()).toList();
-    _data['campuses'] = campuses.map((e)=>e.toJson()).toList();
-    _data['instructionModes'] = instructionModes.map((e)=>e.toJson()).toList();
-    _data['locations'] = locations.map((e)=>e.toJson()).toList();
-    _data['partsOfTerm'] = partsOfTerm.map((e)=>e.toJson()).toList();
-    _data['sessions'] = sessions;
-    _data['holds'] = holds;
-    _data['registrationWarnings'] = registrationWarnings;
-    _data['cartSections'] = cartSections;
-    _data['studentAttributes'] = studentAttributes;
-    _data['selectedCareer'] = selectedCareer;
-    _data['userTermContext'] = userTermContext.toJson();
-    return _data;
+    final data = <String, dynamic>{};
+    data['showDegreePlanWarning'] = showDegreePlanWarning;
+    data['showDegreePlanWarningOnConfirm'] = showDegreePlanWarningOnConfirm;
+    data['currentSections'] = currentSections.map((e)=>e.toJson()).toList();
+    data['degreePlanCourses'] = degreePlanCourses;
+    data['courses'] = courses.map((e)=>e.toJson()).toList();
+    data['favorites'] = favorites;
+    data['academicCareers'] = academicCareers.map((e)=>e.toJson()).toList();
+    data['academicGroups'] = academicGroups.map((e)=>e.toJson()).toList();
+    data['campuses'] = campuses.map((e)=>e.toJson()).toList();
+    data['instructionModes'] = instructionModes.map((e)=>e.toJson()).toList();
+    data['locations'] = locations.map((e)=>e.toJson()).toList();
+    data['partsOfTerm'] = partsOfTerm.map((e)=>e.toJson()).toList();
+    data['sessions'] = sessions;
+    data['holds'] = holds;
+    data['registrationWarnings'] = registrationWarnings;
+    data['cartSections'] = cartSections;
+    data['studentAttributes'] = studentAttributes;
+    data['selectedCareer'] = selectedCareer;
+    data['userTermContext'] = userTermContext.toJson();
+    return data;
   }
 }
 
@@ -778,7 +778,7 @@ class Courses {
   late final Null notes;
   late final Null component;
   late final String courseAttributes;
-  late final String credits;
+  late final String? credits;
   late final String corequisites;
   late final String prerequisites;
   late final String lockedRegistrationBlockId;
@@ -813,12 +813,12 @@ class Courses {
     topic = null;
     title = json['title'];
     topicTitle = null;
-    description = json['description'];
+    description = json['description'] ?? '';
     enrollmentRequirements = List.castFrom<dynamic, dynamic>(json['enrollmentRequirements']);
     notes = null;
     component = null;
     courseAttributes = json['courseAttributes'];
-    credits = json['credits'];
+    credits = json['credits'] ?? '';
     corequisites = json['corequisites'];
     prerequisites = json['prerequisites'];
     lockedRegistrationBlockId = json['lockedRegistrationBlockId'];
