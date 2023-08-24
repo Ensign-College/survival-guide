@@ -6,16 +6,15 @@ import 'package:survival_guide/Views/Scheduler/scheduler_term_data.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 import '../../constants/colors.dart';
+import '../../models/SchedulerAppDataModel.dart';
 import '../school_login.dart';
 
-// This page displays the scheduler list.
 class SchedulerListPage extends StatefulWidget {
-  // Variables to store the cookie and term passed to this widget.
   final String cookie;
   final String term;
+  final SchedulerAppDataModel appData;
 
-  // Constructor to initialize the variables.
-  SchedulerListPage({super.key, required this.cookie, required this.term});
+  SchedulerListPage({super.key, required this.cookie, required this.term, required this.appData});
 
   @override
   _SchedulerListPageState createState() => _SchedulerListPageState();
@@ -101,7 +100,7 @@ class _SchedulerListPageState extends State<SchedulerListPage>
             children: [
               buildSectionTitle('Desired Courses'),
               const SizedBox(height: 10),
-              SchedulerDesiredCoursesWidget(apiService: apiService, term: widget.term),
+              SchedulerDesiredCoursesWidget(apiService: apiService, term: widget.term, appData: widget.appData,),
             ],
           ),
         ],

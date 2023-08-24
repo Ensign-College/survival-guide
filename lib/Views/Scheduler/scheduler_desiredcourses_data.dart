@@ -1,37 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
+import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/text.dart';
-import '../../constants/widgets.dart';
 
-class SchedulerDesiredCoursesWidget extends StatelessWidget {
+class SchedulerDesiredCoursesWidget extends StatefulWidget {
   final SchedulerApiService apiService;
   final String term;
+  final SchedulerAppDataModel appData;
+  final List<String>? desiredCourses;
 
-  const SchedulerDesiredCoursesWidget({super.key,
+  SchedulerDesiredCoursesWidget({
+    Key? key,
     required this.apiService,
     required this.term,
-  });
+    required this.appData,
+    this.desiredCourses,
+  }) : super(key: key);
 
   @override
+  _SchedulerDesiredCoursesWidgetState createState() => _SchedulerDesiredCoursesWidgetState();
+}
+
+class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesWidget> {
+  List<String>? desiredCourses;
+  late String term;
+  late SchedulerApiService apiService;
+  @override
+  void initState() {
+    term = widget.term;
+    apiService = widget.apiService;
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<SchedulerDesiredCoursesModel>>(
-      future: apiService.fetchDesiredCourse(term),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return shimmerEffect(200); // Your shimmerEffect widget
-        } else if (snapshot.hasError) {
-          return _buildErrorWidget(snapshot.error);
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return _buildNoDataWidget();
-        } else {
-          return _buildDataTable(context, snapshot.data!);
-        }
-      },
-    );
+    return Column(children: [
+      _desiredCourses(),
+      SchedulerGenerateCoursesButton(
+          apiService: widget.apiService,
+          term: widget.term,
+          courses: desiredCourses ?? [],
+          currentSections: [],
+          breaks: widget.appData.breaks ?? []),
+    ]);
   }
 
   Widget _buildErrorWidget(dynamic error) {
@@ -43,6 +58,22 @@ class SchedulerDesiredCoursesWidget extends StatelessWidget {
     );
   }
 
+  FutureBuilder _desiredCourses() {
+    return FutureBuilder<List<SchedulerDesiredCoursesModel>>(
+        future: apiService.fetchDesiredCourse(term),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return shimmerEffect(200); // Your shimmerEffect widget
+          } else if (snapshot.hasError) {
+            return _buildErrorWidget(snapshot.error);
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return _buildNoDataWidget();
+          } else {
+            return _buildListView(context, snapshot.data!);
+          }
+        });
+  }
+
   Widget _buildNoDataWidget() {
     return Center(
       child: Text(
@@ -52,7 +83,9 @@ class SchedulerDesiredCoursesWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTable(BuildContext context, List<SchedulerDesiredCoursesModel> data) {
+  Widget _buildListView(
+      BuildContext context, List<SchedulerDesiredCoursesModel> data) {
+    desiredCourses = data.map((e) => e.courseKey).toList();
     return Card(
       elevation: 5.0,
       color: cardBackgroundColor,
@@ -60,76 +93,72 @@ class SchedulerDesiredCoursesWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            headingRowHeight: 40,
-            columnSpacing: 30,
-            clipBehavior: Clip.antiAlias,
-            columns: [
-              DataColumn(label: Text('Status', style: headerTextStyle())),
-              DataColumn(label: Text('Course', style: headerTextStyle())),
-              DataColumn(label: Text('Instructor', style: headerTextStyle())),
-            ],
-            rows: data.map((course) => _buildDataRow(context, course)).toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-
-  DataRow _buildDataRow(BuildContext context, SchedulerDesiredCoursesModel course) {
-    return DataRow(
-      color: MaterialStateProperty.resolveWith<Color>(
-            (Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
-            return Theme.of(context)
-                .colorScheme
-                .primary
-                .withOpacity(0.08);
-          }
-          return cardBackgroundColor;
-        },
-      ),
-      cells: [
-        DataCell(
-          buildDismissibleCell(
-            context: context,
-            title: 'Delete',
-            onDeleteCallback: () => apiService.deleteDesiredCourse(term, course.id),
-            course: course,
-          ),
-        ),
-        DataCell(
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.25,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                '${course.id} ${course.title}',
-                style: cellTextStyle(),
-                softWrap: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Course', style: headerTextStyle()),
+                  Text('Course', style: headerTextStyle()),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+                  Text('Instructor', style: headerTextStyle()),
+                ],
               ),
             ),
-          ),
-        ),
-        DataCell(
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.25,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                course.credits.isEmpty
-                    ? 'TBA'
-                    : course.credits,
-                style: cellTextStyle(),
-                softWrap: false,
-              ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final course = data[index];
+                return Dismissible(
+                  key: Key(course.courseKey),
+                  background: Container(color: Colors.red),
+                  // or any custom background you prefer
+                  onDismissed: (direction) {
+                    apiService.deleteDesiredCourse(term, course.id);
+                  },
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(course.title, style: cellTextStyle()),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(course.courseKey, style: cellTextStyle()),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              '${course.id} ${course.title}',
+                              style: cellTextStyle(),
+                              softWrap: false,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              course.credits.isEmpty ? 'TBA' : course.credits,
+                              style: cellTextStyle(),
+                              softWrap: false,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -28,6 +28,7 @@ class SchedulerCoursesWidget extends StatelessWidget {
         } else if (!snapshot.hasData) {
           return _buildNoDataWidget();
         } else {
+
           return _buildDataTable(context, snapshot.data!);
         }
       },

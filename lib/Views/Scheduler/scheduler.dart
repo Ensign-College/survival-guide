@@ -13,16 +13,17 @@ class SchedulerTermsList extends StatefulWidget {
   const SchedulerTermsList({super.key, required this.cookie});
 
   @override
-  State<SchedulerTermsList> createState() =>  _SchedulerTermsListState();
+  State<SchedulerTermsList> createState() => _SchedulerTermsListState();
 }
 
 class _SchedulerTermsListState extends State<SchedulerTermsList> {
   late final Future<SchedulerAppDataModel> appDataFuture;
   late final SchedulerApiService apiService;
+  late final SchedulerAppDataModel appData;
 
   Future<SchedulerAppDataModel> fetchAppData() async {
-    final appdata = await apiService.fetchAppData();
-    return appdata;
+    appData = await apiService.fetchAppData();
+    return appData;
   }
 
   @override
@@ -42,7 +43,7 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scheduler Terms'), // Set the title for the AppBar
+        title: const Text('Scheduler Terms'),
         backgroundColor: appBackgroundColor,
       ),
       body: FutureBuilder<SchedulerAppDataModel>(
@@ -96,6 +97,7 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
                 builder: (context) => SchedulerListPage(
                   cookie: widget.cookie,
                   term: termsList[index].title ?? '',
+                  appData: appData,
                 ),
               ),
             );

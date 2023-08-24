@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
+import 'package:survival_guide/models/SchedulerGenerateCoursesModel.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/models/SchedulerTermDataModel.dart';
 
@@ -140,7 +141,10 @@ class SchedulerApiService {
   }
 
   Future<void> deleteDesiredCourse(String term, String courseNumber) async {
+    debugPrint("term: $term courseNumber: $courseNumber");
+    debugPrint("courseNumber: $courseNumber");
     final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/$courseNumber');
+    print("request url: $url");
 
     final schedulerToken = await getValueFromPreferences('__RequestVerificationToken');
     final xcrfToken = await getValueFromPreferences('xcrf-token');
@@ -159,7 +163,8 @@ class SchedulerApiService {
           'DNT': '1',
           'Connection': 'keep-alive',
           'Origin': 'https://ensign.collegescheduler.com',
-        });
+        },
+        body: '{}'); // Adding empty JSON payload
 
     if (response.statusCode == 200) {
       print('Response: ${response.body}');
@@ -168,5 +173,57 @@ class SchedulerApiService {
       throw Exception('Failed to delete the course ${response.statusCode}');
     }
   }
+
+  Future<SchedulerGenerateCoursesModel> generateScheduler(String term,
+      List<String> courses, List<Map<String, dynamic>> currentSections, List<dynamic> breaks ) async {
+    final Uri url = Uri.parse('$schedulerURL/terms/$term/schedules/generate');
+
+    final data = jsonEncode({
+      'breaks': breaks,
+      'cartSections': [],
+      'courses': courses,
+      'currentSections': currentSections,
+      'padding': 0,
+    });
+
+    final schedulerToken = await getValueFromPreferences("__RequestVerificationToken");
+    final xcrfToken = await getValueFromPreferences("xcrf-token");
+    final cookie = await getValueFromPreferences(".AspNet.Cookies");
+
+    print('Scheduler token: $schedulerToken');
+    debugPrint('Data: $data');
+
+    final response = await http.post(url,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/116.0',
+          'Accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.5',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Referer': 'https://ensign.collegescheduler.com/scheduler',
+          'Content-Type': 'application/json',
+          'X-XSRF-Token': xcrfToken!,
+          'X-Requested-With': 'XMLHttpRequest',
+          'Origin': 'https://ensign.collegescheduler.com',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Cookie': '.AspNet.Cookies=$cookie; __RequestVerificationToken=$schedulerToken',
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin',
+          'TE': 'trailers',
+        },
+        body: data);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      final generatedScheduleResponse = SchedulerGenerateCoursesModel.fromJson(parsedJson);
+      print("Generated schedule: ${generatedScheduleResponse.warnings.first.warning}");
+      return generatedScheduleResponse;
+    } else {
+      print('Reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception('Failed to generate schedule ${response.statusCode}');
+    }
+  }
+
 
 }
