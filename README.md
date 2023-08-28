@@ -4,6 +4,8 @@
 
 This app is dedicated to helping Ensign College students to orient themselves in Ensign College. 
 
+## [Survival guide's project board](https://github.com/orgs/Ensign-College/projects/1)
+
 ## Table of Contents
 
 - [Requirements](#requirements)
