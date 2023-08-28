@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:survival_guide/ViewModels/card_view_model.dart';
@@ -8,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'boxes.dart';
+import 'constants/firebase_api.dart';
 import 'constants/supabase.dart';
 
 Future<void> main() async {
@@ -24,6 +26,9 @@ Future<void> main() async {
     url: supabaseUrl!,
     anonKey: supabaseAnonKey!,
   );
+
+  await Firebase.initializeApp();
+  await FirebaseApi().initNotifications();
 
   runApp(const MyApp());
 }
@@ -82,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: StreamBuilder(
         stream: cardStream,
         builder: (context, snapshot) {
-          
           if (snapshot.hasError) {
             return Center(
                 child: Text('Error has occurred: ${snapshot.error!}'));
@@ -105,8 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   detailsID: e['card_detail_id'] as int);
             }).toList();
             for (var card in cards) {
-              box.put(card.title,
-                  card);
+              box.put(card.title, card);
             }
             return isGridView
                 ? ListView.builder(
@@ -121,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   )
                 : DirectoryGridView(children: cards);
-          } 
+          }
           return DirectoryGridView(children: box.values.toList());
         },
       ),
