@@ -9,30 +9,18 @@ import '../../constants/shimmer.dart';
 class SchedulerCoursesWidget extends StatelessWidget {
   final SchedulerApiService apiService;
   final String term;
+  final SchedulerTermDataModel termData;
 
 
   SchedulerCoursesWidget({
     required this.apiService,
     required this.term,
+    required this.termData,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SchedulerTermDataModel>(
-      future: apiService.fetchTermData(term),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return shimmerEffect(200);
-        } else if (snapshot.hasError) {
-          return _buildErrorWidget(snapshot.error);
-        } else if (!snapshot.hasData) {
-          return _buildNoDataWidget();
-        } else {
-
-          return _buildDataTable(context, snapshot.data!);
-        }
-      },
-    );
+    return _buildDataTable(context, termData);
   }
 
   Widget _buildErrorWidget(dynamic error) {

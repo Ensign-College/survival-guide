@@ -2,11 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_courses.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_desiredcourses_data.dart';
-import 'package:survival_guide/Views/Scheduler/scheduler_term_data.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler_term_data.dart' as termdata;
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
+import 'package:survival_guide/utilities/convertCurrentSectionsAppData.dart';
 import '../../constants/colors.dart';
+import '../../constants/shimmer.dart';
+import '../../constants/showDialog.dart';
+import '../../constants/widgets/FutureErrorWidgets.dart';
 import '../../models/SchedulerAppDataModel.dart';
+import '../../models/SchedulerGenerateCoursesModel.dart' as generateCourses;
+import '../../models/SchedulerTermDataModel.dart';
 import '../school_login.dart';
 
 class SchedulerListPage extends StatefulWidget {
@@ -26,6 +32,10 @@ class _SchedulerListPageState extends State<SchedulerListPage>
   late final SchedulerApiService apiService;
   late final String term = widget.term;
   late Future<List<SchedulerSubjectModel>> subjects;
+  late Future<SchedulerTermDataModel> termData;
+  List<generateCourses.CurrentSections> currentSections = [];
+  bool isCurrentSectionsPopulated = false;  // We don't want to readd the current sections to the desired courses list every time the widget is rebuilt.
+
   TabController? _tabController;
 
   // This function runs when the widget is created.
@@ -43,7 +53,7 @@ class _SchedulerListPageState extends State<SchedulerListPage>
         MaterialPageRoute(builder: (context) => SAMLLogin()),
       );
     });
-
+    termData = apiService.fetchTermData(term);
     // Setup a tab controller for 2 tabs.
     _tabController = TabController(length: 2, vsync: this);
   }
@@ -84,7 +94,7 @@ class _SchedulerListPageState extends State<SchedulerListPage>
               // Displaying section titles and course lists.
               buildSectionTitle('Current Schedule'),
               const SizedBox(height: 10),
-              SchedulerCoursesWidget(apiService: apiService, term: term),
+              buildTermDataWidget(),
               const SizedBox(height: 20),
               buildSectionTitle('Add classes'),
               const SizedBox(height: 10),
@@ -100,7 +110,7 @@ class _SchedulerListPageState extends State<SchedulerListPage>
             children: [
               buildSectionTitle('Desired Courses'),
               const SizedBox(height: 10),
-              SchedulerDesiredCoursesWidget(apiService: apiService, term: widget.term, appData: widget.appData,),
+              SchedulerDesiredCoursesWidget(apiService: apiService, term: widget.term, appData: widget.appData, currentSections: currentSections,),
             ],
           ),
         ],
@@ -116,4 +126,45 @@ class _SchedulerListPageState extends State<SchedulerListPage>
           color: textColor, fontSize: 24.0, fontWeight: FontWeight.bold),
     );
   }
+
+  void setCurrentSection(SchedulerTermDataModel? data) {
+    if (isCurrentSectionsPopulated) {
+      return; // Skip if already populated
+    }
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      currentSections.clear();  // Clear the list
+      for (var currentSection in data!.currentSections) {
+        this.currentSections.add(convertToCourseGenerator(currentSection));
+      }
+      setState(() {
+        // This is an empty setState, but it should trigger a rebuild
+      });
+      isCurrentSectionsPopulated = true;  // Mark as populated
+    });
+  }
+
+
+  Widget buildTermDataWidget() {
+    return FutureBuilder<SchedulerTermDataModel>(
+      future: termData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return shimmerEffect(200);
+        } else if (snapshot.hasError) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
+            alert(context, snapshot.error.toString());
+          });
+          return buildErrorWidget(snapshot.error);
+        } else if (!snapshot.hasData) {
+          return buildNoDataWidget();
+        } else {
+          setCurrentSection(snapshot.data!);
+          return termdata.SchedulerCoursesWidget(
+            apiService: apiService, term: term, termData: snapshot.data!,
+          );
+        }
+      },
+    );
+  }
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:survival_guide/constants/htmlParse.dart';
 import '../../constants/colors.dart';
 import '../../constants/showDialog.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
@@ -6,12 +7,12 @@ import '../../repository/scheduler_api_services.dart';
 
 class SchedulerGenerateCoursesButton extends StatelessWidget {
   final List<String> courses;
-  final List<Map<String, dynamic>> currentSections;
+  final List<CurrentSections> currentSections;
   final List<dynamic> breaks;
   final SchedulerApiService apiService;
   final String term;
 
-  SchedulerGenerateCoursesButton({
+  const SchedulerGenerateCoursesButton({super.key,
     required this.courses,
     required this.currentSections,
     required this.breaks,
@@ -26,7 +27,7 @@ class SchedulerGenerateCoursesButton extends StatelessWidget {
         SchedulerGenerateCoursesModel response = await apiService.generateScheduler(term, courses, currentSections, breaks);
         if (response.warnings.isNotEmpty) {
           for (var warning in response.warnings) {
-            alert(context, warning.warning);
+            alert(context, removeHtmlTags(warning.warning)); // We need to remove the HTML tags from the warning
           }
         }
       } catch (e) {

@@ -1,3 +1,5 @@
+import 'SchedulerGenerateCoursesModel.dart';
+
 class SchedulerTermDataModel {
   SchedulerTermDataModel({
     required this.showDegreePlanWarning,
@@ -666,39 +668,6 @@ class Meetings {
     _data['room'] = room;
     _data['firstMonday'] = firstMonday;
     _data['lastMonday'] = lastMonday;
-    return _data;
-  }
-}
-
-class RegistrationOptions {
-  RegistrationOptions({
-    required this.gradingBases,
-    required this.showInstructorOptions,
-    required this.showPermissionNumberOption,
-    required this.showRequirementDesignationOption,
-    required this.showStartDateOption,
-  });
-  late final List<GradingBases> gradingBases;
-  late final bool showInstructorOptions;
-  late final bool showPermissionNumberOption;
-  late final bool showRequirementDesignationOption;
-  late final bool showStartDateOption;
-
-  RegistrationOptions.fromJson(Map<String, dynamic> json){
-    gradingBases = List.from(json['gradingBases']).map((e)=>GradingBases.fromJson(e)).toList();
-    showInstructorOptions = json['showInstructorOptions'];
-    showPermissionNumberOption = json['showPermissionNumberOption'];
-    showRequirementDesignationOption = json['showRequirementDesignationOption'];
-    showStartDateOption = json['showStartDateOption'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['gradingBases'] = gradingBases.map((e)=>e.toJson()).toList();
-    _data['showInstructorOptions'] = showInstructorOptions;
-    _data['showPermissionNumberOption'] = showPermissionNumberOption;
-    _data['showRequirementDesignationOption'] = showRequirementDesignationOption;
-    _data['showStartDateOption'] = showStartDateOption;
     return _data;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
+import 'package:survival_guide/constants/showDialog.dart';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
@@ -7,11 +8,14 @@ import 'package:survival_guide/repository/scheduler_api_services.dart';
 import '../../constants/colors.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/text.dart';
+import '../../models/SchedulerGenerateCoursesModel.dart' as generateCourses;
+import '../../models/SchedulerTermDataModel.dart';
 
 class SchedulerDesiredCoursesWidget extends StatefulWidget {
   final SchedulerApiService apiService;
   final String term;
   final SchedulerAppDataModel appData;
+  final List<generateCourses.CurrentSections> currentSections;
   final List<String>? desiredCourses;
 
   SchedulerDesiredCoursesWidget({
@@ -19,7 +23,7 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
     required this.apiService,
     required this.term,
     required this.appData,
-    this.desiredCourses,
+    this.desiredCourses, required this.currentSections,
   }) : super(key: key);
 
   @override
@@ -27,26 +31,66 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
 }
 
 class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesWidget> {
-  List<String>? desiredCourses;
+  final ValueNotifier<List<String>> desiredCoursesNotifier = ValueNotifier<List<String>>([]);
+
   late String term;
   late SchedulerApiService apiService;
+
   @override
   void initState() {
+    super.initState();
     term = widget.term;
     apiService = widget.apiService;
-    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      apiService.fetchDesiredCourse(term).then((data) {
+        desiredCoursesNotifier.value = data.map((e) => e.id).toList();
+      }).catchError((error) {
+        // Handle error
+      });
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       _desiredCourses(),
-      SchedulerGenerateCoursesButton(
-          apiService: widget.apiService,
-          term: widget.term,
-          courses: desiredCourses ?? [],
-          currentSections: [],
-          breaks: widget.appData.breaks ?? []),
+      ValueListenableBuilder<List<String>>(
+        valueListenable: desiredCoursesNotifier,
+        builder: (context, desiredCourses, child) {
+          return SchedulerGenerateCoursesButton(
+            apiService: widget.apiService,
+            term: widget.term,
+            courses: desiredCourses,
+            currentSections: widget.currentSections,
+            breaks: widget.appData.breaks ?? [],
+          );
+        },
+      ),
+      ElevatedButton(onPressed: () => {
+        apiService.fetchWebSocketToken().then((token) {
+          alert(context, 'Token: $token');
+        })
+      }, child: const Text('Send to shoping cart'))
     ]);
+  }
+
+  FutureBuilder _desiredCourses() {
+    return FutureBuilder<List<SchedulerDesiredCoursesModel>>(
+      future: apiService.fetchDesiredCourse(term),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return shimmerEffect(200); // Your shimmerEffect widget
+        } else if (snapshot.hasError) {
+          return _buildErrorWidget(snapshot.error);
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return _buildNoDataWidget();
+        } else {
+          desiredCoursesNotifier.value = snapshot.data!.map((e) => e.id).toList();
+          return _buildListView(context, snapshot.data!);
+        }
+      },
+    );
   }
 
   Widget _buildErrorWidget(dynamic error) {
@@ -56,22 +100,6 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
         style: TextStyle(color: textColor, fontSize: 16.0),
       ),
     );
-  }
-
-  FutureBuilder _desiredCourses() {
-    return FutureBuilder<List<SchedulerDesiredCoursesModel>>(
-        future: apiService.fetchDesiredCourse(term),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return shimmerEffect(200); // Your shimmerEffect widget
-          } else if (snapshot.hasError) {
-            return _buildErrorWidget(snapshot.error);
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildNoDataWidget();
-          } else {
-            return _buildListView(context, snapshot.data!);
-          }
-        });
   }
 
   Widget _buildNoDataWidget() {
@@ -85,7 +113,6 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
 
   Widget _buildListView(
       BuildContext context, List<SchedulerDesiredCoursesModel> data) {
-    desiredCourses = data.map((e) => e.courseKey).toList();
     return Card(
       elevation: 5.0,
       color: cardBackgroundColor,
