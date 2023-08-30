@@ -11,13 +11,15 @@ class SchedulerGenerateCoursesButton extends StatelessWidget {
   final List<dynamic> breaks;
   final SchedulerApiService apiService;
   final String term;
+  final Function(SchedulerGenerateCoursesModel) onGenerate;
 
   const SchedulerGenerateCoursesButton({super.key,
     required this.courses,
     required this.currentSections,
     required this.breaks,
     required this.apiService,
-    required this.term
+    required this.term,
+    required this.onGenerate,
   });
 
   @override
@@ -25,6 +27,7 @@ class SchedulerGenerateCoursesButton extends StatelessWidget {
     void generateSchedule() async {
       try {
         SchedulerGenerateCoursesModel response = await apiService.generateScheduler(term, courses, currentSections, breaks);
+        onGenerate(response);
         if (response.warnings.isNotEmpty) {
           for (var warning in response.warnings) {
             alert(context, removeHtmlTags(warning.warning));

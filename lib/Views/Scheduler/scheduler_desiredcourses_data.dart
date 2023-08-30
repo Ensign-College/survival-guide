@@ -11,6 +11,8 @@ import '../../constants/colors.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/text.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart' as generateCourses;
+import '../../models/SchedulerGenerateCoursesModel.dart';
+import '../scheduler_screen.dart';
 
 class SchedulerDesiredCoursesWidget extends StatefulWidget {
   final SchedulerApiService apiService;
@@ -24,16 +26,22 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
     required this.apiService,
     required this.term,
     required this.appData,
-    this.desiredCourses, required this.currentSections,
+    this.desiredCourses,
+    required this.currentSections,
   }) : super(key: key);
 
   @override
-  _SchedulerDesiredCoursesWidgetState createState() => _SchedulerDesiredCoursesWidgetState();
+  _SchedulerDesiredCoursesWidgetState createState() =>
+      _SchedulerDesiredCoursesWidgetState();
 }
 
-class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesWidget> {
-  final ValueNotifier<List<String>> desiredCoursesNotifier = ValueNotifier<List<String>>([]);
-  final ValueNotifier<List<SchedulerDesiredCoursesModel>> desiredCoursesObjectNotifier = ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
+class _SchedulerDesiredCoursesWidgetState
+    extends State<SchedulerDesiredCoursesWidget> {
+  final ValueNotifier<List<String>> desiredCoursesNotifier =
+      ValueNotifier<List<String>>([]);
+  final ValueNotifier<List<SchedulerDesiredCoursesModel>>
+      desiredCoursesObjectNotifier =
+      ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
   late String term;
   late SchedulerApiService apiService;
 
@@ -55,7 +63,6 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
 
   @override
   Widget build(BuildContext context) {
-
     return Column(children: [
       _desiredCourses(),
       ValueListenableBuilder<List<String>>(
@@ -67,22 +74,40 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
             courses: desiredCourses,
             currentSections: widget.currentSections,
             breaks: widget.appData.breaks ?? [],
+            onGenerate: (SchedulerGenerateCoursesModel response) {
+              _showScheduleModal(response);
+            },
           );
         },
       ),
-      ElevatedButton(onPressed: () => {
-        apiService.fetchWebSocketToken().then((token) {
-          List<SchedulerDesiredCoursesModel> desiredCoursesObject = desiredCoursesObjectNotifier.value;
-          CollegeSchedulerSocketClient(
-            token: token,
-            shoppingCartItems: desiredCoursesObject,
-            termCode: widget.appData.terms?.last.code ?? '',
-            userId: widget.appData.studentUserId ?? 0,
-            onError: (errorCode, error) => alert(context, "$errorCode " + error), // pass the callback here
-          );
-        })
-      }, child: const Text('Send to shoping cart'))
+      ElevatedButton(
+          onPressed: () => {
+                apiService.fetchWebSocketToken().then((token) {
+                  List<SchedulerDesiredCoursesModel> desiredCoursesObject =
+                      desiredCoursesObjectNotifier.value;
+                  CollegeSchedulerSocketClient(
+                    token: token,
+                    shoppingCartItems: desiredCoursesObject,
+                    termCode: widget.appData.terms?.last.code ?? '',
+                    userId: widget.appData.studentUserId ?? 0,
+                    onError: (errorCode, error) => alert(context,
+                        "$errorCode " + error), // pass the callback here
+                  );
+                })
+              },
+          child: const Text('Send to shoping cart'))
     ]);
+  }
+
+  void _showScheduleModal(SchedulerGenerateCoursesModel response) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: ScheduleScreen(currentSections: response.currentSections),
+        );
+      },
+    );
   }
 
   FutureBuilder _desiredCourses() {
@@ -96,7 +121,8 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return _buildNoDataWidget();
         } else {
-          desiredCoursesNotifier.value = snapshot.data!.map((e) => e.id).toList();
+          desiredCoursesNotifier.value =
+              snapshot.data!.map((e) => e.id).toList();
           return _buildListView(context, snapshot.data!);
         }
       },
