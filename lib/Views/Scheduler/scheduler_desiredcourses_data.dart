@@ -3,13 +3,14 @@ import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
 import 'package:survival_guide/constants/showDialog.dart';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
+import 'package:survival_guide/models/SchedulerShoppingCartModel.dart';
+import 'package:survival_guide/repository/college_scheduler_socket_client.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/text.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart' as generateCourses;
-import '../../models/SchedulerTermDataModel.dart';
 
 class SchedulerDesiredCoursesWidget extends StatefulWidget {
   final SchedulerApiService apiService;
@@ -32,7 +33,7 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
 
 class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesWidget> {
   final ValueNotifier<List<String>> desiredCoursesNotifier = ValueNotifier<List<String>>([]);
-
+  final ValueNotifier<List<SchedulerDesiredCoursesModel>> desiredCoursesObjectNotifier = ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
   late String term;
   late SchedulerApiService apiService;
 
@@ -44,6 +45,7 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       apiService.fetchDesiredCourse(term).then((data) {
+        desiredCoursesObjectNotifier.value = data;
         desiredCoursesNotifier.value = data.map((e) => e.id).toList();
       }).catchError((error) {
         // Handle error
@@ -53,6 +55,7 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
 
   @override
   Widget build(BuildContext context) {
+
     return Column(children: [
       _desiredCourses(),
       ValueListenableBuilder<List<String>>(
@@ -69,7 +72,14 @@ class _SchedulerDesiredCoursesWidgetState extends State<SchedulerDesiredCoursesW
       ),
       ElevatedButton(onPressed: () => {
         apiService.fetchWebSocketToken().then((token) {
-          alert(context, 'Token: $token');
+          List<SchedulerDesiredCoursesModel> desiredCoursesObject = desiredCoursesObjectNotifier.value;
+          CollegeSchedulerSocketClient(
+            token: token,
+            shoppingCartItems: desiredCoursesObject,
+            termCode: widget.appData.terms?.last.code ?? '',
+            userId: widget.appData.studentUserId ?? 0,
+            onError: (errorCode, error) => alert(context, "$errorCode " + error), // pass the callback here
+          );
         })
       }, child: const Text('Send to shoping cart'))
     ]);

@@ -27,7 +27,7 @@ class SchedulerGenerateCoursesButton extends StatelessWidget {
         SchedulerGenerateCoursesModel response = await apiService.generateScheduler(term, courses, currentSections, breaks);
         if (response.warnings.isNotEmpty) {
           for (var warning in response.warnings) {
-            alert(context, removeHtmlTags(warning.warning)); // We need to remove the HTML tags from the warning
+            alert(context, removeHtmlTags(warning.warning));
           }
         }
       } catch (e) {
