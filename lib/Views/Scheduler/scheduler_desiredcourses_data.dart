@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
 import 'package:survival_guide/constants/showDialog.dart';
+import 'package:survival_guide/constants/widgets/show_modal.dart';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
 import 'package:survival_guide/models/SchedulerShoppingCartModel.dart';
@@ -75,7 +77,7 @@ class _SchedulerDesiredCoursesWidgetState
             currentSections: widget.currentSections,
             breaks: widget.appData.breaks ?? [],
             onGenerate: (SchedulerGenerateCoursesModel response) {
-              _showScheduleModal(response);
+              showGestureModal(context, ScheduleScreen(generatedScheduleCourses: response));
             },
           );
         },
@@ -95,19 +97,8 @@ class _SchedulerDesiredCoursesWidgetState
                   );
                 })
               },
-          child: const Text('Send to shoping cart'))
+          child: const Text('Send to shopping cart'))
     ]);
-  }
-
-  void _showScheduleModal(SchedulerGenerateCoursesModel response) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: ScheduleScreen(currentSections: response.currentSections),
-        );
-      },
-    );
   }
 
   FutureBuilder _desiredCourses() {

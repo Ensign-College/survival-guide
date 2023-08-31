@@ -9,7 +9,7 @@ import 'package:survival_guide/utilities/convertCurrentSectionsAppData.dart';
 import '../../constants/colors.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/showDialog.dart';
-import '../../constants/widgets/FutureErrorWidgets.dart';
+import '../../constants/widgets/future_error_widgets.dart';
 import '../../models/SchedulerAppDataModel.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart' as generateCourses;
 import '../../models/SchedulerTermDataModel.dart';
