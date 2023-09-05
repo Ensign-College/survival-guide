@@ -40,6 +40,20 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Column(
       children: [
         Container(
+          color: darkBackgroundColor,  // Set the background color to darkBackgroundColor
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 10),
+              height: 5,
+              width: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2.5),
+              ),
+            ),
+          ),
+        ),
+        Container(
           color: darkBackgroundColor,
           padding: EdgeInsets.zero,
           width: double.infinity,
@@ -60,7 +74,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     .toList()
                     .cast<String>();
 
-                return ScheduleTable(
+                return SimpleScheduleList(
                   generatedScheduleCourses: widget.generatedScheduleCourses,
                   sectionIds: sectionIds,
                 );
@@ -75,7 +89,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             children: List.generate(
                 widget.generatedScheduleCourses.schedules.length, (index) {
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
                 width: 10,
                 height: 10,
                 decoration: BoxDecoration(

@@ -13,3 +13,7 @@ TextStyle cellTextStyle() {
     overflow: TextOverflow.ellipsis,
   );
 }
+
+String toShortDateString(DateTime dateTime) {
+  return "${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')}/${dateTime.year.toString()}";
+}
