@@ -21,7 +21,7 @@ class SimpleScheduleList extends StatelessWidget {
 
   Map<String, Color> sectionColorMap = {};
 
-  void _addEventsToCalendar(List<Map<dynamic, dynamic>> sections) {
+  void _addEventsToCalendar(List<dynamic> sections) {
     for (var section in sections) {
       var meeting = section['meetings'][0];
       final Event event = Event(
