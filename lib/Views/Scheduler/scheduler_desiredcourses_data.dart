@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
-import 'package:survival_guide/constants/showDialog.dart';
+import 'package:survival_guide/constants/constant_strings.dart';
+import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'package:survival_guide/constants/widgets/show_modal.dart';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
-import 'package:survival_guide/models/SchedulerShoppingCartModel.dart';
 import 'package:survival_guide/repository/college_scheduler_socket_client.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/constant_strings.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/text.dart';
-import '../../models/SchedulerGenerateCoursesModel.dart' as generateCourses;
+import '../../models/SchedulerGenerateCoursesModel.dart' as generate_courses;
 import '../../models/SchedulerGenerateCoursesModel.dart';
 import '../scheduler_screen.dart';
 
@@ -20,10 +20,10 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
   final SchedulerApiService apiService;
   final String term;
   final SchedulerAppDataModel appData;
-  final List<generateCourses.CurrentSections> currentSections;
+  final List<generate_courses.CurrentSections> currentSections;
   final List<String>? desiredCourses;
 
-  SchedulerDesiredCoursesWidget({
+  const SchedulerDesiredCoursesWidget({
     Key? key,
     required this.apiService,
     required this.term,
@@ -33,11 +33,11 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SchedulerDesiredCoursesWidgetState createState() =>
-      _SchedulerDesiredCoursesWidgetState();
+  SchedulerDesiredCoursesWidgetState createState() =>
+      SchedulerDesiredCoursesWidgetState();
 }
 
-class _SchedulerDesiredCoursesWidgetState
+class SchedulerDesiredCoursesWidgetState
     extends State<SchedulerDesiredCoursesWidget> {
   final ValueNotifier<List<String>> desiredCoursesNotifier =
       ValueNotifier<List<String>>([]);
@@ -46,6 +46,7 @@ class _SchedulerDesiredCoursesWidgetState
       ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
   late String term;
   late SchedulerApiService apiService;
+  bool isDesiredCoursesEmpty = false;
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _SchedulerDesiredCoursesWidgetState
     term = widget.term;
     apiService = widget.apiService;
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       apiService.fetchDesiredCourse(term).then((data) {
         desiredCoursesObjectNotifier.value = data;
         desiredCoursesNotifier.value = data.map((e) => e.id).toList();
@@ -65,40 +66,7 @@ class _SchedulerDesiredCoursesWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      _desiredCourses(),
-      ValueListenableBuilder<List<String>>(
-        valueListenable: desiredCoursesNotifier,
-        builder: (context, desiredCourses, child) {
-          return SchedulerGenerateCoursesButton(
-            apiService: widget.apiService,
-            term: widget.term,
-            courses: desiredCourses,
-            currentSections: widget.currentSections,
-            breaks: widget.appData.breaks ?? [],
-            onGenerate: (SchedulerGenerateCoursesModel response) {
-              showGestureModal(context, ScheduleScreen(generatedScheduleCourses: response));
-            },
-          );
-        },
-      ),
-      ElevatedButton(
-          onPressed: () => {
-                apiService.fetchWebSocketToken().then((token) {
-                  List<SchedulerDesiredCoursesModel> desiredCoursesObject =
-                      desiredCoursesObjectNotifier.value;
-                  CollegeSchedulerSocketClient(
-                    token: token,
-                    shoppingCartItems: desiredCoursesObject,
-                    termCode: widget.appData.terms?.last.code ?? '',
-                    userId: widget.appData.studentUserId ?? 0,
-                    onError: (errorCode, error) => alert(context,
-                        "$errorCode " + error), // pass the callback here
-                  );
-                })
-              },
-          child: const Text('Send to shopping cart'))
-    ]);
+    return isDesiredCoursesEmpty ? _buildNoDataWidget() : _desiredCourses();
   }
 
   FutureBuilder _desiredCourses() {
@@ -114,7 +82,28 @@ class _SchedulerDesiredCoursesWidgetState
         } else {
           desiredCoursesNotifier.value =
               snapshot.data!.map((e) => e.id).toList();
-          return _buildListView(context, snapshot.data!);
+          return Column(
+            children: [
+              _buildListView(context, snapshot.data!),
+              ValueListenableBuilder<List<String>>(
+                valueListenable: desiredCoursesNotifier,
+                builder: (context, desiredCourses, child) {
+                  return SchedulerGenerateCoursesButton(
+                    apiService: widget.apiService,
+                    term: widget.term,
+                    courses: desiredCourses,
+                    currentSections: widget.currentSections,
+                    breaks: widget.appData.breaks ?? [],
+                    onGenerate: (SchedulerGenerateCoursesModel response) {
+                      showGestureModal(context,
+                          ScheduleScreen(generatedScheduleCourses: response));
+                    },
+                  );
+                },
+              ),
+              _generateSchedulesButton(),
+            ],
+          );
         }
       },
     );
@@ -164,31 +153,52 @@ class _SchedulerDesiredCoursesWidgetState
             ),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final course = data[index];
                 return Dismissible(
                   key: Key(course.courseKey),
-                  background: Container(color: Colors.red),
-                  // or any custom background you prefer
+                  background: Container(
+                    color: Colors.red,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text('Remove class',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 18.0)),
+                        ),
+                      ],
+                    ),
+                  ),
                   onDismissed: (direction) {
                     apiService.deleteDesiredCourse(term, course.id);
+                    if (data.length == 1) {
+                      // In here onDismissed hasn't finished yet, and if the data has 1 element. It means that element will be removed, as a result it will be empty. We want to show a different view if data is empty
+                      setState(() {
+                        isDesiredCoursesEmpty = true;
+                      });
+                    }
                   },
                   child: ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(course.title, style: cellTextStyle()),
+                    title:
+                        Text(course.title, style: survivalGuideCellTextStyle()),
                     subtitle: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(course.courseKey, style: cellTextStyle()),
+                        Text(course.courseKey,
+                            style: survivalGuideCellTextStyle()),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.25,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Text(
                               '${course.id} ${course.title}',
-                              style: cellTextStyle(),
+                              style: survivalGuideCellTextStyle(),
                               softWrap: false,
                             ),
                           ),
@@ -199,7 +209,7 @@ class _SchedulerDesiredCoursesWidgetState
                             scrollDirection: Axis.horizontal,
                             child: Text(
                               course.credits.isEmpty ? 'TBA' : course.credits,
-                              style: cellTextStyle(),
+                              style: survivalGuideCellTextStyle(),
                               softWrap: false,
                             ),
                           ),
@@ -213,6 +223,31 @@ class _SchedulerDesiredCoursesWidgetState
           ],
         ),
       ),
+    );
+  }
+
+  Widget _generateSchedulesButton() {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          return constantCardBackgroundColor;
+        }),
+      ),
+      onPressed: () => {
+        apiService.fetchWebSocketToken().then((token) {
+          List<SchedulerDesiredCoursesModel> desiredCoursesObject =
+              desiredCoursesObjectNotifier.value;
+          CollegeSchedulerSocketClient(
+            token: token,
+            shoppingCartItems: desiredCoursesObject,
+            termCode: widget.appData.terms?.last.code ?? '',
+            userId: widget.appData.studentUserId ?? 0,
+            onError: (errorCode, error) => alert(alertErrorHeader,
+                '$errorCode $error'), // pass the callback here
+          );
+        })
+      },
+      child: const Text('Send to shopping cart'),
     );
   }
 }

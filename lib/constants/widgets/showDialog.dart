@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:survival_guide/constants/colors.dart';
 
-import '../models/SchedulerGenerateCoursesModel.dart';
+import '../../models/SchedulerGenerateCoursesModel.dart';
 
-void alert(BuildContext context, String content) {
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+void alert(String header, String content) {
   showDialog(
-    context: context,
+    context: navigatorKey.currentContext!,
     builder: (context) => AlertDialog(
-      title: Text('Error'),
+      title: Text(header),
       content: Text(content),
       backgroundColor: constantCardBackgroundColor,
       actions: [
@@ -16,7 +18,7 @@ void alert(BuildContext context, String content) {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Close'),
+          child: const Text('Close'),
         ),
       ],
     ),

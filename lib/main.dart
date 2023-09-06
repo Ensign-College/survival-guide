@@ -7,6 +7,7 @@ import 'package:survival_guide/ViewModels/card_view_model.dart';
 import 'package:survival_guide/Views/find_bar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/schoolResources.dart';
+import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'Views/Scheduler/scheduler.dart';
 import 'Views/directory_grid_view.dart';
 import 'Views/school_login.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         scaffoldBackgroundColor: appBackgroundColor,

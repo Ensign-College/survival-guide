@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/DateTime.dart';
 import 'package:survival_guide/constants/colors.dart';
+import 'package:survival_guide/constants/extensions/text_extensions.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
-import '../../constants/text.dart';
 
 class SimpleScheduleList extends StatelessWidget {
   final SchedulerGenerateCoursesModel generatedScheduleCourses;
@@ -21,21 +20,22 @@ class SimpleScheduleList extends StatelessWidget {
 
   Map<String, Color> sectionColorMap = {};
 
-  void _addEventsToCalendar(List<dynamic> sections) {
-    for (var section in sections) {
-      var meeting = section['meetings'][0];
-      final Event event = Event(
-        title: "${section['title']}",
-        description: "${section['description']}",
-        location: "${meeting['location']}",
-        startDate: DateTime.parse(meeting['startDate']).toLocal(),
-        endDate: DateTime.parse(meeting['endDate']).toLocal(),
-      );
+  void _addEventsToCalendar(dynamic section) {
+    // TODO: fix calendar
+    var meeting = section['meetings'][0];
+    final Event event = Event(
+      title: "${section['title']}",
+      description: "${section['description']}",
+      location: "${meeting['location']}",
+      startDate: DateTime.parse(meeting['startDate']).toLocal(),
+      endDate: DateTime.parse(meeting['endDate']).toLocal(),
+    );
 
-      Add2Calendar.addEvent2Cal(event);
-    }
+    Add2Calendar.addEvent2Cal(event);
   }
+
   SimpleScheduleList({
+    super.key,
     required this.generatedScheduleCourses,
     required this.sectionIds,
   });
@@ -48,7 +48,6 @@ class SimpleScheduleList extends StatelessWidget {
     return '$hour:$minute $ampm';
   }
 
-
   String daysRawToFull(String daysRaw) {
     final Map<String, String> dayMapping = {
       'M': 'Monday',
@@ -59,16 +58,17 @@ class SimpleScheduleList extends StatelessWidget {
       'S': 'Saturday',
       'Su': 'Sunday'
     };
-    return daysRaw.splitMapJoin(
-        RegExp(r'M|T|W|R|F'),
-        onMatch: (m) => dayMapping[m[0]]!.substring(0, 3) + ' ',
+    return daysRaw.splitMapJoin(RegExp(r'M|T|W|R|F'),
+        onMatch: (m) => '${dayMapping[m[0]]!.substring(0, 3)} ',
         onNonMatch: (n) => n)
       ..substring(0); // Remove trailing comma and space
   }
-  var matchingSections;
-  void getMatchingSections ()  {
+
+  dynamic matchingSections;
+
+  void getMatchingSections() {
     matchingSections = generatedScheduleCourses.sections.where((section) {
-    return sectionIds.contains(section['id'].toString());
+      return sectionIds.contains(section['id'].toString());
     }).toList();
   }
 
@@ -84,43 +84,45 @@ class SimpleScheduleList extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Title: ${section['title']}", style: TextStyle(color: Colors.white)),
-                Text("Class #: ${section['id']}", style: TextStyle(color: Colors.white)),
-                Text("Section: ${section['sectionNumber']}", style: TextStyle(color: Colors.white)),
-                Text("Subject: ${section['subject']}", style: TextStyle(color: Colors.white)),
-                Text("Course: ${section['course']}", style: TextStyle(color: Colors.white)),
-                Text("Seats Open: ${section['openSeats']}", style: TextStyle(color: Colors.white)),
-                Text("Component: ${section['component']}", style: TextStyle(color: Colors.white)),
-                Text("Session: ${section['partsOfTerm']}", style: TextStyle(color: Colors.white)),
-                Text("Instructor: ${section['instructor'][0]['name']}", style: TextStyle(color: Colors.white)),
-                Text("Campus: ${section['campusDescription']}", style: TextStyle(color: Colors.white)),
-                Text("Credits: ${section['credits']}", style: TextStyle(color: Colors.white)),
-                Text("Waitlist Open: ${section['waitlistOpen']}", style: TextStyle(color: Colors.white)),
-                Text("Description: ${section['description']}", style: TextStyle(color: Colors.white)),
-                SizedBox(height: 10),
-                Text(
-                  "Day(s) & Location(s):",
-                  style: TextStyle(color: Colors.white),
-                ),
+                Text("Title: ${section['title']}").survivalGuideWhiteText,
+                Text("Class#: ${section['id']}").survivalGuideWhiteText,
+                Text("Section: ${section['sectionNumber']}")
+                    .survivalGuideWhiteText,
+                Text("Subject: ${section['subject']}").survivalGuideWhiteText,
+                Text("Course: ${section['course']}").survivalGuideWhiteText,
+                Text("Seats Open: ${section['openSeats']}")
+                    .survivalGuideWhiteText,
+                Text("Component: ${section['component']}")
+                    .survivalGuideWhiteText,
+                Text("Session: ${section['partsOfTerm']}")
+                    .survivalGuideWhiteText,
+                Text("Instructor: ${section['instructor'][0]['name']}")
+                    .survivalGuideWhiteText,
+                Text("Campus: ${section['campusDescription']}")
+                    .survivalGuideWhiteText,
+                Text("Credits: ${section['credits']}").survivalGuideWhiteText,
+                Text("Waitlist Open: ${section['waitlistOpen']}")
+                    .survivalGuideWhiteText,
+                Text("Description: ${section['description']}")
+                    .survivalGuideWhiteText,
+                const SizedBox(height: 10),
+                const Text('Day(s) & Location(s):').survivalGuideWhiteText,
                 Text(
                   "${meeting['daysRaw']} ${formatTime(meeting['startTime'])} - ${formatTime(meeting['endTime'])} - ${meeting['location']}",
-                  style: TextStyle(color: Colors.white),
-                ),
+                ).survivalGuideWhiteText,
                 Text(
                   "Dates: ${DateTime.parse(meeting['startDate']).toLocal().toFormattedString()} - ${DateTime.parse(meeting['endDate']).toLocal()}",
-                  style: TextStyle(color: Colors.white),
-                ),
+                ).survivalGuideWhiteText,
                 Text(
                   "Enrollment Requirement: ${enrollmentRequirements.isNotEmpty ? enrollmentRequirements[0]['description'] : 'None'}",
-                  style: TextStyle(color: Colors.white),
-                ),
+                ).survivalGuideWhiteText,
               ],
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Close", style: TextStyle(color: Colors.white)),
+              child: const Text('Close').survivalGuideWhiteText,
             ),
           ],
         );
@@ -137,7 +139,8 @@ class SimpleScheduleList extends StatelessWidget {
       var sectionId = section['id'].toString();
 
       if (!sectionColorMap.containsKey(sectionId)) {
-        sectionColorMap[sectionId] = pastelColors[rng.nextInt(pastelColors.length)];
+        sectionColorMap[sectionId] =
+            pastelColors[rng.nextInt(pastelColors.length)];
       }
 
       var meetings = section['meetings'] as List;
@@ -158,24 +161,27 @@ class SimpleScheduleList extends StatelessWidget {
           child: ListTile(
             title: Text(
               '${section['subjectId']} ${section['course']}',
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
             subtitle: Text(
               '${formatTime(startTime)} - ${formatTime(endTime)} | $daysText',
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
+            trailing: _exportClassToCalendar(section),
             onTap: () => _showSectionInfo(context, section),
           ),
         ),
       );
     }
-    final exportToCalendarButton = ElevatedButton(
-      onPressed: () => _addEventsToCalendar(matchingSections),
-      child: Text("Export Entire Schedule to Calendar"),
-    );
 
-    cards.add(exportToCalendarButton);
     return cards;
+  }
+
+  ElevatedButton _exportClassToCalendar(dynamic section) {
+    return ElevatedButton(
+      onPressed: () => _addEventsToCalendar(section),
+      child: const Text('Export class to Calendar').survivalGuideWhiteText,
+    );
   }
 
   @override

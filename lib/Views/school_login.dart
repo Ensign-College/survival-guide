@@ -5,16 +5,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/developer.dart';
-import 'package:survival_guide/constants/showDialog.dart';
+import 'package:survival_guide/constants/widgets/showDialog.dart';
+
+import '../constants/constant_strings.dart';
 
 class SAMLLogin extends StatefulWidget {
   const SAMLLogin({super.key});
 
   @override
-  _SAMLLoginState createState() => _SAMLLoginState();
+  SAMLLoginState createState() => SAMLLoginState();
 }
 
-class _SAMLLoginState extends State<SAMLLogin> {
+class SAMLLoginState extends State<SAMLLogin> {
   final String samlRequestUrl = 'https://ensign.collegescheduler.com/api/terms/2023%20Fall%20Semester/subjects';
   late InAppWebViewController controller;
   String appUrl = 'SAML login';
@@ -44,7 +46,7 @@ class _SAMLLoginState extends State<SAMLLogin> {
   }
 
   void _showAlert() {
-    alert(context, 'Token value is null');
+    alert(alertErrorHeader,'Token value is null');
   }
 
   void _navigateToScheduler(String setCookieValue) {

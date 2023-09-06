@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:survival_guide/constants/developer.dart';
+import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'dart:convert';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 
@@ -137,7 +138,6 @@ class SchedulerApiService {
       final desiredCoursesData = parsedJsonList
           .map((json) => SchedulerDesiredCoursesModel.fromJson(json))
           .toList();
-      printWrapped('Desired courses: $desiredCoursesData');
       return desiredCoursesData;
     } else {
       throw Exception('Failed to load desired courses');
@@ -164,17 +164,17 @@ class SchedulerApiService {
     }
   }
 
-  Future<void> deleteDesiredCourse(String term, String courseNumber) async {
+  Future<String?> deleteDesiredCourse(String term, String courseNumber) async {
     final Uri url =
         Uri.parse('$schedulerURL/terms/$term/desiredcourses/$courseNumber');
 
-    final headers = await createHeaders(cookie, 0);
+    final headers = await createHeaders(cookie, 2);
 
     final response = await http.delete(url,
         headers: headers, body: '{}'); // Adding empty JSON payload
 
-    if (response.statusCode == 200) {
-      print('Response: ${response.body}');
+    if (response.statusCode == 204) {
+      return response.body;
     } else {
       printWrapped(
           'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');

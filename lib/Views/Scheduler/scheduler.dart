@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_list_page.dart';
 import 'package:survival_guide/constants/colors.dart';
+import 'package:survival_guide/constants/enums/connection_state_status.dart';
 
 import '../../constants/shimmer.dart';
 import '../../models/SchedulerAppDataModel.dart';
@@ -34,8 +35,9 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
       debugPrint('Error fetching app data: $e');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SAMLLogin()),
+        MaterialPageRoute(builder: (context) => const SAMLLogin()),
       );
+      return Future.error(e);
     });
   }
 
@@ -49,22 +51,23 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
       body: FutureBuilder<SchedulerAppDataModel>(
         future: appDataFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Column(
-              children: [
-                shimmerEffect(50, baseColor: appBackgroundColor),
-                shimmerEffect(50, baseColor: appBackgroundColor),
-                shimmerEffect(50),
-                const Padding(padding: EdgeInsets.all(5.0)),
-                shimmerEffect(50)
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else if (!snapshot.hasData || snapshot.data!.terms!.isEmpty) {
-            return const Text('No terms available.');
-          } else {
-            return Material(
+          switch (determineConnectionState(snapshot)) {
+            case ConnectionStateStatus.waiting:
+              return Column(
+                children: [
+                  shimmerEffect(50, baseColor: appBackgroundColor),
+                  shimmerEffect(50, baseColor: appBackgroundColor),
+                  shimmerEffect(50),
+                  const Padding(padding: EdgeInsets.all(5.0)),
+                  shimmerEffect(50)
+                ],
+              );
+            case ConnectionStateStatus.hasError:
+              return Text('Error: ${snapshot.error}');
+            case ConnectionStateStatus.noData:
+              return const Text('No terms available.');
+            case ConnectionStateStatus.hasData:
+              return Material(
                 color: appBackgroundColor,
                 child: Column(
                   children: [
@@ -78,7 +81,8 @@ class _SchedulerTermsListState extends State<SchedulerTermsList> {
                         style: TextStyle(color: Colors.white, fontSize: 20)),
                     Expanded(child: terms(snapshot.data!.terms!)),
                   ],
-                ));
+                ),
+              );
           }
         },
       ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:survival_guide/constants/showDialog.dart';
+import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 
 import '../../constants/colors.dart';
+import 'package:survival_guide/constants/constant_strings.dart';
 import '../../constants/shimmer.dart';
 import '../../models/SchedulerSubjectModel.dart';
 import '../../repository/scheduler_api_services.dart';
@@ -17,10 +18,10 @@ class SchedulerCoursesPage extends StatefulWidget {
       {super.key, required this.apiService, required this.subjects, required this.term});
 
   @override
-  _SchedulerCoursesPageState createState() => _SchedulerCoursesPageState();
+  SchedulerCoursesPageState createState() => SchedulerCoursesPageState();
 }
 
-class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
+class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
   late SchedulerApiService apiService;
   SchedulerSubjectModel? selectedSubject;
   List<SchedulerCourseModel>? selectedCourses;
@@ -86,7 +87,7 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
                     selectedCourse!.number, selectedCourse!.id.substring(0, 3), term);
               } catch (e) {
                 debugPrint('Error posting course: $e');
-                alert(context, 'Error posting course: $e');
+                alert(alertErrorHeader, 'Error posting course: $e');
               } finally {
                 setState(() {
                   isPosting = false;
@@ -98,9 +99,10 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
         backgroundColor: cardBackgroundColor,
         foregroundColor: textColor,
       ),
-      child: isPosting ? const CircularProgressIndicator() : const Text('Submit Course'),
+      child: isPosting ? shimmerEffect(25, width: 100) : const Text('Submit Course'),
     );
   }
+
 
   Row subjectsRow() {
     return Row(
@@ -133,7 +135,7 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
             hint: Text(
               selectedSubject != null
                   ? selectedSubject!.title
-                  : "Select a subject",
+                  : 'Select a subject',
               style: TextStyle(color: textColor),
             ),
             dropdownColor: appBackgroundColor,
@@ -188,7 +190,7 @@ class _SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
         return DropdownMenuItem<SchedulerCourseModel>(
           value: value,
           child: Text(
-            value.number + " " + value.title,
+            '${value.number} ${value.title}',
             style: TextStyle(color: textColor),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,

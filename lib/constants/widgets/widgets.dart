@@ -44,6 +44,6 @@ Widget buildDismissibleCell({
         ),
       ),
     ),
-    child: Text(course.courseKey, style: cellTextStyle()), // Assuming you have this function globally accessible
+    child: Text(course.courseKey, style: survivalGuideCellTextStyle()), // Assuming you have this function globally accessible
   );
 }

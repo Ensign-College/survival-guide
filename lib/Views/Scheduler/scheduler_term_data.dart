@@ -4,7 +4,6 @@ import 'package:survival_guide/models/SchedulerTermDataModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/shimmer.dart';
 
 class SchedulerCoursesWidget extends StatelessWidget {
   final SchedulerApiService apiService;
@@ -12,7 +11,7 @@ class SchedulerCoursesWidget extends StatelessWidget {
   final SchedulerTermDataModel termData;
 
 
-  SchedulerCoursesWidget({
+  const SchedulerCoursesWidget({super.key,
     required this.apiService,
     required this.term,
     required this.termData,
@@ -79,7 +78,7 @@ class SchedulerCoursesWidget extends StatelessWidget {
         return cardBackgroundColor; // make sure you have defined this somewhere in your code
       }),
       cells: [
-        DataCell(Text(course.enrollmentStatus, style: cellTextStyle())),
+        DataCell(Text(course.enrollmentStatus, style: survivalGuideCellTextStyle())),
         DataCell(
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.25,
@@ -87,7 +86,7 @@ class SchedulerCoursesWidget extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Text(
                 course.title,
-                style: cellTextStyle(),
+                style: survivalGuideCellTextStyle(),
                 softWrap: false,
               ),
             ),
@@ -102,7 +101,7 @@ class SchedulerCoursesWidget extends StatelessWidget {
                 course.instructor.isEmpty
                     ? 'TBA'
                     : course.instructor.first.name,
-                style: cellTextStyle(),
+                style: survivalGuideCellTextStyle(),
                 softWrap: false,
               ),
             ),

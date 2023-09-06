@@ -6,7 +6,7 @@ TextStyle headerTextStyle() {
       color: textColor, fontSize: 20.0, fontWeight: FontWeight.bold);
 }
 
-TextStyle cellTextStyle() {
+TextStyle survivalGuideCellTextStyle() {
   return TextStyle(
     color: textColor,
     fontSize: 16.0,
