@@ -9,7 +9,6 @@ import 'package:survival_guide/repository/college_scheduler_socket_client.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
 import '../../constants/colors.dart';
-import '../../constants/constant_strings.dart';
 import '../../constants/shimmer.dart';
 import '../../constants/text.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart' as generate_courses;
@@ -101,10 +100,79 @@ class SchedulerDesiredCoursesWidgetState
                   );
                 },
               ),
-              _generateSchedulesButton(),
+              _sendToShoppingButton(),
             ],
           );
         }
+      },
+    );
+  }
+
+  ListView _desiredCoursesList(List<SchedulerDesiredCoursesModel> data) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final course = data[index];
+        return Dismissible(
+          key: Key(course.courseKey),
+          background: Container(
+            color: Colors.red,
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(Icons.delete, color: Colors.white),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Remove class',
+                      style: TextStyle(color: Colors.white, fontSize: 18.0)),
+                ),
+              ],
+            ),
+          ),
+          onDismissed: (direction) {
+            apiService.deleteDesiredCourse(term, course.id);
+            if (data.length == 1) {
+              // In here onDismissed hasn't finished yet, and if the data has 1 element. It means that element will be removed, as a result it will be empty. We want to show a different view if data is empty
+              setState(() {
+                isDesiredCoursesEmpty = true;
+              });
+            }
+          },
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(course.title, style: survivalGuideCellTextStyle()),
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(course.courseKey, style: survivalGuideCellTextStyle()),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      '${course.id} ${course.title}',
+                      style: survivalGuideCellTextStyle(),
+                      softWrap: false,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      course.credits.isEmpty ? 'TBA' : course.credits,
+                      style: survivalGuideCellTextStyle(),
+                      softWrap: false,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
@@ -127,8 +195,7 @@ class SchedulerDesiredCoursesWidgetState
     );
   }
 
-  Widget _buildListView(
-      BuildContext context, List<SchedulerDesiredCoursesModel> data) {
+  Widget _buildListView( BuildContext context, List<SchedulerDesiredCoursesModel> data) {
     return Card(
       elevation: 5.0,
       color: cardBackgroundColor,
@@ -151,82 +218,14 @@ class SchedulerDesiredCoursesWidgetState
                 ],
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final course = data[index];
-                return Dismissible(
-                  key: Key(course.courseKey),
-                  background: Container(
-                    color: Colors.red,
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(Icons.delete, color: Colors.white),
-                        Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text('Remove class',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 18.0)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onDismissed: (direction) {
-                    apiService.deleteDesiredCourse(term, course.id);
-                    if (data.length == 1) {
-                      // In here onDismissed hasn't finished yet, and if the data has 1 element. It means that element will be removed, as a result it will be empty. We want to show a different view if data is empty
-                      setState(() {
-                        isDesiredCoursesEmpty = true;
-                      });
-                    }
-                  },
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title:
-                        Text(course.title, style: survivalGuideCellTextStyle()),
-                    subtitle: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(course.courseKey,
-                            style: survivalGuideCellTextStyle()),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              '${course.id} ${course.title}',
-                              style: survivalGuideCellTextStyle(),
-                              softWrap: false,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              course.credits.isEmpty ? 'TBA' : course.credits,
-                              style: survivalGuideCellTextStyle(),
-                              softWrap: false,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            _desiredCoursesList(data),
           ],
         ),
       ),
     );
   }
 
-  Widget _generateSchedulesButton() {
+  Widget _sendToShoppingButton() {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((states) {

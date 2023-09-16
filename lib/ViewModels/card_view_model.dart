@@ -6,7 +6,7 @@ import '../Views/details_view.dart';
 
 part 'card_view_model.g.dart';
 
-typedef void VoidCallback();
+typedef VoidCallback = void Function();
 
 @HiveType(typeId: 0)
 class CardViewModel extends StatelessWidget {
@@ -18,9 +18,9 @@ class CardViewModel extends StatelessWidget {
   final int detailsID;
   @HiveField(3)
   final bool isConstant;
-  void Function() callback;
+  final void Function() callback;
 
-   CardViewModel({
+   const CardViewModel({
     Key? key,
     required this.title,
     required this.imageUrl,

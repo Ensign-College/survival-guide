@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_courses.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_desiredcourses_data.dart';
-import 'package:survival_guide/Views/Scheduler/scheduler_term_data.dart' as termdata;
+import 'package:survival_guide/Views/Scheduler/scheduler_courses_widget.dart' as termdata;
 import 'package:survival_guide/constants/constant_strings.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
@@ -119,14 +119,17 @@ class SchedulerListPageState extends State<SchedulerListPage>
     );
   }
 
-  // Function to build a styled section title.
-  Text buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-          color: textColor, fontSize: 24.0, fontWeight: FontWeight.bold),
+  Widget buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add horizontal padding
+      child: Text(
+        title,
+        style: TextStyle(
+            color: textColor, fontSize: 24.0, fontWeight: FontWeight.bold),
+      ),
     );
   }
+
 
   void setCurrentSection(SchedulerTermDataModel? data) {
     if (isCurrentSectionsPopulated) {

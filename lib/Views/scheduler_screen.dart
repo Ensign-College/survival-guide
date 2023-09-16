@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/models/SchedulerGenerateCoursesModel.dart';
 
-import 'Scheduler/schedule_table.dart';
+import 'Scheduler/simple_schedule_list.dart';
 
 class ScheduleScreen extends StatefulWidget {
   final SchedulerGenerateCoursesModel generatedScheduleCourses;

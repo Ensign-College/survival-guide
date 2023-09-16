@@ -15,13 +15,13 @@ class CollegeSchedulerShoppingCartModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "cartName": "Schedule Planner Shopping Cart",
-      "environment": "ensign",
-      "nativeCartRequest": true,
-      "sections": sections.map((section) => section.toJson()).toList(),
-      "studentIdentifierType": "Cart-Wizard",
-      "termCode": termCode,
-      "userId": userId,
+      'cartName': 'Schedule Planner Shopping Cart',
+      'environment': 'ensign',
+      'nativeCartRequest': true,
+      'sections': sections.map((section) => section.toJson()).toList(),
+      'studentIdentifierType': 'Cart-Wizard',
+      'termCode': termCode,
+      'userId': userId,
     };
   }
 }
@@ -48,14 +48,14 @@ class ShoppingCartSection {
   Map<String, dynamic> toJson() {
     return {
       'action': actionToString(action),
-      "sectionParameterValues": {
-        "units": units,
-        "gradingBasis": gradingBasis,
+      'sectionParameterValues': {
+        'units': units,
+        'gradingBasis': gradingBasis,
       },
-      "regNumber": regNumber,
-      "subjectCode": subjectCode,
-      "courseNumber": courseNumber,
-      "academicCareerCode": academicCareerCode,
+      'regNumber': regNumber,
+      'subjectCode': subjectCode,
+      'courseNumber': courseNumber,
+      'academicCareerCode': academicCareerCode,
     };
   }
 }

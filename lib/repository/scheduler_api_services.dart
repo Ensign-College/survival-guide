@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:survival_guide/constants/developer.dart';
-import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'dart:convert';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 
@@ -28,8 +26,8 @@ class SchedulerApiService {
   Future<Map<String, String>> createHeaders(
       String cookie, int bodyLength) async {
     final schedulerToken =
-        await getValueFromPreferences("__RequestVerificationToken");
-    final xcrfToken = await getValueFromPreferences("xcrf-token");
+        await getValueFromPreferences('__RequestVerificationToken');
+    final xcrfToken = await getValueFromPreferences('xcrf-token');
 
     return {
       'Accept': 'application/json',
@@ -189,7 +187,7 @@ class SchedulerApiService {
       List<dynamic> breaks) async {
     final Uri url = Uri.parse('$schedulerURL/terms/$term/schedules/generate');
 
-    final cookie = await getValueFromPreferences(".AspNet.Cookies");
+    final cookie = await getValueFromPreferences('.AspNet.Cookies');
 
     final currentSectionsJson = currentSections
         .map((section) => {

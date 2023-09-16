@@ -10,7 +10,6 @@ class SchedulerCoursesWidget extends StatelessWidget {
   final String term;
   final SchedulerTermDataModel termData;
 
-
   const SchedulerCoursesWidget({super.key,
     required this.apiService,
     required this.term,
@@ -20,24 +19,6 @@ class SchedulerCoursesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _buildDataTable(context, termData);
-  }
-
-  Widget _buildErrorWidget(dynamic error) {
-    return Center(
-      child: Text(
-        'Error: $error',
-        style: TextStyle(color: textColor, fontSize: 16.0),
-      ),
-    );
-  }
-
-  Widget _buildNoDataWidget() {
-    return Center(
-      child: Text(
-        'No data available.',
-        style: TextStyle(color: textColor, fontSize: 16.0),
-      ),
-    );
   }
 
   Widget _buildDataTable(BuildContext context, SchedulerTermDataModel data) {

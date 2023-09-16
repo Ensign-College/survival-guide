@@ -42,8 +42,8 @@ class DetailsViewModelState extends State<DetailsViewModel> {
       text = details[0]['text'];
       images = List<String>.from(
           details[0]['pictures'].map((item) => item as String));
-      debugPrint("images ${images.toString()}");
-      shouldLoadImages = (images == null || images.isEmpty);
+      debugPrint('images ${images.toString()}');
+      shouldLoadImages = (images.isEmpty);
       isLoaded = true;
     });
   }

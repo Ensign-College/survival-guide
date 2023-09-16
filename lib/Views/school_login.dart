@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:survival_guide/Views/Scheduler/scheduler.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler_student_dashboard.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/developer.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
@@ -51,7 +51,7 @@ class SAMLLoginState extends State<SAMLLogin> {
 
   void _navigateToScheduler(String setCookieValue) {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SchedulerTermsList(cookie: setCookieValue)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SchedulerStudentDashboard(cookie: setCookieValue)));
   }
 
   Future<void> _processEntryUrl(InAppWebViewController controller, Uri url, BuildContext context) async {

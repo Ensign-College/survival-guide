@@ -43,39 +43,39 @@ class CollegeSchedulerSocketClient {
           (dynamic message) {
 
         try {
-          print("Received: $message");
+          print('Received: $message');
             switch (message) {
-              case "40":
+              case '40':
                 print('Connected successfully: $message');
                 _sendAuthorizationMessage();
                 break;
-              case "41":
+              case '41':
                 print('Event 41 Response: $message');
                 break;
               case '430[{"success":true}]':
                 print('Authorization Response: $message');
                 sendToCart();
                 break;
-              case "431":
+              case '431':
                 print('Send-to-Cart Response: $message');
                 break;
-              case "42":
+              case '42':
                 print('Authorization failed: $message');
                 break;
               default:
                 print('Unknown event: $message');
           }
         } catch (e) {
-          printWrapped("Error handling message: $e");
-          onError("Error handling message: $e", "Message Handling");
+          printWrapped('Error handling message: $e');
+          onError('Error handling message: $e', 'Message Handling');
         }
       },
       onError: (error) {
-        print("Socket error: $error");
-        onError("Socket error: $error", "Socket Connection");
+        print('Socket error: $error');
+        onError('Socket error: $error', 'Socket Connection');
       },
       onDone: () {
-        print("Connection closed.");
+        print('Connection closed.');
         socketSubscription.cancel();
       },
       cancelOnError: false,
@@ -85,11 +85,11 @@ class CollegeSchedulerSocketClient {
   void _sendAuthorizationMessage() {
     try {
       String authMessage = '420["authorize",{"token":"$token"}]';
-      debugPrint("Sending authorization token: $authMessage");
+      debugPrint('Sending authorization token: $authMessage');
       socketChannel.sink.add(authMessage);
     } catch (e) {
-      print("Error sending authorization message: $e");
-      onError("Error sending authorization message: $e", "Authorization");
+      print('Error sending authorization message: $e');
+      onError('Error sending authorization message: $e', 'Authorization');
     }
   }
 
@@ -105,11 +105,11 @@ class CollegeSchedulerSocketClient {
     try {
       String shoppingCartJson = jsonEncode(shoppingCart.toJson());
       String cartRequestMessage = '421["send-to-cart-request", $shoppingCartJson]';
-      debugPrint("Sending to cart request: $cartRequestMessage");
+      debugPrint('Sending to cart request: $cartRequestMessage');
       socketChannel.sink.add(cartRequestMessage);
     } catch (e) {
-      print("Error sending to cart request: $e");
-      onError("Error sending to cart request: $e", "Cart Request");
+      print('Error sending to cart request: $e');
+      onError('Error sending to cart request: $e', 'Cart Request');
     }
   }
 

@@ -370,99 +370,99 @@ class CurrentSections {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['actions'] = actions;
-    _data['additionalData'] = additionalData.toJson();
-    _data['sectionParameterValues'] = sectionParameterValues.toJson();
-    _data['sectionParameterOptions'] = sectionParameterOptions.toJson();
-    _data['approval'] = approval;
-    _data['approvalCode'] = approvalCode;
-    _data['hasCorequisites'] = hasCorequisites;
-    _data['hasFreetextbook'] = hasFreetextbook;
-    _data['hasLowCostTextbook'] = hasLowCostTextbook;
-    _data['hasPrerequisites'] = hasPrerequisites;
-    _data['hasReserveCaps'] = hasReserveCaps;
-    _data['hasRestrictions'] = hasRestrictions;
-    _data['hasSectionCorequisites'] = hasSectionCorequisites;
-    _data['hasSectionNotes'] = hasSectionNotes;
-    _data['isExternal'] = isExternal;
-    _data['isHonors'] = isHonors;
-    _data['isOnline'] = isOnline;
-    _data['isWritingEnhanced'] = isWritingEnhanced;
-    _data['optional'] = optional;
-    _data['registrationClosed'] = registrationClosed;
-    _data['lastWaitListDate'] = lastWaitListDate;
-    _data['partOfTermBeginDate'] = partOfTermBeginDate;
-    _data['registrationEnds'] = registrationEnds;
-    _data['creditsMax'] = creditsMax;
-    _data['creditsMin'] = creditsMin;
-    _data['openSeats'] = openSeats;
-    _data['topicId'] = topicId;
-    _data['institutionCode'] = institutionCode;
-    _data['institution'] = institution;
-    _data['institutionAbbreviation'] = institutionAbbreviation;
-    _data['sectionAttributes'] = sectionAttributes;
-    _data['corequisiteSections'] = corequisiteSections;
-    _data['enrollmentRequirements'] = enrollmentRequirements.map((e)=>e.toJson()).toList();
-    _data['exams'] = exams;
-    _data['instructor'] = instructor.map((e)=>e.toJson()).toList();
-    _data['meetings'] = meetings.map((e)=>e.toJson()).toList();
-    _data['reserveCaps'] = reserveCaps;
-    _data['courseRestrictions'] = courseRestrictions;
-    _data['sectionRestrictions'] = sectionRestrictions;
-    _data['disabledReasons'] = disabledReasons;
-    _data['flags'] = flags;
-    _data['linkedSectionRegNumbers'] = linkedSectionRegNumbers;
-    _data['textbooks'] = textbooks;
-    _data['registrationOptions'] = registrationOptions.toJson();
-    _data['academicCareer'] = academicCareer;
-    _data['academicCareerDescr'] = academicCareerDescr;
-    _data['academicCareerDescrShort'] = academicCareerDescrShort;
-    _data['academicGroup'] = academicGroup;
-    _data['academicGroupDescr'] = academicGroupDescr;
-    _data['campus'] = campus;
-    _data['campusCode'] = campusCode;
-    _data['campusDescription'] = campusDescription;
-    _data['campusDescriptionRaw'] = campusDescriptionRaw;
-    _data['campusShort'] = campusShort;
-    _data['classAssociations'] = classAssociations;
-    _data['component'] = component;
-    _data['corequisites'] = corequisites;
-    _data['course'] = course;
-    _data['courseAttributes'] = courseAttributes;
-    _data['credits'] = credits;
-    _data['customData'] = customData;
-    _data['department'] = department;
-    _data['description'] = description;
-    _data['enrollmentStatus'] = enrollmentStatus;
-    _data['fees'] = fees;
-    _data['freeFormTopics'] = freeFormTopics;
-    _data['freeTextbookIndicated'] = freeTextbookIndicated;
-    _data['lowCostTextbookIndicated'] = lowCostTextbookIndicated;
-    _data['id'] = id;
-    _data['instructionMode'] = instructionMode;
-    _data['location'] = location;
-    _data['lrnComTitle'] = lrnComTitle;
-    _data['notes'] = notes;
-    _data['notesShort'] = notesShort;
-    _data['partsOfTerm'] = partsOfTerm;
-    _data['prerequisites'] = prerequisites;
-    _data['registrationNumber'] = registrationNumber;
-    _data['registrationType'] = registrationType;
-    _data['requirementDesignationDescr'] = requirementDesignationDescr;
-    _data['seatsCapacity'] = seatsCapacity;
-    _data['seatsFilled'] = seatsFilled;
-    _data['sectionNumber'] = sectionNumber;
-    _data['sectionStatus'] = sectionStatus;
-    _data['subject'] = subject;
-    _data['subjectId'] = subjectId;
-    _data['textbook'] = textbook;
-    _data['title'] = title;
-    _data['topicTitle'] = topicTitle;
-    _data['waitlist'] = waitlist;
-    _data['waitlistOpen'] = waitlistOpen;
-    _data['waitlistPosition'] = waitlistPosition;
-    return _data;
+    final data = <String, dynamic>{};
+    data['actions'] = actions;
+    data['additionalData'] = additionalData.toJson();
+    data['sectionParameterValues'] = sectionParameterValues.toJson();
+    data['sectionParameterOptions'] = sectionParameterOptions.toJson();
+    data['approval'] = approval;
+    data['approvalCode'] = approvalCode;
+    data['hasCorequisites'] = hasCorequisites;
+    data['hasFreetextbook'] = hasFreetextbook;
+    data['hasLowCostTextbook'] = hasLowCostTextbook;
+    data['hasPrerequisites'] = hasPrerequisites;
+    data['hasReserveCaps'] = hasReserveCaps;
+    data['hasRestrictions'] = hasRestrictions;
+    data['hasSectionCorequisites'] = hasSectionCorequisites;
+    data['hasSectionNotes'] = hasSectionNotes;
+    data['isExternal'] = isExternal;
+    data['isHonors'] = isHonors;
+    data['isOnline'] = isOnline;
+    data['isWritingEnhanced'] = isWritingEnhanced;
+    data['optional'] = optional;
+    data['registrationClosed'] = registrationClosed;
+    data['lastWaitListDate'] = lastWaitListDate;
+    data['partOfTermBeginDate'] = partOfTermBeginDate;
+    data['registrationEnds'] = registrationEnds;
+    data['creditsMax'] = creditsMax;
+    data['creditsMin'] = creditsMin;
+    data['openSeats'] = openSeats;
+    data['topicId'] = topicId;
+    data['institutionCode'] = institutionCode;
+    data['institution'] = institution;
+    data['institutionAbbreviation'] = institutionAbbreviation;
+    data['sectionAttributes'] = sectionAttributes;
+    data['corequisiteSections'] = corequisiteSections;
+    data['enrollmentRequirements'] = enrollmentRequirements.map((e)=>e.toJson()).toList();
+    data['exams'] = exams;
+    data['instructor'] = instructor.map((e)=>e.toJson()).toList();
+    data['meetings'] = meetings.map((e)=>e.toJson()).toList();
+    data['reserveCaps'] = reserveCaps;
+    data['courseRestrictions'] = courseRestrictions;
+    data['sectionRestrictions'] = sectionRestrictions;
+    data['disabledReasons'] = disabledReasons;
+    data['flags'] = flags;
+    data['linkedSectionRegNumbers'] = linkedSectionRegNumbers;
+    data['textbooks'] = textbooks;
+    data['registrationOptions'] = registrationOptions.toJson();
+    data['academicCareer'] = academicCareer;
+    data['academicCareerDescr'] = academicCareerDescr;
+    data['academicCareerDescrShort'] = academicCareerDescrShort;
+    data['academicGroup'] = academicGroup;
+    data['academicGroupDescr'] = academicGroupDescr;
+    data['campus'] = campus;
+    data['campusCode'] = campusCode;
+    data['campusDescription'] = campusDescription;
+    data['campusDescriptionRaw'] = campusDescriptionRaw;
+    data['campusShort'] = campusShort;
+    data['classAssociations'] = classAssociations;
+    data['component'] = component;
+    data['corequisites'] = corequisites;
+    data['course'] = course;
+    data['courseAttributes'] = courseAttributes;
+    data['credits'] = credits;
+    data['customData'] = customData;
+    data['department'] = department;
+    data['description'] = description;
+    data['enrollmentStatus'] = enrollmentStatus;
+    data['fees'] = fees;
+    data['freeFormTopics'] = freeFormTopics;
+    data['freeTextbookIndicated'] = freeTextbookIndicated;
+    data['lowCostTextbookIndicated'] = lowCostTextbookIndicated;
+    data['id'] = id;
+    data['instructionMode'] = instructionMode;
+    data['location'] = location;
+    data['lrnComTitle'] = lrnComTitle;
+    data['notes'] = notes;
+    data['notesShort'] = notesShort;
+    data['partsOfTerm'] = partsOfTerm;
+    data['prerequisites'] = prerequisites;
+    data['registrationNumber'] = registrationNumber;
+    data['registrationType'] = registrationType;
+    data['requirementDesignationDescr'] = requirementDesignationDescr;
+    data['seatsCapacity'] = seatsCapacity;
+    data['seatsFilled'] = seatsFilled;
+    data['sectionNumber'] = sectionNumber;
+    data['sectionStatus'] = sectionStatus;
+    data['subject'] = subject;
+    data['subjectId'] = subjectId;
+    data['textbook'] = textbook;
+    data['title'] = title;
+    data['topicTitle'] = topicTitle;
+    data['waitlist'] = waitlist;
+    data['waitlistOpen'] = waitlistOpen;
+    data['waitlistPosition'] = waitlistPosition;
+    return data;
   }
 }
 
@@ -472,8 +472,8 @@ class AdditionalData {
   AdditionalData.fromJson(Map json);
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    return _data;
+    final data = <String, dynamic>{};
+    return data;
   }
 }
 
@@ -509,16 +509,16 @@ class SectionParameterValues {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['academicProgram'] = academicProgram;
-    _data['gradingBasis'] = gradingBasis;
-    _data['units'] = units;
-    _data['classPermissionNumber'] = classPermissionNumber;
-    _data['startDate'] = startDate;
-    _data['requirementDesignation'] = requirementDesignation;
-    _data['instructorId'] = instructorId;
-    _data['academicCareer'] = academicCareer;
-    return _data;
+    final data = <String, dynamic>{};
+    data['academicProgram'] = academicProgram;
+    data['gradingBasis'] = gradingBasis;
+    data['units'] = units;
+    data['classPermissionNumber'] = classPermissionNumber;
+    data['startDate'] = startDate;
+    data['requirementDesignation'] = requirementDesignation;
+    data['instructorId'] = instructorId;
+    data['academicCareer'] = academicCareer;
+    return data;
   }
 }
 
@@ -528,8 +528,8 @@ class SectionParameterOptions {
   SectionParameterOptions.fromJson(Map json);
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    return _data;
+    final data = <String, dynamic>{};
+    return data;
   }
 }
 
@@ -547,10 +547,10 @@ class EnrollmentRequirements {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['type'] = type;
-    _data['description'] = description;
-    return _data;
+    final data = <String, dynamic>{};
+    data['type'] = type;
+    data['description'] = description;
+    return data;
   }
 }
 
@@ -577,13 +577,13 @@ class Instructor {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['name'] = name;
-    _data['email'] = email;
-    _data['externalId'] = externalId;
-    _data['instructorRole'] = instructorRole;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['externalId'] = externalId;
+    data['instructorRole'] = instructorRole;
+    return data;
   }
 }
 
@@ -649,26 +649,26 @@ class Meetings {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['days'] = days;
-    _data['daysRaw'] = daysRaw;
-    _data['startTime'] = startTime;
-    _data['endTime'] = endTime;
-    _data['location'] = location;
-    _data['meetingType'] = meetingType;
-    _data['startDate'] = startDate;
-    _data['endDate'] = endDate;
-    _data['mapURL'] = mapURL;
-    _data['meetingTypeDescription'] = meetingTypeDescription;
-    _data['scheduleTypeCode'] = scheduleTypeCode;
-    _data['scheduleTypeDescription'] = scheduleTypeDescription;
-    _data['building'] = building;
-    _data['buildingDescription'] = buildingDescription;
-    _data['buildingCode'] = buildingCode;
-    _data['room'] = room;
-    _data['firstMonday'] = firstMonday;
-    _data['lastMonday'] = lastMonday;
-    return _data;
+    final data = <String, dynamic>{};
+    data['days'] = days;
+    data['daysRaw'] = daysRaw;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
+    data['location'] = location;
+    data['meetingType'] = meetingType;
+    data['startDate'] = startDate;
+    data['endDate'] = endDate;
+    data['mapURL'] = mapURL;
+    data['meetingTypeDescription'] = meetingTypeDescription;
+    data['scheduleTypeCode'] = scheduleTypeCode;
+    data['scheduleTypeDescription'] = scheduleTypeDescription;
+    data['building'] = building;
+    data['buildingDescription'] = buildingDescription;
+    data['buildingCode'] = buildingCode;
+    data['room'] = room;
+    data['firstMonday'] = firstMonday;
+    data['lastMonday'] = lastMonday;
+    return data;
   }
 }
 
@@ -686,10 +686,10 @@ class GradingBases {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['code'] = code;
-    _data['description'] = description;
-    return _data;
+    final data = <String, dynamic>{};
+    data['code'] = code;
+    data['description'] = description;
+    return data;
   }
 }
 
@@ -815,46 +815,46 @@ class Courses {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['subjectShort'] = subjectShort;
-    _data['subjectLong'] = subjectLong;
-    _data['subjectId'] = subjectId;
-    _data['number'] = number;
-    _data['topic'] = topic;
-    _data['title'] = title;
-    _data['topicTitle'] = topicTitle;
-    _data['description'] = description;
-    _data['enrollmentRequirements'] = enrollmentRequirements;
-    _data['notes'] = notes;
-    _data['component'] = component;
-    _data['courseAttributes'] = courseAttributes;
-    _data['credits'] = credits;
-    _data['corequisites'] = corequisites;
-    _data['prerequisites'] = prerequisites;
-    _data['lockedRegistrationBlockId'] = lockedRegistrationBlockId;
-    _data['isRequired'] = isRequired;
-    _data['isLocked'] = isLocked;
-    _data['isLearningCommunity'] = isLearningCommunity;
-    _data['hasHonors'] = hasHonors;
-    _data['hasCorequisites'] = hasCorequisites;
-    _data['hasPrerequisites'] = hasPrerequisites;
-    _data['hasRequisites'] = hasRequisites;
-    _data['hasRestrictions'] = hasRestrictions;
-    _data['hasReserveCaps'] = hasReserveCaps;
-    _data['hasWritingEnhanced'] = hasWritingEnhanced;
-    _data['hasOptional'] = hasOptional;
-    _data['hasSectionNotes'] = hasSectionNotes;
-    _data['hasFreeTextbook'] = hasFreeTextbook;
-    _data['hasLowCostTextbook'] = hasLowCostTextbook;
-    _data['courseKey'] = courseKey;
-    _data['filteredRegBlockIds'] = filteredRegBlockIds;
-    _data['selectedOptionalSectionIds'] = selectedOptionalSectionIds;
-    _data['filterRules'] = filterRules;
-    _data['flags'] = flags;
-    _data['optionMessages'] = optionMessages;
-    _data['addedMessage'] = addedMessage;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['subjectShort'] = subjectShort;
+    data['subjectLong'] = subjectLong;
+    data['subjectId'] = subjectId;
+    data['number'] = number;
+    data['topic'] = topic;
+    data['title'] = title;
+    data['topicTitle'] = topicTitle;
+    data['description'] = description;
+    data['enrollmentRequirements'] = enrollmentRequirements;
+    data['notes'] = notes;
+    data['component'] = component;
+    data['courseAttributes'] = courseAttributes;
+    data['credits'] = credits;
+    data['corequisites'] = corequisites;
+    data['prerequisites'] = prerequisites;
+    data['lockedRegistrationBlockId'] = lockedRegistrationBlockId;
+    data['isRequired'] = isRequired;
+    data['isLocked'] = isLocked;
+    data['isLearningCommunity'] = isLearningCommunity;
+    data['hasHonors'] = hasHonors;
+    data['hasCorequisites'] = hasCorequisites;
+    data['hasPrerequisites'] = hasPrerequisites;
+    data['hasRequisites'] = hasRequisites;
+    data['hasRestrictions'] = hasRestrictions;
+    data['hasReserveCaps'] = hasReserveCaps;
+    data['hasWritingEnhanced'] = hasWritingEnhanced;
+    data['hasOptional'] = hasOptional;
+    data['hasSectionNotes'] = hasSectionNotes;
+    data['hasFreeTextbook'] = hasFreeTextbook;
+    data['hasLowCostTextbook'] = hasLowCostTextbook;
+    data['courseKey'] = courseKey;
+    data['filteredRegBlockIds'] = filteredRegBlockIds;
+    data['selectedOptionalSectionIds'] = selectedOptionalSectionIds;
+    data['filterRules'] = filterRules;
+    data['flags'] = flags;
+    data['optionMessages'] = optionMessages;
+    data['addedMessage'] = addedMessage;
+    return data;
   }
 }
 
@@ -881,13 +881,13 @@ class AcademicCareers {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['selected'] = selected;
-    _data['code'] = code;
-    _data['locked'] = locked;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['selected'] = selected;
+    data['code'] = code;
+    data['locked'] = locked;
+    return data;
   }
 }
 
@@ -914,13 +914,13 @@ class AcademicGroups {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['selected'] = selected;
-    _data['code'] = code;
-    _data['locked'] = locked;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['selected'] = selected;
+    data['code'] = code;
+    data['locked'] = locked;
+    return data;
   }
 }
 
@@ -947,13 +947,13 @@ class Campuses {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['selected'] = selected;
-    _data['code'] = code;
-    _data['locked'] = locked;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['selected'] = selected;
+    data['code'] = code;
+    data['locked'] = locked;
+    return data;
   }
 }
 
@@ -980,13 +980,13 @@ class InstructionModes {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['selected'] = selected;
-    _data['code'] = code;
-    _data['locked'] = locked;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['selected'] = selected;
+    data['code'] = code;
+    data['locked'] = locked;
+    return data;
   }
 }
 
@@ -1013,13 +1013,13 @@ class Locations {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['selected'] = selected;
-    _data['code'] = code;
-    _data['locked'] = locked;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['selected'] = selected;
+    data['code'] = code;
+    data['locked'] = locked;
+    return data;
   }
 }
 
@@ -1046,13 +1046,13 @@ class PartsOfTerm {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['title'] = title;
-    _data['selected'] = selected;
-    _data['code'] = code;
-    _data['locked'] = locked;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['selected'] = selected;
+    data['code'] = code;
+    data['locked'] = locked;
+    return data;
   }
 }
 
@@ -1067,8 +1067,8 @@ class UserTermContext {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['registrationTimeTickets'] = registrationTimeTickets;
-    return _data;
+    final data = <String, dynamic>{};
+    data['registrationTimeTickets'] = registrationTimeTickets;
+    return data;
   }
 }

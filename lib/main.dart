@@ -8,7 +8,7 @@ import 'package:survival_guide/Views/find_bar.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/schoolResources.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
-import 'Views/Scheduler/scheduler.dart';
+import 'Views/Scheduler/scheduler_student_dashboard.dart';
 import 'Views/directory_grid_view.dart';
 import 'Views/school_login.dart';
 import 'boxes.dart';
@@ -139,10 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void addConstantCards() {
-    if (!cards.any((card) => card.title == "Class Scheduler (beta)" && card.detailsID == 99999999)) {
+    if (!cards.any((card) => card.title == 'Class Scheduler (beta)' && card.detailsID == 99999999)) {
       cards.add(
         CardViewModel(
-          title: "Class Scheduler (beta)",
+          title: 'Class Scheduler (beta)',
           imageUrl: ensignLogo,
           detailsID: 99999999,
           isConstant: true,
@@ -152,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SchedulerTermsList(cookie: setCookieValue),
+                  builder: (context) => SchedulerStudentDashboard(cookie: setCookieValue),
                 ),
               );
             } else {

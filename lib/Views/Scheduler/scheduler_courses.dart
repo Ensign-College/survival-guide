@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 
@@ -15,7 +14,10 @@ class SchedulerCoursesPage extends StatefulWidget {
   final String term;
 
   const SchedulerCoursesPage(
-      {super.key, required this.apiService, required this.subjects, required this.term});
+      {super.key,
+      required this.apiService,
+      required this.subjects,
+      required this.term});
 
   @override
   SchedulerCoursesPageState createState() => SchedulerCoursesPageState();
@@ -63,9 +65,12 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Courses:',
-                style: TextStyle(color: textColor, fontSize: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Courses:',
+                  style: TextStyle(color: textColor, fontSize: 24),
+                ),
               ),
               Expanded(child: buildCourses()),
             ],
@@ -77,14 +82,14 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
     return ElevatedButton(
       onPressed: selectedCourse != null && !isPosting
           ? () async {
-        debugPrint('postDesiredCourse called at ${DateTime.now()}');
+              debugPrint('postDesiredCourse called at ${DateTime.now()}');
 
-        setState(() {
+              setState(() {
                 isPosting = true;
               });
               try {
-                await apiService.postDesiredCourse(
-                    selectedCourse!.number, selectedCourse!.id.substring(0, 3), term);
+                await apiService.postDesiredCourse(selectedCourse!.number,
+                    selectedCourse!.id.substring(0, 3), term);
               } catch (e) {
                 debugPrint('Error posting course: $e');
                 alert(alertErrorHeader, 'Error posting course: $e');
@@ -99,18 +104,22 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
         backgroundColor: cardBackgroundColor,
         foregroundColor: textColor,
       ),
-      child: isPosting ? shimmerEffect(25, width: 100) : const Text('Submit Course'),
+      child: isPosting
+          ? shimmerEffect(25, width: 100)
+          : const Text('Submit Course'),
     );
   }
-
 
   Row subjectsRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          'Subjects:',
-          style: TextStyle(color: textColor, fontSize: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            'Subjects:',
+            style: TextStyle(color: textColor, fontSize: 24),
+          ),
         ),
         Expanded(child: buildSubjects()),
       ],
@@ -171,32 +180,35 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
     if (selectedCourses == null || selectedCourses!.isEmpty) {
       return shimmerEffect(50, baseColor: appBackgroundColor);
     }
-    return DropdownButton<SchedulerCourseModel>(
-      hint: Text(
-        selectedCourse != null ? selectedCourse!.title : 'Select a course',
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: DropdownButton<SchedulerCourseModel>(
+        hint: Text(
+          selectedCourse != null ? selectedCourse!.title : 'Select a course',
+          style: TextStyle(color: textColor),
+        ),
+        dropdownColor: appBackgroundColor,
+        icon: Icon(Icons.arrow_downward, color: textColor),
+        iconSize: 24,
         style: TextStyle(color: textColor),
+        onChanged: (SchedulerCourseModel? newValue) {
+          setState(() {
+            selectedCourse = newValue;
+          });
+        },
+        items: selectedCourses!.map<DropdownMenuItem<SchedulerCourseModel>>(
+            (SchedulerCourseModel value) {
+          return DropdownMenuItem<SchedulerCourseModel>(
+            value: value,
+            child: Text(
+              '${value.number} ${value.title}',
+              style: TextStyle(color: textColor),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          );
+        }).toList(),
       ),
-      dropdownColor: appBackgroundColor,
-      icon: Icon(Icons.arrow_downward, color: textColor),
-      iconSize: 24,
-      style: TextStyle(color: textColor),
-      onChanged: (SchedulerCourseModel? newValue) {
-        setState(() {
-          selectedCourse = newValue;
-        });
-      },
-      items: selectedCourses!.map<DropdownMenuItem<SchedulerCourseModel>>(
-          (SchedulerCourseModel value) {
-        return DropdownMenuItem<SchedulerCourseModel>(
-          value: value,
-          child: Text(
-            '${value.number} ${value.title}',
-            style: TextStyle(color: textColor),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        );
-      }).toList(),
     );
   }
 }

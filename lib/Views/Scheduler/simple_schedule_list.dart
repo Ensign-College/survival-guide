@@ -6,9 +6,20 @@ import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/extensions/text_extensions.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
 
-class SimpleScheduleList extends StatelessWidget {
+class SimpleScheduleList extends StatefulWidget {
   final SchedulerGenerateCoursesModel generatedScheduleCourses;
   final List<String> sectionIds;
+  const SimpleScheduleList({
+    super.key,
+    required this.generatedScheduleCourses,
+    required this.sectionIds,
+  });
+
+  @override
+  State<SimpleScheduleList> createState() => _SimpleScheduleListState();
+}
+
+class _SimpleScheduleListState extends State<SimpleScheduleList> {
   final List<Color> pastelColors = [
     Colors.pink[100]!,
     Colors.green[100]!,
@@ -33,12 +44,6 @@ class SimpleScheduleList extends StatelessWidget {
 
     Add2Calendar.addEvent2Cal(event);
   }
-
-  SimpleScheduleList({
-    super.key,
-    required this.generatedScheduleCourses,
-    required this.sectionIds,
-  });
 
   String formatTime(int time) {
     int hour = (time ~/ 100) % 12;
@@ -67,8 +72,9 @@ class SimpleScheduleList extends StatelessWidget {
   dynamic matchingSections;
 
   void getMatchingSections() {
-    matchingSections = generatedScheduleCourses.sections.where((section) {
-      return sectionIds.contains(section['id'].toString());
+    matchingSections =
+        widget.generatedScheduleCourses.sections.where((section) {
+      return widget.sectionIds.contains(section['id'].toString());
     }).toList();
   }
 
