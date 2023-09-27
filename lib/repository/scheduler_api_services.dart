@@ -5,6 +5,7 @@ import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 import 'package:survival_guide/models/SchedulerGenerateCoursesModel.dart';
+import 'package:survival_guide/models/SchedulerRegBlocksModel.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/models/SchedulerTermDataModel.dart' as termdata;
 
@@ -122,6 +123,27 @@ class SchedulerApiService {
       return termData;
     } else {
       throw Exception('Failed to load term data');
+    }
+  }
+
+  Future<SchedulerRegBlocksModel> fetchRegistrationBlocks(String term, String subject, String course) async {
+    final response = await http.get(
+      Uri.parse('${schedulerURL}terms/$term/subjects/$subject/courses/$course/regblocks'),
+      headers: headers,
+    );
+
+    final cookie = await getValueFromPreferences('.AspNet.Cookies');
+    if (response.statusCode == 200) {
+      printWrapped("Response ${response.body}");
+      final Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      final registrationBlocks =
+      SchedulerRegBlocksModel.fromJson(parsedJson);
+      return registrationBlocks;
+    } else {
+      printWrapped(
+          'Reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception(
+          'Failed to get registration blocks ${response.statusCode} ${response.reasonPhrase}');
     }
   }
 

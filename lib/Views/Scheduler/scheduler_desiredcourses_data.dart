@@ -134,7 +134,6 @@ class SchedulerDesiredCoursesWidgetState
           onDismissed: (direction) {
             apiService.deleteDesiredCourse(term, course.id);
             if (data.length == 1) {
-              // In here onDismissed hasn't finished yet, and if the data has 1 element. It means that element will be removed, as a result it will be empty. We want to show a different view if data is empty
               setState(() {
                 isDesiredCoursesEmpty = true;
               });
@@ -144,11 +143,9 @@ class SchedulerDesiredCoursesWidgetState
             contentPadding: EdgeInsets.zero,
             title: Text(course.title, style: survivalGuideCellTextStyle()),
             subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(course.courseKey, style: survivalGuideCellTextStyle()),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.25,
+                Expanded(child: Text(course.courseKey, style: survivalGuideCellTextStyle())),
+                Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
@@ -158,8 +155,7 @@ class SchedulerDesiredCoursesWidgetState
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.25,
+                Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
@@ -169,6 +165,24 @@ class SchedulerDesiredCoursesWidgetState
                     ),
                   ),
                 ),
+                ElevatedButton(onPressed: () {
+                  apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
+                }, child: const Text('Sections'))
+                // Expanded(
+                //   child: DropdownButton<dynamic>(
+                //     isExpanded: true, // Making dropdown expanded
+                //     items: course.selectedOptionalSectionIds.map((dynamic value) {
+                //       return DropdownMenuItem<dynamic>(
+                //         value: value,
+                //         child: Text(value.toString(), style: survivalGuideCellTextStyle()),
+                //       );
+                //     }).toList(),
+                //     onChanged: (newValue) {
+                //       // Handle dropdown selection if necessary
+                //     },
+                //     hint: Text('Select section', style: survivalGuideCellTextStyle()),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -195,7 +209,7 @@ class SchedulerDesiredCoursesWidgetState
     );
   }
 
-  Widget _buildListView( BuildContext context, List<SchedulerDesiredCoursesModel> data) {
+  Widget _buildListView(BuildContext context, List<SchedulerDesiredCoursesModel> data) {
     return Card(
       elevation: 5.0,
       color: cardBackgroundColor,
@@ -209,12 +223,11 @@ class SchedulerDesiredCoursesWidgetState
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Course', style: headerTextStyle()),
-                  Text('Course', style: headerTextStyle()),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.25),
-                  Text('Instructor', style: headerTextStyle()),
+                  Expanded(child: Text('Course Key', style: headerTextStyle())), // changed label to 'Course Key'
+                  Expanded(child: Text('Title', style: headerTextStyle())), // changed label to 'Course ID & Title'
+                  Expanded(child: Text('Instructor', style: headerTextStyle())),
+                  Expanded(child: Text('Section', style: headerTextStyle())),
                 ],
               ),
             ),
@@ -224,6 +237,7 @@ class SchedulerDesiredCoursesWidgetState
       ),
     );
   }
+
 
   Widget _sendToShoppingButton() {
     return ElevatedButton(
