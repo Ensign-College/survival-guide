@@ -104,6 +104,10 @@ class _SchedulerStudentDashboardState extends State<SchedulerStudentDashboard> {
                             SizedBox(
                               height: orientation == Orientation.portrait ? 30 : 15,
                             ),
+                            //  Add text here
+                            // Make sure that the text is a header sized
+                            // And make sure that the color of hte text if white
+                            // Remove the text
                             Column(
                               children: [
                                 Container(
