@@ -109,7 +109,7 @@ class _SchedulerStudentDashboardState extends State<SchedulerStudentDashboard> {
                               child: Text(
                                 'Terms',
                                 style: TextStyle(
-                                  color: Colors.white, // This sets the text color to white
+                                  color: Colors.white,
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
                                 ),
