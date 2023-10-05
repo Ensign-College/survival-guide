@@ -133,4 +133,5 @@ app.*.symbols
 !.vscode/settings.json
 .env
 # google messaging 
-/ios/GoogleService-Info.plist
+ios/GoogleService-Info.plist
+android/app/google-services.json
