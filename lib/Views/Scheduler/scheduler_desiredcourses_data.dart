@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:survival_guide/Views/Scheduler/scheduler_course_sections.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
 import 'package:survival_guide/constants/constant_strings.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'package:survival_guide/constants/widgets/show_modal.dart';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
+import 'package:survival_guide/models/SchedulerRegBlocksModel.dart';
 import 'package:survival_guide/repository/college_scheduler_socket_client.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
@@ -39,10 +41,10 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
 class SchedulerDesiredCoursesWidgetState
     extends State<SchedulerDesiredCoursesWidget> {
   final ValueNotifier<List<String>> desiredCoursesNotifier =
-      ValueNotifier<List<String>>([]);
+  ValueNotifier<List<String>>([]);
   final ValueNotifier<List<SchedulerDesiredCoursesModel>>
-      desiredCoursesObjectNotifier =
-      ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
+  desiredCoursesObjectNotifier =
+  ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
   late String term;
   late SchedulerApiService apiService;
   bool isDesiredCoursesEmpty = false;
@@ -109,12 +111,15 @@ class SchedulerDesiredCoursesWidgetState
   }
 
   ListView _desiredCoursesList(List<SchedulerDesiredCoursesModel> data) {
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: data.length,
       itemBuilder: (context, index) {
         final course = data[index];
+        final regBlocks = apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
+
         return Dismissible(
           key: Key(course.courseKey),
           background: Container(
@@ -141,15 +146,13 @@ class SchedulerDesiredCoursesWidgetState
           },
           child: ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(course.title, style: survivalGuideCellTextStyle()),
             subtitle: Row(
               children: [
-                Expanded(child: Text(course.courseKey, style: survivalGuideCellTextStyle())),
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
-                      '${course.id} ${course.title}',
+                      '${course.subjectShort} ${course.title}',
                       style: survivalGuideCellTextStyle(),
                       softWrap: false,
                     ),
@@ -165,24 +168,33 @@ class SchedulerDesiredCoursesWidgetState
                     ),
                   ),
                 ),
-                ElevatedButton(onPressed: () {
-                  apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
-                }, child: const Text('Sections'))
-                // Expanded(
-                //   child: DropdownButton<dynamic>(
-                //     isExpanded: true, // Making dropdown expanded
-                //     items: course.selectedOptionalSectionIds.map((dynamic value) {
-                //       return DropdownMenuItem<dynamic>(
-                //         value: value,
-                //         child: Text(value.toString(), style: survivalGuideCellTextStyle()),
-                //       );
-                //     }).toList(),
-                //     onChanged: (newValue) {
-                //       // Handle dropdown selection if necessary
-                //     },
-                //     hint: Text('Select section', style: survivalGuideCellTextStyle()),
-                //   ),
-                // ),
+                // ElevatedButton(onPressed: () {
+                //   apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
+                // }, child: const Text('Sections'))
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      SchedulerRegBlocksModel resolvedRegBlocks = await regBlocks;
+
+                        showGestureModal(context,
+                          SchedulerCourseSectionsView(
+                            regBlocks: resolvedRegBlocks,
+                          ),
+                      );
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.pressed)) {
+                          // Change this color if you want a different color when pressed
+                          return constantCardBackgroundColor;
+                        } else {
+                          return constantCardBackgroundColor; // Use the default button color
+                        }
+                      }),
+                    ),
+                    child: const Text('Sections'),
+                  ),
+                ),
               ],
             ),
           ),
@@ -224,10 +236,9 @@ class SchedulerDesiredCoursesWidgetState
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
                 children: [
-                  Expanded(child: Text('Course Key', style: headerTextStyle())), // changed label to 'Course Key'
-                  Expanded(child: Text('Title', style: headerTextStyle())), // changed label to 'Course ID & Title'
-                  Expanded(child: Text('Instructor', style: headerTextStyle())),
-                  Expanded(child: Text('Section', style: headerTextStyle())),
+                  Expanded(child: Text('Title', style: headerTextStyle())), // changed label to 'Course Key'
+                  Expanded(child: Text('Credits', style: headerTextStyle())), // changed label to 'Course ID & Title'
+                  Expanded(child: Text('Sections', style: headerTextStyle())),
                 ],
               ),
             ),
@@ -237,7 +248,6 @@ class SchedulerDesiredCoursesWidgetState
       ),
     );
   }
-
 
   Widget _sendToShoppingButton() {
     return ElevatedButton(

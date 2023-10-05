@@ -63,10 +63,10 @@ class SchedulerApiService {
   }
 
   Future<List<SchedulerCourseModel>> fetchCoursesForSubject(
-      String subjectId) async {
+      String subjectId, String term) async {
     final response = await http.get(
       Uri.parse(
-          '${schedulerURL}terms/2023%20Spring%20Semester/subjects/$subjectId/courses'),
+          '${schedulerURL}terms/$term/subjects/$subjectId/courses'),
       headers: headers,
     );
 
@@ -134,10 +134,9 @@ class SchedulerApiService {
 
     final cookie = await getValueFromPreferences('.AspNet.Cookies');
     if (response.statusCode == 200) {
-      printWrapped("Response ${response.body}");
+      printWrapped('Response ${response.body}');
       final Map<String, dynamic> parsedJson = jsonDecode(response.body);
-      final registrationBlocks =
-      SchedulerRegBlocksModel.fromJson(parsedJson);
+      final registrationBlocks = SchedulerRegBlocksModel.fromJson(parsedJson);
       return registrationBlocks;
     } else {
       printWrapped(
@@ -201,6 +200,28 @@ class SchedulerApiService {
       throw Exception('Failed to delete the course ${response.statusCode}');
     }
   }
+
+  Future<void> updateDesiredCourse(String id, String number, String subjectId,
+      String term, [String? topic]) async {
+
+    // Adjusted the URL to include the course id at the end
+    final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/$id');
+    final body = jsonEncode({'number': number, 'subjectId': subjectId, 'topic': topic});
+
+    final headers = await createHeaders(cookie, body.length);
+
+    // Using http.put for the PUT request
+    final response = await http.put(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      print('Response: ${response.body}');
+    } else {
+      printWrapped(
+          'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception('Failed to update desired course ${response.statusCode}  ');
+    }
+  }
+
 
   Future<SchedulerGenerateCoursesModel> generateScheduler(
       String term,
