@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,9 @@ class SimpleScheduleList extends StatefulWidget {
 
   @override
   State<SimpleScheduleList> createState() => _SimpleScheduleListState();
+  static String addEventsToCalendar2(dynamic section) {
+    return 'success';
+  }
 }
 
 class _SimpleScheduleListState extends State<SimpleScheduleList> {
@@ -31,7 +35,7 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
 
   Map<String, Color> sectionColorMap = {};
 
-  void _addEventsToCalendar(dynamic section) {
+  Int _addEventsToCalendar(dynamic section) {
     // TODO: fix calendar
     var meeting = section['meetings'][0];
     final Event event = Event(
@@ -43,6 +47,8 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
     );
 
     Add2Calendar.addEvent2Cal(event);
+    print(section.length.toInt());
+    return section.length.toInt(); // Added lines 50,51 to test single event and not the whole class.
   }
 
   String formatTime(int time) {
@@ -179,7 +185,6 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
         ),
       );
     }
-
     return cards;
   }
 
