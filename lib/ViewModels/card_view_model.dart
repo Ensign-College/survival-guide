@@ -6,6 +6,8 @@ import '../Views/details_view.dart';
 
 part 'card_view_model.g.dart';
 
+typedef VoidCallback = void Function();
+
 @HiveType(typeId: 0)
 class CardViewModel extends StatelessWidget {
   @HiveField(0)
@@ -14,31 +16,38 @@ class CardViewModel extends StatelessWidget {
   final String imageUrl;
   @HiveField(2)
   final int detailsID;
-  
-  const CardViewModel(
-      {Key? key,
-      required this.title,
-      required this.imageUrl,
-      required this.detailsID})
-      : super(key: key);
+  @HiveField(3)
+  final bool isConstant;
+  final void Function() callback;
+
+   const CardViewModel({
+    Key? key,
+    required this.title,
+    required this.imageUrl,
+    required this.detailsID,
+    required this.isConstant,
+    required this.callback,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailsViewModel(
-              detailsId: detailsID,
-              title: title,
-            ),
-          ),
-        );
+        isConstant
+            ? callback()
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailsViewModel(
+                    detailsId: detailsID,
+                    title: title,
+                  ),
+                ),
+              );
       },
       child: Container(
         decoration: BoxDecoration(
-          color: cardBackgroundColor,
+          color: isConstant ? constantCardBackgroundColor : cardBackgroundColor,
           borderRadius: BorderRadius.circular(24),
         ),
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
