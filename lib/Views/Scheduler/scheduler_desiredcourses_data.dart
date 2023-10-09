@@ -142,7 +142,15 @@ class SchedulerDesiredCoursesWidgetState
           },
           child: ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(course.title, style: survivalGuideCellTextStyle()),
+            //title: Text(course.title, style: survivalGuideCellTextStyle()),
+            trailing: ElevatedButton(
+              onPressed: () {
+                showGestureModal(context, Text(course.description),
+                );
+              },
+              child: Icon(Icons.info_outline),
+            ),
+
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -152,7 +160,7 @@ class SchedulerDesiredCoursesWidgetState
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
-                      '${course.id} ${course.title}',
+                      '${course.description} ${course.title}',
                       style: survivalGuideCellTextStyle(),
                       softWrap: false,
                     ),
@@ -211,10 +219,12 @@ class SchedulerDesiredCoursesWidgetState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Course', style: headerTextStyle()),
-                  Text('Course', style: headerTextStyle()),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.25),
-                  Text('Instructor', style: headerTextStyle()),
+                  Expanded(child: Text('Title', style: headerTextStyle())),
+                  Expanded(child: Text('Credits', style: headerTextStyle())),
+                  //SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+                  Expanded(child: Text('Teacher', style: headerTextStyle())),
+                  Expanded(child: Text('Info', style: headerTextStyle())),
+
                 ],
               ),
             ),

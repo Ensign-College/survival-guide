@@ -62,10 +62,10 @@ class SchedulerApiService {
   }
 
   Future<List<SchedulerCourseModel>> fetchCoursesForSubject(
-      String subjectId) async {
+      String subjectId, String term) async {
     final response = await http.get(
       Uri.parse(
-          '${schedulerURL}terms/2023%20Spring%20Semester/subjects/$subjectId/courses'),
+          '${schedulerURL}terms/$term/subjects/$subjectId/courses'),
       headers: headers,
     );
 
