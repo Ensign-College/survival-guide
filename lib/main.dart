@@ -34,7 +34,14 @@ void main() async {
     sound: true,
   );
   final fcmToken = await FirebaseMessaging.instance.getToken();
-  print("Notification token: $fcmToken)");
+  print('Notification token: $fcmToken');
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    print('notification' + notification.toString());
+    // Handle the received notification
+  });
+
   runApp(const MyApp());
 }
 

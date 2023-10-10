@@ -29,11 +29,12 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>Calendar is used to export your classes from the app, and add it into your calendar</string>
 	<key>NSContactsUsageDescription</key>
-	<string>NSContactsUsageDescription is required for the location autocomplete once Apple's UI is opened</string>
+	<string>NSContactsUsageDescription is required for the location autocomplete once Apple&apos;s UI is opened</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
