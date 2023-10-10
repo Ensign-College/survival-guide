@@ -28,6 +28,8 @@ void main() async {
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   await Firebase.initializeApp();
+  FirebaseMessaging.instance.subscribeToTopic('all');
+
   FirebaseMessaging.instance.requestPermission(
     alert: true,
     badge: true,

@@ -65,7 +65,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   lints: ^2.1.1
-  commitlint_cli: ^0.4.1
+  commitlint_cli: ^0.7.1
   husky: ^0.1.6
   hive_generator: ^2.0.0
   build_runner: ^2.4.6
