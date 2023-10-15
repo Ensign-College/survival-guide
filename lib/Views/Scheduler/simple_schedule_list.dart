@@ -32,17 +32,20 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
   Map<String, Color> sectionColorMap = {};
 
   void _addEventsToCalendar(dynamic section) {
-    // TODO: fix calendar
-    var meeting = section['meetings'][0];
-    final Event event = Event(
-      title: "${section['title']}",
-      description: "${section['description']}",
-      location: "${meeting['location']}",
-      startDate: DateTime.parse(meeting['startDate']).toLocal(),
-      endDate: DateTime.parse(meeting['endDate']).toLocal(),
-    );
+    // TODO: fix calendar - work in progress
+    var meetings = section['meetings'] as List; //line casts the section['meetings'] property to a List. This is necessary because the Add2Calendar.addEvent2Cal() method expects the meetings parameter to be a List.
 
-    Add2Calendar.addEvent2Cal(event);
+    for (var meeting in meetings) { //loop iterates over the meetings list and adds each meeting to the calendar as an event.
+      final Event event = Event(
+        title: "${section['title']}",
+        description: "${section['description']}",
+        location: "${meeting['location']}",
+        startDate: DateTime.parse(meeting['startDate']).toLocal(),
+        endDate: DateTime.parse(meeting['endDate']).toLocal(),
+      );
+
+      Add2Calendar.addEvent2Cal(event);
+    }
   }
 
   String formatTime(int time) {
@@ -193,8 +196,13 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(8),
-      children: _buildClassCards(context),
+      children: [
+        for (var section in matchingSections) //loop iterates over the matchingSections list and displays a list tile for each section.
+          ListTile(
+            title: Text(section['title']),
+            onTap: () => _addEventsToCalendar(section), //callback calls the _addEventsToCalendar() method with the current section as the parameter.
+          ),
+      ],
     );
   }
 }
