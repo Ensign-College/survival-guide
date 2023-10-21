@@ -201,24 +201,56 @@ class SchedulerApiService {
     }
   }
 
-  Future<void> updateDesiredCourse(String id, String number, String subjectId,
-      String term, [String? topic]) async {
-
-    // Adjusted the URL to include the course id at the end
+  Future<void> updateDesiredCourse(
+    String id,
+    String number,
+    String subjectId,
+    String term, [
+    String? topic,
+    dynamic? filteredRules,
+  ]) async {
     final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/$id');
-    final body = jsonEncode({'number': number, 'subjectId': subjectId, 'topic': topic});
+
+    // Include filter rules in the request body
+    final body = jsonEncode({
+      'number': number,
+      'subjectId': subjectId,
+      'topic': topic,
+      'filterRules': filteredRules
+    });
 
     final headers = await createHeaders(cookie, body.length);
 
-    // Using http.put for the PUT request
     final response = await http.put(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      print('Response: ${response.body}');
+      printWrapped('Response: ${response.body}');
     } else {
       printWrapped(
           'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
-      throw Exception('Failed to update desired course ${response.statusCode}  ');
+      throw Exception('Failed to update desired course ${response.statusCode}');
+    }
+  }
+
+  Future<void> updateDesiredCourseSections(
+      SchedulerDesiredCoursesModel desiredCourseModel,
+      String term
+      ) async {
+    final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/${desiredCourseModel.id}');
+
+    // Use toJson method to convert SchedulerDesiredCoursesModel to JSON-formattable Map
+    final body = jsonEncode(desiredCourseModel.toJson());
+
+    final headers = await createHeaders(cookie, body.length);
+
+    final response = await http.put(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      printWrapped('Response: ${response.body}');
+    } else {
+      printWrapped(
+          'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception('Failed to update desired course ${response.statusCode}');
     }
   }
 

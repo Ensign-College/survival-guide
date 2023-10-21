@@ -161,10 +161,16 @@ class SchedulerDesiredCoursesWidgetState
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Text(
-                      course.credits.isEmpty ? 'TBA' : course.credits,
-                      style: survivalGuideCellTextStyle(),
-                      softWrap: false,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        course.credits.isEmpty ? 'TBA' : '\t        ${course.credits}',
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 16.0,
+                        ),
+                        softWrap: false,
+                      ),
                     ),
                   ),
                 ),
@@ -179,6 +185,7 @@ class SchedulerDesiredCoursesWidgetState
                         showGestureModal(context,
                           SchedulerCourseSectionsView(
                             regBlocks: resolvedRegBlocks,
+                            apiService: apiService, course: course,term: widget.term,
                           ),
                       );
                     },
