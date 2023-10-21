@@ -3,6 +3,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/DateTime.dart';
 import 'package:survival_guide/constants/colors.dart';
+import 'package:survival_guide/constants/developer.dart';
 import 'package:survival_guide/constants/extensions/text_extensions.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
 
@@ -224,11 +225,12 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        for (var section in matchingSections) //loop iterates over the matchingSections list and displays a list tile for each section.
-          ListTile(
-            title: Text(section['title']),
-            onTap: () => _addEventsToCalendar(section), //callback calls the _addEventsToCalendar() method with the current section as the parameter.
-          ),
+        if (matchingSections != null) // Check if matchingSections is not null
+          for (var section in matchingSections.where((s) => s != null)) // Loop iterates only over non-null sections
+            ListTile(
+              title: Text(section['title']),
+              onTap: () => _addEventsToCalendar(section), // Callback calls the _addEventsToCalendar() method with the current section as the parameter.
+            ),
       ],
     );
   }

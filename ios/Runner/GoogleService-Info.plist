@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1085280541539-d9lptsc9vfk77he342rugs7kc32pjhb2.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1085280541539-d9lptsc9vfk77he342rugs7kc32pjhb2</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBs_LuoDXEJYbIGNSZ3H7jqLPavLqKK-0M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1085280541539</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ensignCollege.survivalGuide</string>
+	<key>PROJECT_ID</key>
+	<string>survivalguide-407e0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>survivalguide-407e0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1085280541539:ios:4c04b9454ce55504621156</string>
+</dict>
+</plist>
