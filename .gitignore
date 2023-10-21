@@ -135,3 +135,4 @@ app.*.symbols
 # google messaging 
 ios/Runner/GoogleService-Info.plist
 android/app/google-services.json
+android/app/src/debug/google-services.json
