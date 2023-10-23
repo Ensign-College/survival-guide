@@ -41,5 +41,6 @@ end
 
 target 'notifications' do
 	use_frameworks!
+	pod 'GoogleUtilities'
 	pod 'Firebase/Messaging'
 end
