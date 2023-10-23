@@ -117,6 +117,7 @@ class _SchedulerStudentDashboardState extends State<SchedulerStudentDashboard> {
                             ),
                             Column(
                               children: [
+                                Text("Terms:"),
                                 Container(
                                   height: orientation == Orientation.portrait
                                       ? MediaQuery.of(context).size.height * (snapshot.data!.terms!.length / 10)
