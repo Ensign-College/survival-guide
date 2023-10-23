@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:survival_guide/Views/Scheduler/CourseSection/scheduler_course_sections.dart';
+import 'package:survival_guide/Views/Scheduler/CourseSection/scheduler_course_sections_view_model.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
 import 'package:survival_guide/constants/constant_strings.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'package:survival_guide/constants/widgets/show_modal.dart';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 import 'package:survival_guide/models/SchedulerDesiredCoursesModel.dart';
+import 'package:survival_guide/models/SchedulerRegBlocksModel.dart';
 import 'package:survival_guide/repository/college_scheduler_socket_client.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
@@ -39,10 +42,10 @@ class SchedulerDesiredCoursesWidget extends StatefulWidget {
 class SchedulerDesiredCoursesWidgetState
     extends State<SchedulerDesiredCoursesWidget> {
   final ValueNotifier<List<String>> desiredCoursesNotifier =
-      ValueNotifier<List<String>>([]);
+  ValueNotifier<List<String>>([]);
   final ValueNotifier<List<SchedulerDesiredCoursesModel>>
-      desiredCoursesObjectNotifier =
-      ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
+  desiredCoursesObjectNotifier =
+  ValueNotifier<List<SchedulerDesiredCoursesModel>>([]);
   late String term;
   late SchedulerApiService apiService;
   bool isDesiredCoursesEmpty = false;
@@ -109,12 +112,15 @@ class SchedulerDesiredCoursesWidgetState
   }
 
   ListView _desiredCoursesList(List<SchedulerDesiredCoursesModel> data) {
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: data.length,
       itemBuilder: (context, index) {
         final course = data[index];
+        final regBlocks = apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
+
         return Dismissible(
           key: Key(course.courseKey),
           background: Container(
@@ -134,7 +140,6 @@ class SchedulerDesiredCoursesWidgetState
           onDismissed: (direction) {
             apiService.deleteDesiredCourse(term, course.id);
             if (data.length == 1) {
-              // In here onDismissed hasn't finished yet, and if the data has 1 element. It means that element will be removed, as a result it will be empty. We want to show a different view if data is empty
               setState(() {
                 isDesiredCoursesEmpty = true;
               });
@@ -142,31 +147,65 @@ class SchedulerDesiredCoursesWidgetState
           },
           child: ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(course.title, style: survivalGuideCellTextStyle()),
             subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(course.courseKey, style: survivalGuideCellTextStyle()),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.25,
+                Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
-                      '${course.id} ${course.title}',
+                      '${course.subjectShort} ${course.title}',
                       style: survivalGuideCellTextStyle(),
                       softWrap: false,
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.25,
+                Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Text(
-                      course.credits.isEmpty ? 'TBA' : course.credits,
-                      style: survivalGuideCellTextStyle(),
-                      softWrap: false,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        course.credits.isEmpty ? 'TBA' : '\t        ${course.credits}',
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 16.0,
+                        ),
+                        softWrap: false,
+                      ),
                     ),
+                  ),
+                ),
+                // ElevatedButton(onPressed: () {
+                //   apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
+                // }, child: const Text('Sections'))
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      SchedulerRegBlocksModel resolvedRegBlocks = await regBlocks;
+                      final courseSectionViewModel = SchedulerCourseSectionsViewModel(
+                        regBlocks: resolvedRegBlocks,
+                        apiService: apiService,
+                        course: course,
+                        term: widget.term,
+                      );
+                      courseSectionViewModel.initializeSelectedBlocks();
+                        showGestureModal(context,
+                          SchedulerCourseSectionsView(
+                             viewModel: courseSectionViewModel,
+                          ),
+                      );
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.pressed)) {
+                          // Change this color if you want a different color when pressed
+                          return constantCardBackgroundColor;
+                        } else {
+                          return constantCardBackgroundColor; // Use the default button color
+                        }
+                      }),
+                    ),
+                    child: const Text('Sections'),
                   ),
                 ),
               ],
@@ -195,7 +234,7 @@ class SchedulerDesiredCoursesWidgetState
     );
   }
 
-  Widget _buildListView( BuildContext context, List<SchedulerDesiredCoursesModel> data) {
+  Widget _buildListView(BuildContext context, List<SchedulerDesiredCoursesModel> data) {
     return Card(
       elevation: 5.0,
       color: cardBackgroundColor,
@@ -209,12 +248,10 @@ class SchedulerDesiredCoursesWidgetState
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Course', style: headerTextStyle()),
-                  Text('Course', style: headerTextStyle()),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.25),
-                  Text('Instructor', style: headerTextStyle()),
+                  Expanded(child: Text('Title', style: headerTextStyle())), // changed label to 'Course Key'
+                  Expanded(child: Text('Credits', style: headerTextStyle())), // changed label to 'Course ID & Title'
+                  Expanded(child: Text('Sections', style: headerTextStyle())),
                 ],
               ),
             ),

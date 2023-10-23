@@ -49,7 +49,7 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
   void _onSubjectTap(SchedulerSubjectModel subject) async {
     try {
       final courses =
-          await widget.apiService.fetchCoursesForSubject(subject.id);
+          await widget.apiService.fetchCoursesForSubject(subject.id, term);
       setState(() {
         selectedCourses = courses;
         selectedCourse = selectedCourses?.first;

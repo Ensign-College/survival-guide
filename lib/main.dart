@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,7 +29,22 @@ void main() async {
   final supabaseUrl = dotenv.env['SUPABASE_URL']!;
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
-
+  await Firebase.initializeApp();
+  FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print("fcm token: $fcmToken");
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    print('notification' + notification.toString());
+    // Handle the received notification
+  });
+  sleep(const Duration(seconds: 2));
+  FirebaseMessaging.instance.subscribeToTopic('all');
   runApp(const MyApp());
 }
 

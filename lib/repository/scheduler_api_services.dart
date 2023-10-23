@@ -5,6 +5,7 @@ import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 
 import 'package:survival_guide/models/SchedulerCourseModel.dart';
 import 'package:survival_guide/models/SchedulerGenerateCoursesModel.dart';
+import 'package:survival_guide/models/SchedulerRegBlocksModel.dart';
 import 'package:survival_guide/models/SchedulerSubjectModel.dart';
 import 'package:survival_guide/models/SchedulerTermDataModel.dart' as termdata;
 
@@ -62,10 +63,10 @@ class SchedulerApiService {
   }
 
   Future<List<SchedulerCourseModel>> fetchCoursesForSubject(
-      String subjectId) async {
+      String subjectId, String term) async {
     final response = await http.get(
       Uri.parse(
-          '${schedulerURL}terms/2023%20Spring%20Semester/subjects/$subjectId/courses'),
+          '${schedulerURL}terms/$term/subjects/$subjectId/courses'),
       headers: headers,
     );
 
@@ -125,6 +126,26 @@ class SchedulerApiService {
     }
   }
 
+  Future<SchedulerRegBlocksModel> fetchRegistrationBlocks(String term, String subject, String course) async {
+    final response = await http.get(
+      Uri.parse('${schedulerURL}terms/$term/subjects/$subject/courses/$course/regblocks'),
+      headers: headers,
+    );
+
+    final cookie = await getValueFromPreferences('.AspNet.Cookies');
+    if (response.statusCode == 200) {
+      printWrapped('Response ${response.body}');
+      final Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      final registrationBlocks = SchedulerRegBlocksModel.fromJson(parsedJson);
+      return registrationBlocks;
+    } else {
+      printWrapped(
+          'Reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception(
+          'Failed to get registration blocks ${response.statusCode} ${response.reasonPhrase}');
+    }
+  }
+
   Future<List<SchedulerDesiredCoursesModel>> fetchDesiredCourse(
       String term) async {
     final response = await http.get(
@@ -179,6 +200,60 @@ class SchedulerApiService {
       throw Exception('Failed to delete the course ${response.statusCode}');
     }
   }
+
+  Future<void> updateDesiredCourse(
+    String id,
+    String number,
+    String subjectId,
+    String term, [
+    String? topic,
+    dynamic? filteredRules,
+  ]) async {
+    final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/$id');
+
+    // Include filter rules in the request body
+    final body = jsonEncode({
+      'number': number,
+      'subjectId': subjectId,
+      'topic': topic,
+      'filterRules': filteredRules
+    });
+
+    final headers = await createHeaders(cookie, body.length);
+
+    final response = await http.put(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      printWrapped('Response: ${response.body}');
+    } else {
+      printWrapped(
+          'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception('Failed to update desired course ${response.statusCode}');
+    }
+  }
+
+  Future<void> updateDesiredCourseSections(
+      SchedulerDesiredCoursesModel desiredCourseModel,
+      String term
+      ) async {
+    final Uri url = Uri.parse('$schedulerURL/terms/$term/desiredcourses/${desiredCourseModel.id}');
+
+    // Use toJson method to convert SchedulerDesiredCoursesModel to JSON-formattable Map
+    final body = jsonEncode(desiredCourseModel.toJson());
+
+    final headers = await createHeaders(cookie, body.length);
+
+    final response = await http.put(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      printWrapped('Response: ${response.body}');
+    } else {
+      printWrapped(
+          'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
+      throw Exception('Failed to update desired course ${response.statusCode}');
+    }
+  }
+
 
   Future<SchedulerGenerateCoursesModel> generateScheduler(
       String term,

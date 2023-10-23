@@ -10,7 +10,7 @@ TextStyle survivalGuideCellTextStyle() {
   return TextStyle(
     color: textColor,
     fontSize: 16.0,
-    overflow: TextOverflow.ellipsis,
+    overflow: TextOverflow.values[2],
   );
 }
 
