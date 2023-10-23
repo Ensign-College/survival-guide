@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:survival_guide/Views/Scheduler/scheduler_course_sections.dart';
+import 'package:survival_guide/Views/Scheduler/CourseSection/scheduler_course_sections.dart';
+import 'package:survival_guide/Views/Scheduler/CourseSection/scheduler_course_sections_view_model.dart';
 import 'package:survival_guide/Views/Scheduler/scheduler_generate_courses.dart';
 import 'package:survival_guide/constants/constant_strings.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
@@ -181,11 +182,16 @@ class SchedulerDesiredCoursesWidgetState
                   child: ElevatedButton(
                     onPressed: () async {
                       SchedulerRegBlocksModel resolvedRegBlocks = await regBlocks;
-
+                      final courseSectionViewModel = SchedulerCourseSectionsViewModel(
+                        regBlocks: resolvedRegBlocks,
+                        apiService: apiService,
+                        course: course,
+                        term: widget.term,
+                      );
+                      courseSectionViewModel.initializeSelectedBlocks();
                         showGestureModal(context,
                           SchedulerCourseSectionsView(
-                            regBlocks: resolvedRegBlocks,
-                            apiService: apiService, course: course,term: widget.term,
+                             viewModel: courseSectionViewModel,
                           ),
                       );
                     },
