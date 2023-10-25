@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/DateTime.dart';
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/extensions/text_extensions.dart';
+import '../../constants/format_time.dart';
+import '../../constants/widgets/show_info.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
 
 class SimpleScheduleList extends StatefulWidget {
@@ -45,14 +47,6 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
     Add2Calendar.addEvent2Cal(event);
   }
 
-  String formatTime(int time) {
-    int hour = (time ~/ 100) % 12;
-    hour = hour == 0 ? 12 : hour; // Replace 0 with 12
-    final String minute = (time % 100).toString().padLeft(2, '0');
-    final String ampm = time < 1200 ? 'AM' : 'PM';
-    return '$hour:$minute $ampm';
-  }
-
   String daysRawToFull(String daysRaw) {
     final Map<String, String> dayMapping = {
       'M': 'Monday',
@@ -76,64 +70,6 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
         widget.generatedScheduleCourses.sections.where((section) {
       return widget.sectionIds.contains(section['id'].toString());
     }).toList();
-  }
-
-  void _showSectionInfo(BuildContext context, Map section) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        var meeting = section['meetings'][0];
-        var enrollmentRequirements = section['enrollmentRequirements'];
-        return AlertDialog(
-          backgroundColor: appBackgroundColor, // Set the background color
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Title: ${section['title']}").survivalGuideWhiteText,
-                Text("Class#: ${section['id']}").survivalGuideWhiteText,
-                Text("Section: ${section['sectionNumber']}")
-                    .survivalGuideWhiteText,
-                Text("Subject: ${section['subject']}").survivalGuideWhiteText,
-                Text("Course: ${section['course']}").survivalGuideWhiteText,
-                Text("Seats Open: ${section['openSeats']}")
-                    .survivalGuideWhiteText,
-                Text("Component: ${section['component']}")
-                    .survivalGuideWhiteText,
-                Text("Session: ${section['partsOfTerm']}")
-                    .survivalGuideWhiteText,
-                Text("Instructor: ${section['instructor'][0]['name']}")
-                    .survivalGuideWhiteText,
-                Text("Campus: ${section['campusDescription']}")
-                    .survivalGuideWhiteText,
-                Text("Credits: ${section['credits']}").survivalGuideWhiteText,
-                Text("Waitlist Open: ${section['waitlistOpen']}")
-                    .survivalGuideWhiteText,
-                Text("Description: ${section['description']}")
-                    .survivalGuideWhiteText,
-                const SizedBox(height: 10),
-                const Text('Day(s) & Location(s):').survivalGuideWhiteText,
-                Text(
-                  "${meeting['daysRaw']} ${formatTime(meeting['startTime'])} - ${formatTime(meeting['endTime'])} - ${meeting['location']}",
-                ).survivalGuideWhiteText,
-                Text(
-                  "Dates: ${DateTime.parse(meeting['startDate']).toLocal().toFormattedString()} - ${DateTime.parse(meeting['endDate']).toLocal()}",
-                ).survivalGuideWhiteText,
-                Text(
-                  "Enrollment Requirement: ${enrollmentRequirements.isNotEmpty ? enrollmentRequirements[0]['description'] : 'None'}",
-                ).survivalGuideWhiteText,
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close').survivalGuideWhiteText,
-            ),
-          ],
-        );
-      },
-    );
   }
 
   List<Widget> _buildClassCards(BuildContext context) {
@@ -174,13 +110,58 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
               style: const TextStyle(color: Colors.black),
             ),
             trailing: _exportClassToCalendar(section),
-            onTap: () => _showSectionInfo(context, section),
+            onTap: () => showSectionInfo(context, section),
           ),
         ),
       );
     }
 
     return cards;
+  }
+
+  void showSectionInfo(BuildContext context, Map section) {
+
+    var meeting = section['meetings'][0];
+    var enrollmentRequirements = section['enrollmentRequirements'];
+    var sectionView = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Title: ${section['title']}").survivalGuideWhiteText,
+        Text("Class#: ${section['id']}").survivalGuideWhiteText,
+        Text("Section: ${section['sectionNumber']}")
+            .survivalGuideWhiteText,
+        Text("Subject: ${section['subject']}").survivalGuideWhiteText,
+        Text("Course: ${section['course']}").survivalGuideWhiteText,
+        Text("Seats Open: ${section['openSeats']}")
+            .survivalGuideWhiteText,
+        Text("Component: ${section['component']}")
+            .survivalGuideWhiteText,
+        Text("Session: ${section['partsOfTerm']}")
+            .survivalGuideWhiteText,
+        Text("Instructor: ${section['instructor'][0]['name']}")
+            .survivalGuideWhiteText,
+        Text("Campus: ${section['campusDescription']}")
+            .survivalGuideWhiteText,
+        Text("Credits: ${section['credits']}").survivalGuideWhiteText,
+        Text("Waitlist Open: ${section['waitlistOpen']}")
+            .survivalGuideWhiteText,
+        Text("Description: ${section['description']}")
+            .survivalGuideWhiteText,
+        const SizedBox(height: 10),
+        const Text('Day(s) & Location(s):').survivalGuideWhiteText,
+        Text(
+          "${meeting['daysRaw']} ${formatTime(meeting['startTime'])} - ${formatTime(meeting['endTime'])} - ${meeting['location']}",
+        ).survivalGuideWhiteText,
+        Text(
+          "Dates: ${DateTime.parse(meeting['startDate']).toLocal().toFormattedString()} - ${DateTime.parse(meeting['endDate']).toLocal()}",
+        ).survivalGuideWhiteText,
+        Text(
+          "Enrollment Requirement: ${enrollmentRequirements.isNotEmpty ? enrollmentRequirements[0]['description'] : 'None'}",
+        ).survivalGuideWhiteText,
+      ],
+    );
+
+    showInfo(context, sectionView);
   }
 
   ElevatedButton _exportClassToCalendar(dynamic section) {

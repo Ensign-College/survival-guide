@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/text.dart';
+import 'package:survival_guide/constants/widgets/show_info.dart';
+import 'package:survival_guide/constants/widgets/show_modal.dart';
 import 'package:survival_guide/models/SchedulerTermDataModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
@@ -10,7 +12,8 @@ class SchedulerCoursesWidget extends StatelessWidget {
   final String term;
   final SchedulerTermDataModel termData;
 
-  const SchedulerCoursesWidget({super.key,
+  const SchedulerCoursesWidget({
+    super.key,
     required this.apiService,
     required this.term,
     required this.termData,
@@ -28,17 +31,18 @@ class SchedulerCoursesWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
             headingRowHeight: 40,
-            columnSpacing: 30,
+            columnSpacing: 18,
             clipBehavior: Clip.antiAlias,
             columns: [
               DataColumn(label: Text('Status', style: headerTextStyle())),
               DataColumn(label: Text('Course', style: headerTextStyle())),
               DataColumn(label: Text('Instructor', style: headerTextStyle())),
+              DataColumn(label: Text('Info', style: headerTextStyle())),
             ],
             rows: data.currentSections
                 .map((course) => _buildDataRow(context, course))
@@ -59,7 +63,8 @@ class SchedulerCoursesWidget extends StatelessWidget {
         return cardBackgroundColor; // make sure you have defined this somewhere in your code
       }),
       cells: [
-        DataCell(Text(course.enrollmentStatus, style: survivalGuideCellTextStyle())),
+        DataCell(
+            Text(course.enrollmentStatus, style: survivalGuideCellTextStyle())),
         DataCell(
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.25,
@@ -86,6 +91,36 @@ class SchedulerCoursesWidget extends StatelessWidget {
                 softWrap: false,
               ),
             ),
+          ),
+        ),
+        DataCell(
+          IconButton(
+            // TODO: Figure out how to make sections work with classes
+            icon: const Icon(
+              Icons.info,
+              color: EnsignColor.constantCardBackgroundColor,
+            ),
+            onPressed: () {
+              showInfo(
+                  context,
+                  Column(
+                    children: [
+                      Text(course.description),
+                      Row(
+                        children: [
+                         const Text(
+                            'Instructor: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Set the fontWeight to bold
+                            ),
+                          ),
+                          Text(course.instructor.first.name)
+                        ],
+                      )
+                    ],
+                  ),
+              );
+            },
           ),
         ),
       ],

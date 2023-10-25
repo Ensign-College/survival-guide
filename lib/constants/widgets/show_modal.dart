@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';  // Required for HapticFeedback
 
-void showGestureModal(BuildContext context, Widget view) {
+void showGestureModal(BuildContext context, Widget view, {Color? backgroundColor}) {
   double yOffset = 0;
 
   showDialog(
@@ -28,6 +28,7 @@ void showGestureModal(BuildContext context, Widget view) {
             child: Transform.translate(
               offset: Offset(0, yOffset),
               child: Dialog(
+                backgroundColor: backgroundColor,
                 child: view,
               ),
             ),
