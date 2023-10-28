@@ -32,17 +32,47 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
   Map<String, Color> sectionColorMap = {};
 
   void _addEventsToCalendar(dynamic section) {
-    // TODO: fix calendar
-    var meeting = section['meetings'][0];
+    // TODO: fix calendar - work in progress
+
+    var meeting = section['meetings'];
     final Event event = Event(
       title: "${section['title']}",
       description: "${section['description']}",
       location: "${meeting['location']}",
       startDate: DateTime.parse(meeting['startDate']).toLocal(),
       endDate: DateTime.parse(meeting['endDate']).toLocal(),
+      recurrence: Recurrence(
+        frequency: Frequency.weekly,
+        interval: 2,
+        ocurrences: 6,
+      ),
     );
 
+    // "meetings": [
+    // {
+    // "days": "MW",
+    // "daysRaw": "MW",
+    // "startTime": 1420,
+    // "endTime": 1550,
+    // "location": "707 707",
+    // "meetingType": "DLC",
+    // "startDate": "2023-09-11T00:00:00Z",
+    // "endDate": "2023-12-13T00:00:00Z",
+    // "mapURL": "",
+    // "meetingTypeDescription": null,
+    // "scheduleTypeCode": null,
+    // "scheduleTypeDescription": null,
+    // "building": "707",
+    // "buildingDescription": "Ensign College",
+    // "buildingCode": "LDSBC",
+    // "room": "707",
+    // "firstMonday": "2023-09-11T00:00:00Z",
+    // "lastMonday": "2023-12-11T00:00:00Z"
+    // }
+    // ],
+
     Add2Calendar.addEvent2Cal(event);
+    }
   }
 
   String formatTime(int time) {
@@ -193,8 +223,13 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(8),
-      children: _buildClassCards(context),
+      children: [
+        for (var section in matchingSections) //loop iterates over the matchingSections list and displays a list tile for each section.
+          ListTile(
+            title: Text(section['title']),
+            onTap: () => _addEventsToCalendar(section), //callback calls the _addEventsToCalendar() method with the current section as the parameter.
+          ),
+      ],
     );
   }
 }
