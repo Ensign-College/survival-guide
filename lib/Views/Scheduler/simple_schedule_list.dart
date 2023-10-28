@@ -33,18 +33,45 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
 
   void _addEventsToCalendar(dynamic section) {
     // TODO: fix calendar - work in progress
-    var meetings = section['meetings'] as List; //line casts the section['meetings'] property to a List. This is necessary because the Add2Calendar.addEvent2Cal() method expects the meetings parameter to be a List.
 
-    for (var meeting in meetings) { //loop iterates over the meetings list and adds each meeting to the calendar as an event.
-      final Event event = Event(
-        title: "${section['title']}",
-        description: "${section['description']}",
-        location: "${meeting['location']}",
-        startDate: DateTime.parse(meeting['startDate']).toLocal(),
-        endDate: DateTime.parse(meeting['endDate']).toLocal(),
-      );
+    var meeting = section['meetings'];
+    final Event event = Event(
+      title: "${section['title']}",
+      description: "${section['description']}",
+      location: "${meeting['location']}",
+      startDate: DateTime.parse(meeting['startDate']).toLocal(),
+      endDate: DateTime.parse(meeting['endDate']).toLocal(),
+      recurrence: Recurrence(
+        frequency: Frequency.weekly,
+        interval: 2,
+        ocurrences: 6,
+      ),
+    );
 
-      Add2Calendar.addEvent2Cal(event);
+    // "meetings": [
+    // {
+    // "days": "MW",
+    // "daysRaw": "MW",
+    // "startTime": 1420,
+    // "endTime": 1550,
+    // "location": "707 707",
+    // "meetingType": "DLC",
+    // "startDate": "2023-09-11T00:00:00Z",
+    // "endDate": "2023-12-13T00:00:00Z",
+    // "mapURL": "",
+    // "meetingTypeDescription": null,
+    // "scheduleTypeCode": null,
+    // "scheduleTypeDescription": null,
+    // "building": "707",
+    // "buildingDescription": "Ensign College",
+    // "buildingCode": "LDSBC",
+    // "room": "707",
+    // "firstMonday": "2023-09-11T00:00:00Z",
+    // "lastMonday": "2023-12-11T00:00:00Z"
+    // }
+    // ],
+
+    Add2Calendar.addEvent2Cal(event);
     }
   }
 
