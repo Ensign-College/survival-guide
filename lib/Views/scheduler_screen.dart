@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/colors.dart';
+import 'package:survival_guide/constants/developer.dart';
 import 'package:survival_guide/models/SchedulerGenerateCoursesModel.dart';
 
 import 'Scheduler/simple_schedule_list.dart';
@@ -69,15 +70,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             child: PageView(
               controller: _pageController,
               children: widget.generatedScheduleCourses.schedules.map((schedule) {
-                final sectionIds = schedule['combination']
+                final sectionIds = schedule.combination
                     .map((combo) => combo.split('@')[1])
                     .toList()
                     .cast<String>();
+                printWrapped("sectionIds: ${sectionIds}");
+                if (widget.generatedScheduleCourses != null && sectionIds != null) {
+                  return SimpleScheduleList(
+                    generatedScheduleCourses: widget.generatedScheduleCourses,
+                    sectionIds: sectionIds,
+                  );
+                } else {
+                  print("Either generatedScheduleCourses or sectionIds is null");
+                  // return some fallback widget
+                  return CircularProgressIndicator();
+                }
 
-                return SimpleScheduleList(
-                  generatedScheduleCourses: widget.generatedScheduleCourses,
-                  sectionIds: sectionIds,
-                );
               }).toList(),
             ),
           ),

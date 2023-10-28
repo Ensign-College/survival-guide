@@ -34,46 +34,53 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
 
   void _addEventsToCalendar(dynamic section) {
     // TODO: fix calendar - work in progress
+    var meeting = section['meetings'][0];
 
-    var meeting = section['meetings'];
+    DateTime startDate = DateTime.parse(meeting['startDate']).toLocal();
+    DateTime endDate = DateTime.parse(meeting['endDate']).toLocal();
+
+// Calculating the number of weeks between start and end date
+    int daysDifference = endDate.difference(startDate).inDays;
+    int totalWeeks = (daysDifference / 7).ceil();
+
+    String meetingDays = meeting['days']; // "MW" in this case
+
+// Assuming the meeting occurs every time on the days mentioned in 'meetingDays'
+    int occurrencesPerWeek = 0;
+
+// Loop through meetingDays to accurately count the days
+    for (int i = 0; i < meetingDays.length; i++) {
+      // Check for 'T' as it can be part of 'TTH'
+      if (meetingDays[i] == 'T') {
+        if (i + 1 < meetingDays.length && meetingDays[i + 1] == 'H') {
+          occurrencesPerWeek++;
+          i++; // skip the next character as it's part of 'TH'
+        } else {
+          occurrencesPerWeek++;
+        }
+      } else {
+        occurrencesPerWeek++;
+      }
+    }
+
+// The rest of your code, such as calculating totalOccurrences, remains the same
+    int totalOccurrences = totalWeeks * occurrencesPerWeek;
+
     final Event event = Event(
       title: "${section['title']}",
       description: "${section['description']}",
       location: "${meeting['location']}",
-      startDate: DateTime.parse(meeting['startDate']).toLocal(),
-      endDate: DateTime.parse(meeting['endDate']).toLocal(),
+      startDate: startDate,
+      endDate: endDate,
       recurrence: Recurrence(
         frequency: Frequency.weekly,
-        interval: 2,
-        ocurrences: 6,
+        interval: 1, // Assuming each meeting happens weekly
+        ocurrences: totalOccurrences,
       ),
     );
 
-    // "meetings": [
-    // {
-    // "days": "MW",
-    // "daysRaw": "MW",
-    // "startTime": 1420,
-    // "endTime": 1550,
-    // "location": "707 707",
-    // "meetingType": "DLC",
-    // "startDate": "2023-09-11T00:00:00Z",
-    // "endDate": "2023-12-13T00:00:00Z",
-    // "mapURL": "",
-    // "meetingTypeDescription": null,
-    // "scheduleTypeCode": null,
-    // "scheduleTypeDescription": null,
-    // "building": "707",
-    // "buildingDescription": "Ensign College",
-    // "buildingCode": "LDSBC",
-    // "room": "707",
-    // "firstMonday": "2023-09-11T00:00:00Z",
-    // "lastMonday": "2023-12-11T00:00:00Z"
-    // }
-    // ],
-
     Add2Calendar.addEvent2Cal(event);
-    }
+
   }
 
   String formatTime(int time) {
@@ -103,10 +110,10 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
   dynamic matchingSections;
 
   void getMatchingSections() {
-    matchingSections =
-        widget.generatedScheduleCourses.sections.where((section) {
-      return widget.sectionIds.contains(section['id'].toString());
+    matchingSections = widget.generatedScheduleCourses.sections.where((section) {
+      return widget.sectionIds.contains(section.id);
     }).toList();
+    printWrapped("matchingSections: $matchingSections");
   }
 
   void _showSectionInfo(BuildContext context, Map section) {
@@ -173,7 +180,8 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
     getMatchingSections();
 
     for (var section in matchingSections) {
-      var sectionId = section['id'].toString();
+      printWrapped("section: ${section.toString()}");
+      var sectionId = section['id'];
 
       if (!sectionColorMap.containsKey(sectionId)) {
         sectionColorMap[sectionId] =
@@ -223,15 +231,10 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
 
   @override
   Widget build(BuildContext context) {
+    print("matchingSections: $matchingSections");
     return ListView(
-      children: [
-        if (matchingSections != null) // Check if matchingSections is not null
-          for (var section in matchingSections.where((s) => s != null)) // Loop iterates only over non-null sections
-            ListTile(
-              title: Text(section['title']),
-              onTap: () => _addEventsToCalendar(section), // Callback calls the _addEventsToCalendar() method with the current section as the parameter.
-            ),
-      ],
+      padding: const EdgeInsets.all(8),
+      children: _buildClassCards(context),
     );
   }
 }

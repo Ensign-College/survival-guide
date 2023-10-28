@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/constant_strings.dart';
+import 'package:survival_guide/constants/developer.dart';
 import 'package:survival_guide/constants/htmlParse.dart';
 import '../../constants/colors.dart';
 import '../../constants/widgets/showDialog.dart';
@@ -30,7 +31,7 @@ class SchedulerGenerateCoursesButton extends StatefulWidget {
 
 class SchedulerGenerateCoursesButtonState extends State<SchedulerGenerateCoursesButton> {
   void generateSchedule() async {
-    try {
+
       SchedulerGenerateCoursesModel response = await widget.apiService.generateScheduler(
         widget.term,
         widget.courses,
@@ -43,9 +44,7 @@ class SchedulerGenerateCoursesButtonState extends State<SchedulerGenerateCourses
           alert(alertErrorHeader, removeHtmlTags(warning.warning));
         }
       }
-    } catch (e) {
-      alert('Error', e.toString());
-    }
+
   }
 
   @override

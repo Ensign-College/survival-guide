@@ -219,6 +219,8 @@ class SchedulerApiService {
       final Map<String, dynamic> parsedJson = jsonDecode(response.body);
       final generatedScheduleResponse =
           SchedulerGenerateCoursesModel.fromJson(parsedJson);
+      printWrapped("schedule generated successfully" +
+         generatedScheduleResponse.toJson().toString());
       return generatedScheduleResponse;
     } else {
       printWrapped(
