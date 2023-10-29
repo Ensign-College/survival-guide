@@ -231,10 +231,14 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
 
   @override
   Widget build(BuildContext context) {
-    print("matchingSections: $matchingSections");
     return ListView(
-      padding: const EdgeInsets.all(8),
-      children: _buildClassCards(context),
+      children: [
+        if (matchingSections != null) // Check if matchingSections is not null
+         for (var section in matchingSections.where((s) => s != null)) // Loop iterates only over non-null sections
+           ListTile(
+               title: Text(section['title']),
+                onTap: () => _addEventsToCalendar(section), // Callback calls the _addEventsToCalendar() method with the current section as the parameter.
+               ),
+         ],
     );
-  }
 }
