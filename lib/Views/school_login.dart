@@ -6,6 +6,7 @@ import 'package:survival_guide/Views/Scheduler/scheduler_student_dashboard.dart'
 import 'package:survival_guide/constants/colors.dart';
 import 'package:survival_guide/constants/developer.dart';
 import 'package:survival_guide/constants/widgets/showDialog.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../constants/constant_strings.dart';
 
@@ -17,12 +18,22 @@ class SAMLLogin extends StatefulWidget {
 }
 
 class SAMLLoginState extends State<SAMLLogin> {
-  final String samlRequestUrl = 'https://ensign.collegescheduler.com/api/terms/2023%20Fall%20Semester/subjects';
+  final String samlRequestUrl =
+      'https://ensign.collegescheduler.com/api/terms/2023%20Fall%20Semester/subjects';
   late InAppWebViewController controller;
   String appUrl = 'SAML login';
 
+  void _showLoginModal(BuildContext context) {
+    showBarModalBottomSheet(
+      expand: true, // Set to true to make the modal fullscreen
+      context: context,
+      builder: (context) => build(context), // Use the login form widget
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    _showLoginModal(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(appUrl),
@@ -46,17 +57,23 @@ class SAMLLoginState extends State<SAMLLogin> {
   }
 
   void _showAlert() {
-    alert(alertErrorHeader,'Token value is null');
+    alert(alertErrorHeader, 'Token value is null');
   }
 
   void _navigateToScheduler(String setCookieValue) {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SchedulerStudentDashboard(cookie: setCookieValue)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SchedulerStudentDashboard(cookie: setCookieValue)));
   }
 
-  Future<void> _processEntryUrl(InAppWebViewController controller, Uri url, BuildContext context) async {
+  Future<void> _processEntryUrl(
+      InAppWebViewController controller, Uri url, BuildContext context) async {
     final htmlContent = await controller.getHtml();
-    final RegExp regExp = RegExp(r'input name="__RequestVerificationToken".*?value="(.*?)"');
+    final RegExp regExp =
+        RegExp(r'input name="__RequestVerificationToken".*?value="(.*?)"');
     final match = regExp.firstMatch(htmlContent!);
 
     String? xcrfToken = match?.group(1);
@@ -69,8 +86,11 @@ class SAMLLoginState extends State<SAMLLogin> {
     }
 
     final cookies = await CookieManager.instance().getCookies(url: url);
-    final setCookieValue = cookies.firstWhere((cookie) => cookie.name == '.AspNet.Cookies').value;
-    final setTokenValue = cookies.firstWhere((cookie) => cookie.name == '__RequestVerificationToken').value;
+    final setCookieValue =
+        cookies.firstWhere((cookie) => cookie.name == '.AspNet.Cookies').value;
+    final setTokenValue = cookies
+        .firstWhere((cookie) => cookie.name == '__RequestVerificationToken')
+        .value;
 
     if (setCookieValue != null) {
       debugPrint('verification token on login: $setTokenValue');
