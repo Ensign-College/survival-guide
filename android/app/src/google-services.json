@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1085280541539",
+    "project_id": "survivalguide-407e0",
+    "storage_bucket": "survivalguide-407e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085280541539:android:681fcbea944ae2b4621156",
+        "android_client_info": {
+          "package_name": "com.ensignCollege.survival_guide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085280541539-650mglqaenidahjo2o50327v5q9q0828.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgFVptMHvoktC6TaquEKyKzAG4yoGV3KY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085280541539-650mglqaenidahjo2o50327v5q9q0828.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1085280541539-d9lptsc9vfk77he342rugs7kc32pjhb2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ensignCollege.survivalGuide"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
