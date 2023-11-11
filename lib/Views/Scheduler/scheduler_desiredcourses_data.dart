@@ -64,24 +64,24 @@ class SchedulerDesiredCoursesWidgetState
   }
 
   // // This function runs when the widget is created.
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   // Initialize the API service with the given cookie.
-  //   apiService = SchedulerApiService(cookie: widget.cookie);
-  //
-  //   // Fetch the subjects and navigate to the login page if there's an error.
-  //   subjects = apiService.fetchSubjects(widget.term).catchError((e) {
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const SAMLLogin()),
-  //     );
-  //   });
-  //   termData = apiService.fetchTermData(term);
-  //   // Setup a tab controller for 2 tabs.
-  //   _tabController = TabController(length: 2, vsync: this);
-  // }
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the API service with the given cookie.
+    apiService = SchedulerApiService(cookie: widget.cookie);
+
+    // Fetch the subjects and navigate to the login page if there's an error.
+    subjects = apiService.fetchSubjects(widget.term).catchError((e) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SAMLLogin()),
+      );
+    });
+    termData = apiService.fetchTermData(term);
+    // Setup a tab controller for 2 tabs.
+    _tabController = TabController(length: 2, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
