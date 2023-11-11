@@ -21,13 +21,15 @@ class SAMLLoginState extends State<SAMLLogin> {
   final String samlRequestUrl =
       'https://ensign.collegescheduler.com/api/terms/2023%20Fall%20Semester/subjects';
   late InAppWebViewController controller;
+  late ModalBottomSheetState controllerMBS;
   String appUrl = 'SAML login';
 
   void _showLoginModal(BuildContext context) {
     showBarModalBottomSheet(
       expand: true, // Set to true to make the modal fullscreen
       context: context,
-      builder: (context) => build(context), // Use the login form widget
+      builder: (context) =>
+          LoginModal(samlRequestUrl), // Pass the URL to LoginModal
     );
   }
 
@@ -38,20 +40,6 @@ class SAMLLoginState extends State<SAMLLogin> {
       appBar: AppBar(
         title: Text(appUrl),
         backgroundColor: appBackgroundColor,
-      ),
-      body: InAppWebView(
-        initialUrlRequest: URLRequest(url: Uri.parse(samlRequestUrl)),
-        onWebViewCreated: (InAppWebViewController webViewController) {
-          controller = webViewController;
-        },
-        onLoadStop: (InAppWebViewController controller, Uri? url) async {
-          setState(() => appUrl = url.toString());
-          printWrapped('On Load stop: $appUrl');
-
-          if (url?.toString() == 'https://ensign.collegescheduler.com/entry') {
-            await _processEntryUrl(controller, url!, context);
-          }
-        },
       ),
     );
   }
@@ -104,5 +92,25 @@ class SAMLLoginState extends State<SAMLLogin> {
       }
       _navigateToScheduler(setCookieValue);
     }
+  }
+}
+
+class LoginModal extends StatelessWidget {
+  final String samlRequestUrl;
+  late InAppWebViewController controller;
+
+  LoginModal(this.samlRequestUrl);
+
+  @override
+  Widget build(BuildContext context) {
+    return InAppWebView(
+      initialUrlRequest: URLRequest(url: Uri.parse(samlRequestUrl)),
+      onWebViewCreated: (InAppWebViewController webViewController) {
+        controller = webViewController;
+      },
+      onLoadStop: (InAppWebViewController controller, Uri? url) async {
+        // Handle onLoadStop as needed
+      },
+    );
   }
 }
