@@ -164,6 +164,30 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       );
+      cards.add(
+        CardViewModel(
+          title: 'Scholarships',
+          imageUrl: ensignLogo,
+          detailsID: 99999998,
+          isConstant: true,
+          callback: () async {
+            final String? setCookieValue = await getCookieFromPreferences();
+            if (setCookieValue != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Scholarship_View_Widget(),
+                ),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SAMLLogin()),
+              );
+            }
+          },
+        ), //created by Jonatha
+      );
     }
   }
 
@@ -172,3 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return prefs.getString('.AspNet.Cookies');
   }
 }
+
+Scholarship_View_Widget() {
+}
+
+
+
+
