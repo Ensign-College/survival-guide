@@ -5,6 +5,7 @@ import '../../constants/colors.dart';
 import '../../constants/widgets/showDialog.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
 import '../../repository/scheduler_api_services.dart';
+import '../school_login.dart';
 
 class SchedulerGenerateCoursesButton extends StatefulWidget {
   final List<String> courses;
@@ -44,8 +45,17 @@ class SchedulerGenerateCoursesButtonState extends State<SchedulerGenerateCourses
         }
       }
     } catch (e) {
-      alert('Error', e.toString());
+      // alert('Error', e.toString());
+      handleError(context, e);
     }
+  }
+
+  void handleError(BuildContext context, dynamic error) {
+    // Handle the error, e.g., show a dialog or navigate to the login page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SAMLLogin()),
+    );
   }
 
   @override

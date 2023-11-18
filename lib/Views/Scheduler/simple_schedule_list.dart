@@ -7,6 +7,7 @@ import 'package:survival_guide/constants/extensions/text_extensions.dart';
 import '../../constants/format_time.dart';
 import '../../constants/widgets/show_info.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart';
+import '../school_login.dart';
 
 class SimpleScheduleList extends StatefulWidget {
   final SchedulerGenerateCoursesModel generatedScheduleCourses;
@@ -173,9 +174,28 @@ class _SimpleScheduleListState extends State<SimpleScheduleList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      children: _buildClassCards(context),
-    );
+    try {
+      //SchedulerAppDataModel appData = fetchAppData(); // Assuming fetchAppData is synchronous
+      return ListView(
+        padding: const EdgeInsets.all(8),
+        children: _buildClassCards(context),
+      );
+    } catch (e) {
+      // Handle error, navigate to login page, or show an error message
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SAMLLogin()),
+      );
+      return Text('Error: $e');
+    }
   }
+
+
+// @override
+  // Widget build(BuildContext context) {
+  //   return ListView(
+  //     padding: const EdgeInsets.all(8),
+  //     children: _buildClassCards(context),
+  //   );
+  // }
 }

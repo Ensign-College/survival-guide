@@ -1,3 +1,5 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:survival_guide/constants/text.dart';
 import 'package:survival_guide/constants/widgets/show_info.dart';
@@ -6,6 +8,7 @@ import 'package:survival_guide/models/SchedulerTermDataModel.dart';
 import 'package:survival_guide/repository/scheduler_api_services.dart';
 
 import '../../constants/colors.dart';
+import '../school_login.dart';
 
 class SchedulerCoursesWidget extends StatelessWidget {
   final SchedulerApiService apiService;
@@ -44,16 +47,30 @@ class SchedulerCoursesWidget extends StatelessWidget {
               DataColumn(label: Text('Instructor', style: headerTextStyle())),
               DataColumn(label: Text('Info', style: headerTextStyle())),
             ],
-            rows: data.currentSections
-                .map((course) => _buildDataRow(context, course))
-                .toList(),
+            // rows: data.currentSections
+            //     .map((course) => _buildDataRow(context, course))
+            //     .toList(),
+            rows: _buildDataRows(context, data),
           ),
         ),
       ),
     );
   }
 
-  DataRow _buildDataRow(BuildContext context, CurrentSections course) {
+  List<DataRow> _buildDataRows(BuildContext context, SchedulerTermDataModel data) {
+    List<DataRow> rows = [];
+
+    for (var course in data.currentSections) {
+      try {
+        rows.add(_buildDataRow(context, course, handleError));
+      } catch (e) {
+        handleError(context, e);
+      }
+    }
+    return rows;
+  }
+
+  DataRow _buildDataRow(BuildContext context, CurrentSections course, Function(BuildContext, dynamic) handleError) {
     return DataRow(
       color:
           MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
@@ -126,4 +143,13 @@ class SchedulerCoursesWidget extends StatelessWidget {
       ],
     );
   }
+
+  void handleError(BuildContext context, dynamic error) {
+    // Handle the error, e.g., show a dialog or navigate to the login page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SAMLLogin()),
+    );
+  }
+
 }

@@ -7,6 +7,7 @@ import 'package:survival_guide/constants/constant_strings.dart';
 import '../../constants/shimmer.dart';
 import '../../models/SchedulerSubjectModel.dart';
 import '../../repository/scheduler_api_services.dart';
+import '../school_login.dart';
 
 class SchedulerCoursesPage extends StatefulWidget {
   final SchedulerApiService apiService;
@@ -135,6 +136,8 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
         } else if (snapshot.hasError ||
             !snapshot.hasData ||
             snapshot.data!.isEmpty) {
+          // Add error handling here
+          handleError(snapshot.error);
           return Text(
             'No subjects available.',
             style: TextStyle(color: textColor),
@@ -173,6 +176,14 @@ class SchedulerCoursesPageState extends State<SchedulerCoursesPage> {
           );
         }
       },
+    );
+  }
+
+  void handleError(dynamic error) {
+    // Handle the error, e.g., show a dialog or navigate to the login page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SAMLLogin()),
     );
   }
 

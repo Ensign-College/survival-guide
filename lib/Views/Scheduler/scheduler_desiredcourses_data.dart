@@ -14,6 +14,7 @@ import '../../constants/text.dart';
 import '../../models/SchedulerGenerateCoursesModel.dart' as generate_courses;
 import '../../models/SchedulerGenerateCoursesModel.dart';
 import '../scheduler_screen.dart';
+import '../school_login.dart';
 
 class SchedulerDesiredCoursesWidget extends StatefulWidget {
   final SchedulerApiService apiService;
@@ -47,6 +48,22 @@ class SchedulerDesiredCoursesWidgetState
   late SchedulerApiService apiService;
   bool isDesiredCoursesEmpty = false;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   term = widget.term;
+  //   apiService = widget.apiService;
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     apiService.fetchDesiredCourse(term).then((data) {
+  //       desiredCoursesObjectNotifier.value = data;
+  //       desiredCoursesNotifier.value = data.map((e) => e.id).toList();
+  //     }).catchError((error) {
+  //       // Handle error
+  //     });
+  //   });
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -58,9 +75,17 @@ class SchedulerDesiredCoursesWidgetState
         desiredCoursesObjectNotifier.value = data;
         desiredCoursesNotifier.value = data.map((e) => e.id).toList();
       }).catchError((error) {
-        // Handle error
+        handleError(error);
       });
     });
+  }
+
+  void handleError(dynamic error) {
+    // Handle the error, e.g., show a dialog or navigate to the login page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SAMLLogin()),
+    );
   }
 
   // // This function runs when the widget is created.

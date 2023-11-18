@@ -62,7 +62,14 @@ class _SchedulerStudentDashboardState extends State<SchedulerStudentDashboard> {
                 ],
               );
             case ConnectionStateStatus.hasError:
-              return Text('Error: ${snapshot.error}');
+              // return Text('Error: ${snapshot.error}');
+              debugPrint('Error fetching app data: ${snapshot.error}');
+              // Handle the error, e.g., show a dialog or navigate to the login page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SAMLLogin()),
+              );
+              return Container(); // You can return an empty container or an error message widget
             case ConnectionStateStatus.noData:
               return const Text('No terms available.');
             case ConnectionStateStatus.hasData:
