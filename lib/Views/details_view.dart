@@ -19,6 +19,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
   String text = 'no text';
   List<String> images = [];
   bool isLoaded = false;
+  bool shouldLoadImages = false;
   double _fontSize = 16.0;
 
   @override
@@ -41,6 +42,8 @@ class DetailsViewModelState extends State<DetailsViewModel> {
       text = details[0]['text'];
       images = List<String>.from(
           details[0]['pictures'].map((item) => item as String));
+      debugPrint('images ${images.toString()}');
+      shouldLoadImages = (images.isEmpty);
       isLoaded = true;
     });
   }
@@ -88,7 +91,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
               backgroundColor: Colors.transparent,
             ),
             body: Column(children: [
-              Expanded(
+              shouldLoadImages ? const SizedBox.shrink() : Expanded(
                 flex: (images.first.toString() == '') ? 0 : 1,
                 // Once we fetch data from supabase our array is populated with "", therefore it is not empty anymore
                 child: (images.first.toString() == '')
