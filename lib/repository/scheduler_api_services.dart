@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:survival_guide/constants/developer.dart';
+import 'package:survival_guide/constants/widgets/showDialog.dart';
 import 'dart:convert';
 import 'package:survival_guide/models/SchedulerAppDataModel.dart';
 
@@ -132,9 +133,7 @@ class SchedulerApiService {
       headers: headers,
     );
 
-    final cookie = await getValueFromPreferences('.AspNet.Cookies');
     if (response.statusCode == 200) {
-      printWrapped('Response ${response.body}');
       final Map<String, dynamic> parsedJson = jsonDecode(response.body);
       final registrationBlocks = SchedulerRegBlocksModel.fromJson(parsedJson);
       return registrationBlocks;
@@ -224,7 +223,7 @@ class SchedulerApiService {
     final response = await http.put(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      printWrapped('Response: ${response.body}');
+      printWrapped('Response from update Desired Course: ${response.body}');
     } else {
       printWrapped(
           'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
@@ -244,10 +243,11 @@ class SchedulerApiService {
     final headers = await createHeaders(cookie, body.length);
 
     final response = await http.put(url, headers: headers, body: body);
-
+    print("Response status from update Desired Course: ${response.statusCode}");
     if (response.statusCode == 200) {
-      printWrapped('Response: ${response.body}');
+      print("Success updating desired course");
     } else {
+      alert(response.statusCode.toString(), response.headers.toString());
       printWrapped(
           'reason: ${response.reasonPhrase} isRedirect: ${response.isRedirect} header: ${response.headers}');
       throw Exception('Failed to update desired course ${response.statusCode}');

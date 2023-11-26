@@ -69,9 +69,6 @@ class SchedulerCourseSectionsViewModel with ChangeNotifier {
       }
     }
 
-    // Debug print for verification
-    print("Updated rules: ${course.filterRules}");
-
     // Update the course sections through API
     apiService.updateDesiredCourseSections(course, term);
 

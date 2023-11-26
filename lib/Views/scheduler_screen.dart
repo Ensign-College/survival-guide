@@ -73,7 +73,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     .map((combo) => combo.split('@')[1])
                     .toList()
                     .cast<String>();
-
                 return SimpleScheduleList(
                   generatedScheduleCourses: widget.generatedScheduleCourses,
                   sectionIds: sectionIds,

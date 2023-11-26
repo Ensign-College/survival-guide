@@ -76,7 +76,7 @@ class SchedulerDesiredCoursesWidgetState
       future: apiService.fetchDesiredCourse(term),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return shimmerEffect(200); // Your shimmerEffect widget
+          return shimmerEffect(200); //shimmerEffect widget
         } else if (snapshot.hasError) {
           return _buildErrorWidget(snapshot.error);
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -120,6 +120,9 @@ class SchedulerDesiredCoursesWidgetState
       itemBuilder: (context, index) {
         final course = data[index];
         final regBlocks = apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
+        print("Term: $term");
+        print("Subject: ${course.subjectShort}");
+        print("courses: ${course.number}");
 
         return Dismissible(
           key: Key(course.courseKey),
@@ -179,34 +182,7 @@ class SchedulerDesiredCoursesWidgetState
                 //   apiService.fetchRegistrationBlocks(term, course.subjectShort, course.number);
                 // }, child: const Text('Sections'))
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      SchedulerRegBlocksModel resolvedRegBlocks = await regBlocks;
-                      final courseSectionViewModel = SchedulerCourseSectionsViewModel(
-                        regBlocks: resolvedRegBlocks,
-                        apiService: apiService,
-                        course: course,
-                        term: widget.term,
-                      );
-                      courseSectionViewModel.initializeSelectedBlocks();
-                        showGestureModal(context,
-                          SchedulerCourseSectionsView(
-                             viewModel: courseSectionViewModel,
-                          ),
-                      );
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          // Change this color if you want a different color when pressed
-                          return constantCardBackgroundColor;
-                        } else {
-                          return constantCardBackgroundColor; // Use the default button color
-                        }
-                      }),
-                    ),
-                    child: const Text('Sections'),
-                  ),
+                  child: _sectionButton(regBlocks, course)
                 ),
               ],
             ),
@@ -262,7 +238,38 @@ class SchedulerDesiredCoursesWidgetState
     );
   }
 
-  Widget _sendToShoppingButton() {
+  ElevatedButton _sectionButton(Future <SchedulerRegBlocksModel> regBlocks, course ) {
+    return ElevatedButton(
+      onPressed: () async {
+        SchedulerRegBlocksModel resolvedRegBlocks = await regBlocks;
+        final courseSectionViewModel = SchedulerCourseSectionsViewModel(
+          regBlocks: resolvedRegBlocks,
+          apiService: apiService,
+          course: course,
+          term: widget.term,
+        );
+        courseSectionViewModel.initializeSelectedBlocks();
+        showGestureModal(context,
+          SchedulerCourseSectionsView(
+            viewModel: courseSectionViewModel,
+          ),
+        );
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.pressed)) {
+            // Change this color if you want a different color when pressed
+            return constantCardBackgroundColor;
+          } else {
+            return constantCardBackgroundColor; // Use the default button color
+          }
+        }),
+      ),
+      child: const Text('Sections'),
+    );
+  }
+
+  ElevatedButton _sendToShoppingButton() {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((states) {
@@ -280,6 +287,8 @@ class SchedulerDesiredCoursesWidgetState
             userId: widget.appData.studentUserId ?? 0,
             onError: (errorCode, error) => alert(alertErrorHeader,
                 '$errorCode $error'), // pass the callback here
+            apiService: apiService,
+            yearTerm: widget.term,
           );
         })
       },

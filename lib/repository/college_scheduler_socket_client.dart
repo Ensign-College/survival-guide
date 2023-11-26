@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:survival_guide/constants/developer.dart';
+import 'package:survival_guide/models/SchedulerRegBlocksModel.dart';
+import 'package:survival_guide/repository/scheduler_api_services.dart';
 import 'package:web_socket_channel/io.dart';
 
 import '../models/SchedulerDesiredCoursesModel.dart';
@@ -17,13 +19,19 @@ class CollegeSchedulerSocketClient {
   final String termCode;
   final int userId;
   final ErrorHandler onError;
+  final SchedulerApiService apiService;
+  final String yearTerm;
 
+  // final SchedulerRegBlocksModel registrationNumber;
   CollegeSchedulerSocketClient({
     required this.token,
     required this.shoppingCartItems,
     required this.termCode,
     required this.userId,
     required this.onError,
+    required this.apiService,
+    required this.yearTerm,
+    // required this.registrationNumber,
   }) {
     _initializeSocket();
   }
@@ -93,10 +101,16 @@ class CollegeSchedulerSocketClient {
     }
   }
 
-  void sendToCart() {
+  Future<void> sendToCart() async {
 
-    List<ShoppingCartSection> shoppingCartSections = mapToShoppingCartSections(shoppingCartItems);
+    List<SchedulerRegBlocksModel> registrationBlocks = [];
 
+    for (var item in shoppingCartItems) {
+      var block = await apiService.fetchRegistrationBlocks(yearTerm, item.subjectShort, item.number);
+      registrationBlocks.add(block);
+    }
+
+    List<ShoppingCartSection> shoppingCartSections = mapToShoppingCartSections(shoppingCartItems, registrationBlocks);
     final shoppingCart = CollegeSchedulerShoppingCartModel(
       sections: shoppingCartSections,
       termCode: termCode,

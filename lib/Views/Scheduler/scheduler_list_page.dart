@@ -1,5 +1,6 @@
   // Importing required packages and components.
   import 'package:flutter/material.dart';
+import 'package:survival_guide/Views/Scheduler/schedular_shopping_cart_widget.dart';
   import 'package:survival_guide/Views/Scheduler/scheduler_courses.dart';
   import 'package:survival_guide/Views/Scheduler/scheduler_desiredcourses_data.dart';
   import 'package:survival_guide/Views/Scheduler/scheduler_courses_widget.dart' as termdata;
@@ -121,6 +122,8 @@
                 buildSectionTitle('Desired Courses'),
                 const SizedBox(height: 10),
                 SchedulerDesiredCoursesWidget(apiService: apiService, term: widget.term, appData: widget.appData, currentSections: currentSections,),
+                buildSectionTitle("Shopping Cart"),
+                SchedulerShoppingCartWidget(),
               ],
             ),
           ],
