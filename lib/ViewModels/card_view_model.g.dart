@@ -16,23 +16,26 @@ class CardViewModelAdapter extends TypeAdapter<CardViewModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+
     return CardViewModel(
-      title: fields[0] as String,
-      imageUrl: fields[1] as String,
-      detailsID: fields[2] as int,
+      title: (fields[0] ?? '') as String, // provide a fallback value if null
+      imageUrl: (fields[1] ?? '') as String, // provide a fallback value if null
+      detailsID: (fields[2] ?? 0) as int,
+      isConstant: fields[3] ?? false, callback: () {  },
     );
   }
 
   @override
   void write(BinaryWriter writer, CardViewModel obj) {
     writer
-      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
       ..write(obj.imageUrl)
       ..writeByte(2)
-      ..write(obj.detailsID);
+      ..write(obj.detailsID)
+      ..writeByte(3)
+      ..write(obj.isConstant);
   }
 
   @override
