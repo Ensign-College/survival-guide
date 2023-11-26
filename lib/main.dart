@@ -140,7 +140,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void addConstantCards() {
-    print ("scholarships");
     if (!cards.any((card) => card.title == 'Class Scheduler (beta)' && card.detailsID == 99999999)) {
       cards.add(
         CardViewModel(
@@ -166,34 +165,33 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       );
-          if(!cards.any((card) => card.title == 'Scholarships' && card.detailsID == 99999998)) {
-            cards.add(
-                CardViewModel(
-                  title: 'Scholarships',
-                  imageUrl: ensignLogo,
-                  detailsID: 99999998,
-                  isConstant: true,
-                  callback: () async {
-                    final String? setCookieValue = await getCookieFromPreferences();
-                    if (setCookieValue != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ScholarshipsView(),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SAMLLogin()),
-                        );
-                    }
-                  },
+    }
+
+    if (!cards.any((card) => card.title == 'Scholarships' && card.detailsID == 99999998)) {
+      cards.add(
+        CardViewModel(
+          title: 'Scholarships',
+          imageUrl: ensignLogo,
+          detailsID: 99999998,
+          isConstant: true,
+          callback: () async {
+            final String? setCookieValue = await getCookieFromPreferences();
+            if (setCookieValue != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScholarshipsView(),
                 ),
-
-
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SAMLLogin()),
+              );
+            }
+          },
+        ),
       );
-     };
     }
   }
 
