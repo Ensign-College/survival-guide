@@ -3,6 +3,7 @@ import 'package:survival_guide/constants/colors.dart';
 import 'package:hive/hive.dart';
 
 import '../Views/details_view.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 part 'card_view_model.g.dart';
 
@@ -53,23 +54,34 @@ class CardViewModel extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         width: 150,
         child: Center(
-          child: ListTile(
-            leading: ensignLogo(),
-            title: departmentTitle(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ensignLogo(),
+              SizedBox(width: 2), // Adjust this value to control the spacing
+              Expanded(child: departmentTitle()),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Text departmentTitle() {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-      ),
+  Widget departmentTitle() {
+    return  Html(
+      data: title, // HTML content
+      style: {
+        'p': Style(
+          // textAlign: TextAlign.center,
+          color: Colors.white,
+          // fontSize: FontSize(16),
+        ),
+        'strong': Style(
+
+          color: Colors.white,
+        ),
+      },
+
     );
   }
 

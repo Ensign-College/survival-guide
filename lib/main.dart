@@ -132,7 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
           }).toList();
 
           cards.addAll(fetchedCards);
-          cards.forEach((card) => box.put(card.title, card));
+          for (var card in cards) {
+            box.put(card.title, card);
+          }
 
           return isGridView ? buildListView() : DirectoryGridView(children: cards);
         }

@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:survival_guide/Views/custom_text_parser.dart';
 import 'package:survival_guide/constants/colors.dart';
 
@@ -79,16 +82,48 @@ class DetailsViewModelState extends State<DetailsViewModel> {
       ),
     );
   }
+  Widget htmlView(String text) {
+    return Html(
+        data: text,
+      style: {
+        'p': Style(
+          textAlign: TextAlign.center,
+          color: Colors.white,
+          fontSize: FontSize(16.0),
+          margin: Margins(left: Margin(-50, Unit.px), right: Margin.auto()),
+        ),
+        'strong': Style(
+          fontWeight: FontWeight.bold,
+        ),
+      }
+    );
+  }
+
+
+  Widget htmlTextView(String text, double fontSize) {
+    return  Html(
+      data: text, // HTML content
+      style: {
+        'p': Style(
+          textAlign: TextAlign.center,
+          color: Colors.white,
+          fontSize: FontSize(fontSize),
+        ),
+        'strong': Style(
+          fontWeight: FontWeight.bold,
+        ),
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return isLoaded
         ? Scaffold(
             appBar: AppBar(
-              title: Text(
-                widget.title,
-              ),
+              title: Center(child: htmlView(widget.title)),
               backgroundColor: Colors.transparent,
+              centerTitle: true,
             ),
             body: Column(children: [
               shouldLoadImages ? const SizedBox.shrink() : Expanded(
@@ -100,10 +135,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
               ),
               Expanded(
                 flex: 2,
-                child: CustomTextParserWidget(
-                  text: text,
-                  fontSize: _fontSize,
-                ),
+                child: SingleChildScrollView(child: htmlTextView(text, _fontSize)),
               ),
             ]),
             floatingActionButton: Column(
@@ -126,10 +158,9 @@ class DetailsViewModelState extends State<DetailsViewModel> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: Text(
-                widget.title,
-              ),
+              title: htmlView(widget.title),
               backgroundColor: Colors.transparent,
+              centerTitle: true,
             ),
             body: const Center(
               child: CircularProgressIndicator(),
