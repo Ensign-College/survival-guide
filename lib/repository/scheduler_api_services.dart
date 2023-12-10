@@ -81,6 +81,18 @@ class SchedulerApiService {
     }
   }
 
+  Future<bool> isServerAlive() async {
+    try {
+      final response = await http.get(Uri.parse('https://ensign.collegescheduler.com'));
+      if (response.statusCode == 200) {
+        return true; // Server is alive
+      }
+      return false; // Server responded but not with a 200 OK
+    } catch (e) {
+      return false; // Server did not respond or there was a network error
+    }
+  }
+
   Future<SchedulerAppDataModel> fetchAppData() async {
     final response = await http.get(
       Uri.parse('${schedulerURL}app-data/'),
