@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:survival_guide/Views/custom_text_parser.dart';
 import 'package:survival_guide/constants/colors.dart';
 
@@ -19,6 +22,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
   String text = 'no text';
   List<String> images = [];
   bool isLoaded = false;
+  bool shouldLoadImages = false;
   double _fontSize = 16.0;
 
   @override
@@ -41,6 +45,8 @@ class DetailsViewModelState extends State<DetailsViewModel> {
       text = details[0]['text'];
       images = List<String>.from(
           details[0]['pictures'].map((item) => item as String));
+      debugPrint('images ${images.toString()}');
+      shouldLoadImages = (images.isEmpty);
       isLoaded = true;
     });
   }
@@ -76,19 +82,51 @@ class DetailsViewModelState extends State<DetailsViewModel> {
       ),
     );
   }
+  Widget htmlView(String text) {
+    return Html(
+        data: text,
+      style: {
+        'p': Style(
+          textAlign: TextAlign.center,
+          color: Colors.white,
+          fontSize: FontSize(16.0),
+          margin: Margins(left: Margin(-50, Unit.px), right: Margin.auto()),
+        ),
+        'strong': Style(
+          fontWeight: FontWeight.bold,
+        ),
+      }
+    );
+  }
+
+
+  Widget htmlTextView(String text, double fontSize) {
+    return  Html(
+      data: text, // HTML content
+      style: {
+        'p': Style(
+          textAlign: TextAlign.center,
+          color: Colors.white,
+          fontSize: FontSize(fontSize),
+        ),
+        'strong': Style(
+          fontWeight: FontWeight.bold,
+        ),
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return isLoaded
         ? Scaffold(
             appBar: AppBar(
-              title: Text(
-                widget.title,
-              ),
+              title: Center(child: htmlView(widget.title)),
               backgroundColor: Colors.transparent,
+              centerTitle: true,
             ),
             body: Column(children: [
-              Expanded(
+              shouldLoadImages ? const SizedBox.shrink() : Expanded(
                 flex: (images.first.toString() == '') ? 0 : 1,
                 // Once we fetch data from supabase our array is populated with "", therefore it is not empty anymore
                 child: (images.first.toString() == '')
@@ -97,10 +135,7 @@ class DetailsViewModelState extends State<DetailsViewModel> {
               ),
               Expanded(
                 flex: 2,
-                child: CustomTextParserWidget(
-                  text: text,
-                  fontSize: _fontSize,
-                ),
+                child: SingleChildScrollView(child: htmlTextView(text, _fontSize)),
               ),
             ]),
             floatingActionButton: Column(
@@ -123,10 +158,9 @@ class DetailsViewModelState extends State<DetailsViewModel> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: Text(
-                widget.title,
-              ),
+              title: htmlView(widget.title),
               backgroundColor: Colors.transparent,
+              centerTitle: true,
             ),
             body: const Center(
               child: CircularProgressIndicator(),
